@@ -3,12 +3,12 @@ import {createConnection} from "typeorm";
 import {User} from "./entity/User";
 import {UserDetail} from "./entity/UserDetail"
 import * as argon2 from "argon2";
+import * as express from "express";
 
 createConnection().then(async connection => {
 
+    /*Just for demonstrating purposes, can be removed after understanding the code
     //Add test-user to user
-    const testUser = await connection.manager.find(User, { where: { username: "Test" }});
-    if (!testUser) {
       console.log("Inserting a new user into the database...");
       const user = new User();
       user.username = "Test";
@@ -38,5 +38,12 @@ createConnection().then(async connection => {
     console.log("Loaded users: ", usersDetail);
 
     console.log("Here you can setup and run express/koa/any other framework.");
+    */
+
+   const app = express();
+
+   app.listen(3000);
+
+   console.log("Tables initialized and express application up and running on port 3000");
 
 }).catch(error => console.log(error));
