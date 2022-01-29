@@ -4,6 +4,7 @@ import {User} from "./entity/User";
 import {UserDetail} from "./entity/UserDetail"
 import * as argon2 from "argon2";
 import * as express from "express";
+import {router} from "./routes"
 
 createConnection().then(async connection => {
 
@@ -41,6 +42,8 @@ createConnection().then(async connection => {
     */
 
    const app = express();
+   app.use(express.json());
+   app.use(router);
 
    app.listen(3000);
 
