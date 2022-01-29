@@ -6,13 +6,21 @@ export class User {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @Column()
-    firstName: string;
+    @Column({
+      unique: true
+    })
+    username: string;
 
     @Column()
-    lastName: string;
+    password: string;
 
-    @Column()
-    age: number;
+    @Column({
+      default: false
+    })
+    is_teacher: boolean;
 
+    @Column({
+      default: false
+    })
+    is_administrator: boolean;
 }
