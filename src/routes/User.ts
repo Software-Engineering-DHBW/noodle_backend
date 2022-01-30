@@ -29,6 +29,14 @@ interface LoginUser {
 }
 
 /**
+ * Representation of the incoming data for removing a user
+ * @interface
+ */
+interface DeleteUser {
+  username: string;
+}
+
+/**
  * @exports
  * @async
  * Registers a new User with the data given by the HTTP-Request
@@ -141,7 +149,7 @@ export const login_user = async (req: Request, res: Response): Promise<void> => 
  * @param {LoginUser} data - Given username from the request
  * @returns {Promise<User[]>}
  */
-const get_user_login = async (data: LoginUser): Promise<User[]> => {
+const get_user_login = async (data: LoginUser|DeleteUser): Promise<User[]> => {
   const user_repository = await getRepository(User);
   return await user_repository.find({ where: { username: data.username}})
 }
@@ -178,4 +186,46 @@ const create_login_jwt = async (user: User, user_details: UserDetail): Promise<s
     "role": role,
     "exp": Math.floor(Date.now() / 1000) + (12 * 60 * 60)
   }, "", {algorithm: "none"});
+}
+
+/**
+ * @export
+ * Deletes the user with the given username and id
+ * @param {Request} req - Received request object
+ * @param {Response} res - Received response object
+ */
+export const delete_user = async (req: Request, res: Response) => {
+  try{
+    const data: DeleteUser = req.body;
+    const users: User[] = await get_user_login(data)
+    if (users.length !== 1) {
+      res.status(500).send("The user could not be found in the database");
+      return;
+    }
+    const user: User = users[0];
+    await delete_user_details_from_repository(user);
+    await delete_user_from_repository(user);
+    res.status(200).send("The user has been deleted");
+  } catch (_err) {
+    console.log(_err)
+    res.status(500).send("The user could not be deleted");
+  }
+}
+/**
+ * @export
+ * Deletes the entry from the repository 'UserDetail'
+ * @param {User} data - The user to delete 
+ */
+const delete_user_details_from_repository = async (user: User) => {
+  const user_detail_respository: Repository<UserDetail> = await getRepository(UserDetail);
+  await user_detail_respository.delete({ user_id: user })
+}
+/**
+ * @export
+ * Deletes the entry from the repository 'User'
+ * @param {User} user - The user to delete 
+ */
+const delete_user_from_repository = async (user: User) => {
+  const user_respository: Repository<User> = await getRepository(User);
+  await user_respository.delete(user)
 }
