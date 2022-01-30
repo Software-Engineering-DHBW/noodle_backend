@@ -9,9 +9,7 @@ import * as jwt from "jsonwebtoken";
  * Representation of the incoming data of a new user
  * @interface
  */
-interface RegisterUser {
-  username: string;
-  password: string;
+interface RegisterUser extends LoginUser {
   role: string;
   fullname: string;
   address: string;
@@ -23,8 +21,7 @@ interface RegisterUser {
  * Representation of the incoming data of a user login
  * @interface
  */
-interface LoginUser {
-  username: string;
+interface LoginUser extends DeleteUser {
   password: string;
 }
 
@@ -117,28 +114,18 @@ const save_new_user = async (new_user: User, new_user_detail: UserDetail, res: R
  * @param {Response} res - Received response object
  * @returns HTTP-Status 200 and JWT
  * @throws HTTP-Status 403 and "Wrong username or password" - Invalid username or wrong password
- * @throws HTTP-Status 403 and "Your account is corrupted. Please inform a administrator" - Received a duplicate or no entry from the 'UserData'-Entity
  */
 export const login_user = async (req: Request, res: Response): Promise<void> => {
-  const invalid_data_error: Error = new Error('Wrong username or password');
-  const corrupted_account_error: Error = new Error('Your account is corrupted. Please inform a administrator')
   try {
     const data: LoginUser = req.body;
-    const users: User[] = await get_user_login(data);
-    if (users.length !== 1) {
-      throw invalid_data_error;
-    }
-    const user = users[0];
+    const user: User = await get_user_login(data);
     if (!await argon2.verify(user.password, data.password)) {
-      throw invalid_data_error;
+      throw new Error();
     }
-    const user_details: UserDetail[] = await get_user_detail(user);
-    if (user_details.length !== 1) {
-      throw corrupted_account_error;
-    }
-    res.status(200).send(await create_login_jwt(user, user_details[0])) 
-  } catch (err) {
-    res.status(403).send(err.message);
+    const user_details: UserDetail = await get_user_detail(user);
+    res.status(200).send(await create_login_jwt(user, user_details)) 
+  } catch (_err) {
+    res.status(403).send("Wrong username or password");
     return;
   }
 }
@@ -149,9 +136,12 @@ export const login_user = async (req: Request, res: Response): Promise<void> => 
  * @param {LoginUser} data - Given username from the request
  * @returns {Promise<User[]>}
  */
-const get_user_login = async (data: LoginUser|DeleteUser): Promise<User[]> => {
+const get_user_login = async (data: LoginUser|DeleteUser): Promise<User> => {
+  if (data.username === undefined || data.username === null) {
+    throw new Error();
+  }
   const user_repository = await getRepository(User);
-  return await user_repository.find({ where: { username: data.username}})
+  return await user_repository.findOneOrFail({ where: { username: data.username}})
 }
 
 /**
@@ -160,9 +150,12 @@ const get_user_login = async (data: LoginUser|DeleteUser): Promise<User[]> => {
  * @param {User} user - Selected user
  * @returns {Promise<UserDetail[]>}
  */
-const get_user_detail = async (user: User): Promise<UserDetail[]> => {
+const get_user_detail = async (user: User): Promise<UserDetail> => {
+  if (user === undefined || user === null){
+    throw new Error();
+  }
   const user_detail_respository = await getRepository(UserDetail);
-  return await user_detail_respository.find({ where: {user_id: user}})
+  return await user_detail_respository.findOneOrFail({ where: {user_id: user}})
 }
 
 /**
@@ -189,7 +182,7 @@ const create_login_jwt = async (user: User, user_details: UserDetail): Promise<s
 }
 
 /**
- * @export
+ * @exports
  * Deletes the user with the given username and id
  * @param {Request} req - Received request object
  * @param {Response} res - Received response object
@@ -197,12 +190,7 @@ const create_login_jwt = async (user: User, user_details: UserDetail): Promise<s
 export const delete_user = async (req: Request, res: Response) => {
   try{
     const data: DeleteUser = req.body;
-    const users: User[] = await get_user_login(data)
-    if (users.length !== 1) {
-      res.status(500).send("The user could not be found in the database");
-      return;
-    }
-    const user: User = users[0];
+    const user: User = await get_user_login(data)
     await delete_user_details_from_repository(user);
     await delete_user_from_repository(user);
     res.status(200).send("The user has been deleted");
@@ -212,7 +200,6 @@ export const delete_user = async (req: Request, res: Response) => {
   }
 }
 /**
- * @export
  * Deletes the entry from the repository 'UserDetail'
  * @param {User} data - The user to delete 
  */
@@ -221,7 +208,6 @@ const delete_user_details_from_repository = async (user: User) => {
   await user_detail_respository.delete({ user_id: user })
 }
 /**
- * @export
  * Deletes the entry from the repository 'User'
  * @param {User} user - The user to delete 
  */
