@@ -215,3 +215,29 @@ const delete_user_from_repository = async (user: User) => {
   const user_respository: Repository<User> = await getRepository(User);
   await user_respository.delete(user)
 }
+
+/**
+ * Changes the password of a user
+ * @param {Request} req - Received request object
+ * @param {Response} res - Received response object
+ */
+export const change_user_password = async (req: Request, res: Response) => {
+  try {
+  const data: LoginUser = req.body;
+  const user: User = await get_user_login(data);
+  await change_password(data.password, user);  
+  res.status(200).send("The password has been changed.");
+  } catch (_err) {
+    res.staus(500).send("Password could not be changed.");
+  }
+}
+/**
+ * Change the attribute 'password' in the repository 'User' of the given user
+ * @param {string} password - New pasword
+ * @param {User} user - User, which want to change their password
+ */
+const change_password = async (new_password: string, user: User) => {
+  new_password = await argon2.hash(new_password);
+  const user_respository: Repository<User> = await getRepository(User);
+  await user_respository.update({ id: user.id }, { password: new_password });
+}
