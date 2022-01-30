@@ -1,7 +1,7 @@
-import {Request, Response} from "express";
-import {getConnection} from "typeorm";
-import {User} from "../entity/User";
-import {UserDetail} from "../entity/UserDetail"
+import { Request, Response } from "express";
+import { getConnection } from "typeorm";
+import { User } from "../entity/User";
+import { UserDetail } from "../entity/UserDetail"
 import * as argon2 from "argon2";
 
 /**
@@ -29,7 +29,7 @@ export const register_user = async (req: Request, res: Response) => {
   const new_user: User = await create_user(data);
   const new_user_detail: UserDetail = create_user_detail(data, new_user);
   save_new_user(new_user, new_user_detail, res);
-} 
+}
 
 /**
  * Creates a new User with the given data
@@ -40,11 +40,11 @@ const create_user = async (data: RegisterUser): Promise<User> => {
   const new_user = new User();
   new_user.username = data.username;
   new_user.password = await argon2.hash(data.password);
-  switch(data.role){
+  switch (data.role) {
     case "teacher":
-      new_user.is_teacher = true;break;
+      new_user.is_teacher = true; break;
     case "administrator":
-      new_user.is_administrator = true;break;
+      new_user.is_administrator = true; break;
   }
   return new_user;
 }
@@ -73,7 +73,7 @@ const create_user_detail = (data: RegisterUser, new_user: User): UserDetail => {
  * @param {UserDetail} new_user_detail - Details of the new user
  * @param {Response} res - Response object for sending the response
  */
-const save_new_user = async(new_user: User, new_user_detail: UserDetail, res: Response): Promise<void>  => {
+const save_new_user = async (new_user: User, new_user_detail: UserDetail, res: Response): Promise<void> => {
   const queryRunner = getConnection().createQueryRunner();
   await queryRunner.startTransaction();
   try {
@@ -84,7 +84,7 @@ const save_new_user = async(new_user: User, new_user_detail: UserDetail, res: Re
     res.sendStatus(200);
   } catch (_err) {
     await queryRunner.rollbackTransaction();
-    res.sendStatus(404);
+    res.sendStatus(403);
   }
 }
 
