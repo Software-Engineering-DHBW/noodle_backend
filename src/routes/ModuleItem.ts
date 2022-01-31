@@ -53,7 +53,6 @@ const save_new_file = async (new_file: File, res: Response): Promise<void> => {
     try {
         await queryRunner.manager.save(new_file);
         await queryRunner.commitTransaction();
-
         res.sendStatus(200);
     } catch (_err) {
         await queryRunner.rollbackTransaction();
