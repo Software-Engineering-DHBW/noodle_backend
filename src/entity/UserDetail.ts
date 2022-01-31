@@ -1,30 +1,30 @@
-import {PrimaryGeneratedColumn, Entity, Column, OneToOne, JoinColumn} from "typeorm";
-import {User} from "./User";
+import {
+  PrimaryGeneratedColumn, Entity, Column, OneToOne, JoinColumn,
+} from 'typeorm';
+import User from './User';
 
 @Entity()
-export class UserDetail {
-
+export default class UserDetail {
   @PrimaryGeneratedColumn()
-  id: number; 
+    id: number;
 
   @OneToOne(() => User)
   @JoinColumn()
-  userId: User;
+    userId: User;
 
   @Column()
-  fullname: string;
+    fullname: string;
 
   @Column()
-  address: string;
+    address: string;
 
   @Column({
-    unique: true
+    unique: true,
   })
-  matriculationNumber: string;
+    matriculationNumber: string;
 
   @Column({
-    unique: true
+    unique: true,
   })
-  mail: string;
-
+    mail: string;
 }
