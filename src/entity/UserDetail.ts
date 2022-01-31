@@ -9,7 +9,7 @@ export class UserDetail {
 
   @OneToOne(() => User)
   @JoinColumn()
-  user_id: User;
+  userId: User;
 
   @Column()
   fullname: string;
@@ -20,7 +20,7 @@ export class UserDetail {
   @Column({
     unique: true
   })
-  matriculation_number: string;
+  matriculationNumber: string;
 
   @Column({
     unique: true

@@ -13,7 +13,7 @@ interface RegisterUser extends LoginUser {
   role: string;
   fullname: string;
   address: string;
-  matriculation_number: string;
+  matriculationNumber: string;
   mail: string;
 }
 
@@ -40,11 +40,11 @@ interface DeleteUser {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
-export const register_user = async (req: Request, res: Response) => {
+export const registerUser = async (req: Request, res: Response) => {
   const data: RegisterUser = req.body;
-  const new_user: User = await create_user(data);
-  const new_user_detail: UserDetail = create_user_detail(data, new_user);
-  save_new_user(new_user, new_user_detail, res);
+  const newUser: User = await createUser(data);
+  const newUserDetail: UserDetail = createUserDetail(data, newUser);
+  saveNewUser(newUser, newUserDetail, res);
 } 
 
 /**
@@ -53,17 +53,17 @@ export const register_user = async (req: Request, res: Response) => {
  * @param {RegisterUser} data - Data of the new user
  * @returns {Promise<User>}
  */
-const create_user = async (data: RegisterUser): Promise<User> => {
-  const new_user = new User();
-  new_user.username = data.username;
-  new_user.password = await argon2.hash(data.password);
+const createUser = async (data: RegisterUser): Promise<User> => {
+  const newUser = new User();
+  newUser.username = data.username;
+  newUser.password = await argon2.hash(data.password);
   switch(data.role){
     case "teacher":
-      new_user.is_teacher = true;break;
+      newUser.isTeacher = true;break;
     case "administrator":
-      new_user.is_administrator = true;break;
+      newUser.isAdministrator = true;break;
   }
-  return new_user;
+  return newUser;
 }
 
 /**
@@ -72,14 +72,14 @@ const create_user = async (data: RegisterUser): Promise<User> => {
  * @param {User} new_user - Already created User-Object
  * @returns {UserDetail}
  */
-const create_user_detail = (data: RegisterUser, new_user: User): UserDetail => {
-  const new_user_detail = new UserDetail();
-  new_user_detail.user_id = new_user
-  new_user_detail.fullname = data.fullname;
-  new_user_detail.address = data.address
-  new_user_detail.matriculation_number = data.matriculation_number;
-  new_user_detail.mail = data.mail;
-  return new_user_detail;
+const createUserDetail = (data: RegisterUser, newUser: User): UserDetail => {
+  const newUserDetail = new UserDetail();
+  newUserDetail.userId = newUser
+  newUserDetail.fullname = data.fullname;
+  newUserDetail.address = data.address
+  newUserDetail.matriculationNumber = data.matriculationNumber;
+  newUserDetail.mail = data.mail;
+  return newUserDetail;
 }
 
 /**
@@ -91,12 +91,12 @@ const create_user_detail = (data: RegisterUser, new_user: User): UserDetail => {
  * @param {UserDetail} new_user_detail - Details of the new user
  * @param {Response} res - Response object for sending the response
  */
-const save_new_user = async (new_user: User, new_user_detail: UserDetail, res: Response): Promise<void>  => {
+const saveNewUser = async (newUser: User, newUserDetail: UserDetail, res: Response): Promise<void>  => {
   const queryRunner = getConnection().createQueryRunner();
   await queryRunner.startTransaction();
   try {
-    await queryRunner.manager.save(new_user);
-    await queryRunner.manager.save(new_user_detail);
+    await queryRunner.manager.save(newUser);
+    await queryRunner.manager.save(newUserDetail);
     await queryRunner.commitTransaction();
 
     res.sendStatus(200);
@@ -115,15 +115,15 @@ const save_new_user = async (new_user: User, new_user_detail: UserDetail, res: R
  * @returns HTTP-Status 200 and JWT
  * @throws HTTP-Status 403 and "Wrong username or password" - Invalid username or wrong password
  */
-export const login_user = async (req: Request, res: Response): Promise<void> => {
+export const loginUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const data: LoginUser = req.body;
-    const user: User = await get_user_login(data);
+    const user: User = await getUserLogin(data);
     if (!await argon2.verify(user.password, data.password)) {
       throw new Error();
     }
-    const user_details: UserDetail = await get_user_detail(user);
-    res.status(200).send(await create_login_jwt(user, user_details)) 
+    const userDetails: UserDetail = await getUserDetail(user);
+    res.status(200).send(await createLoginJwt(user, userDetails)) 
   } catch (_err) {
     res.status(403).send("Wrong username or password");
     return;
@@ -136,12 +136,12 @@ export const login_user = async (req: Request, res: Response): Promise<void> => 
  * @param {LoginUser} data - Given username from the request
  * @returns {Promise<User[]>}
  */
-const get_user_login = async (data: LoginUser|DeleteUser): Promise<User> => {
+const getUserLogin = async (data: LoginUser|DeleteUser): Promise<User> => {
   if (data.username === undefined || data.username === null) {
     throw new Error();
   }
-  const user_repository = await getRepository(User);
-  return await user_repository.findOneOrFail({ where: { username: data.username}})
+  const userRepository = getRepository(User);
+  return await userRepository.findOneOrFail({ where: { username: data.username}})
 }
 
 /**
@@ -150,12 +150,12 @@ const get_user_login = async (data: LoginUser|DeleteUser): Promise<User> => {
  * @param {User} user - Selected user
  * @returns {Promise<UserDetail[]>}
  */
-const get_user_detail = async (user: User): Promise<UserDetail> => {
+const getUserDetail = async (user: User): Promise<UserDetail> => {
   if (user === undefined || user === null){
     throw new Error();
   }
-  const user_detail_respository = await getRepository(UserDetail);
-  return await user_detail_respository.findOneOrFail({ where: {user_id: user}})
+  const userDetailRespository = getRepository(UserDetail);
+  return await userDetailRespository.findOneOrFail({ where: {user_id: user}})
 }
 
 /**
@@ -165,17 +165,17 @@ const get_user_detail = async (user: User): Promise<UserDetail> => {
  * @param {UserDetail} user_details - Details of the selected user
  * @returns {Promise<String>} Signed JWT as string
  */
-const create_login_jwt = async (user: User, user_details: UserDetail): Promise<string> => {
+const createLoginJwt = async (user: User, userDetails: UserDetail): Promise<string> => {
   let role = "student"
-  if (user.is_administrator) {
+  if (user.isAdministrator) {
     role = "administrator";
-  } else if (user.is_teacher) {
+  } else if (user.isTeacher) {
     role = "teacher";
   }
   return await jwt.sign({
     "id": user.id,
     "username": user.username,
-    "fullName": user_details.fullname,
+    "fullName": userDetails.fullname,
     "role": role,
     "exp": Math.floor(Date.now() / 1000) + (12 * 60 * 60)
   }, process.env.jwtSignatureKey);
@@ -187,12 +187,12 @@ const create_login_jwt = async (user: User, user_details: UserDetail): Promise<s
  * @param {Request} req - Received request object
  * @param {Response} res - Received response object
  */
-export const delete_user = async (req: Request, res: Response) => {
+export const deleteUser = async (req: Request, res: Response) => {
   try{
     const data: DeleteUser = req.body;
-    const user: User = await get_user_login(data)
-    await delete_user_details_from_repository(user);
-    await delete_user_from_repository(user);
+    const user: User = await getUserLogin(data)
+    await deleteUserDetailsFromRepository(user);
+    await deleteUserFromRepository(user);
     res.status(200).send("The user has been deleted");
   } catch (_err) {
     console.log(_err)
@@ -203,17 +203,17 @@ export const delete_user = async (req: Request, res: Response) => {
  * Deletes the entry from the repository 'UserDetail'
  * @param {User} data - The user to delete 
  */
-const delete_user_details_from_repository = async (user: User) => {
-  const user_detail_respository: Repository<UserDetail> = await getRepository(UserDetail);
-  await user_detail_respository.delete({ user_id: user })
+const deleteUserDetailsFromRepository = async (user: User) => {
+  const userDetailRespository: Repository<UserDetail> = getRepository(UserDetail);
+  await userDetailRespository.delete({ userId: user })
 }
 /**
  * Deletes the entry from the repository 'User'
  * @param {User} user - The user to delete 
  */
-const delete_user_from_repository = async (user: User) => {
-  const user_respository: Repository<User> = await getRepository(User);
-  await user_respository.delete(user)
+const deleteUserFromRepository = async (user: User) => {
+  const userRespository: Repository<User> = getRepository(User);
+  await userRespository.delete(user)
 }
 
 /**
@@ -221,11 +221,11 @@ const delete_user_from_repository = async (user: User) => {
  * @param {Request} req - Received request object
  * @param {Response} res - Received response object
  */
-export const change_user_password = async (req: Request, res: Response) => {
+export const changeUserPassword = async (req: Request, res: Response) => {
   try {
   const data: LoginUser = req.body;
-  const user: User = await get_user_login(data);
-  await change_password(data.password, user);  
+  const user: User = await getUserLogin(data);
+  await changePassword(data.password, user);  
   res.status(200).send("The password has been changed.");
   } catch (_err) {
     res.staus(500).send("Password could not be changed.");
@@ -236,8 +236,8 @@ export const change_user_password = async (req: Request, res: Response) => {
  * @param {string} password - New pasword
  * @param {User} user - User, which want to change their password
  */
-const change_password = async (new_password: string, user: User) => {
-  new_password = await argon2.hash(new_password);
-  const user_respository: Repository<User> = await getRepository(User);
-  await user_respository.update({ id: user.id }, { password: new_password });
+const changePassword = async (newPassword: string, user: User) => {
+  newPassword = await argon2.hash(newPassword);
+  const userRespository: Repository<User> = getRepository(User);
+  await userRespository.update({ id: user.id }, { password: newPassword });
 }

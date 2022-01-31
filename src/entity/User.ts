@@ -17,10 +17,10 @@ export class User {
     @Column({
       default: false
     })
-    is_teacher: boolean;
+    isTeacher: boolean;
 
     @Column({
       default: false
     })
-    is_administrator: boolean;
+    isAdministrator: boolean;
 }
