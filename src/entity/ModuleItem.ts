@@ -19,13 +19,14 @@ export class ModuleItem {
     web_link: string;
 
     @OneToOne(() => File)
+    @JoinColumn()
     downloadable_file: File;
 
     @Column()
     has_file_upload: boolean;
 
     @OneToMany(() => File, file => file.id)
-    uploaded_files: File;
+    uploaded_files: File[];
 
     @Column()
     is_visible: boolean;

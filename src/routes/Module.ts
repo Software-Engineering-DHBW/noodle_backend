@@ -12,7 +12,7 @@ interface RegisterModule {
     description: string;
     assigned_teacher: User;
     assigned_course: Course;
-    submodule: Module; //dont know if this works with more than one submodule
+    submodule: Module[];
 }
 
 /**

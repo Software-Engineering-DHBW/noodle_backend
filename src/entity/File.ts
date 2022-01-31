@@ -1,4 +1,5 @@
-import { Column, Entity, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { ModuleItem } from "./ModuleItem";
 import { User } from "./User";
 
 @Entity()
@@ -8,6 +9,7 @@ export class File {
     id: number;
 
     @OneToOne(() => User)
+    @JoinColumn()
     owner: User;
 
     @Column()
@@ -18,4 +20,7 @@ export class File {
 
     @Column()
     upload_date: Date;
+
+    @ManyToOne(() => ModuleItem, module_item => module_item.id)
+    uploaded_at: ModuleItem;
 }
