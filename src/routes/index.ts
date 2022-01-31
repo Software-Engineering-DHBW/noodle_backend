@@ -3,6 +3,10 @@ import * as jwt from 'jsonwebtoken';
 import {
   registerUser, loginUser, deleteUser, changeUserPassword,
 } from './User';
+import { registerModule } from "./Module";
+import { 
+  addStudent, registerCourse
+} from "./course";
 
 export const router: express.Router = express.Router();
 
@@ -32,3 +36,15 @@ router.post('/user/delete', (req, res) => {
 router.post('/user/changePassword', (req, res) => {
   changeUserPassword(req, res);
 });
+
+router.post('/module/register', (req, res) => {
+  registerModule(req, res);
+})
+
+router.post('/course/register', (req, res) => {
+  registerCourse(req, res);
+})
+
+router.post('/course/addStudent', (req, res) => {
+  addStudent(req, res);
+})

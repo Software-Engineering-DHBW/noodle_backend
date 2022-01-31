@@ -90,7 +90,7 @@ const saveNewUser = async (newUser: User, newUserDetail: UserDetail, res: Respon
     res.sendStatus(200);
   } catch (_err) {
     await queryRunner.rollbackTransaction();
-    res.sendStatus(404);
+    res.sendStatus(403);
   }
 };
 

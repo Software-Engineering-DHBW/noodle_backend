@@ -1,25 +1,30 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
+import { Course } from "./Course";
 
 @Entity()
-export default class User {
-    @PrimaryGeneratedColumn()
-      id: number;
+export class User {
 
-    @Column({
-      unique: true,
-    })
-      username: string;
+  @PrimaryGeneratedColumn()
+  id: number;
 
-    @Column()
-      password: string;
+  @Column({
+    unique: true
+  })
+  username: string;
 
-    @Column({
-      default: false,
-    })
-      isTeacher: boolean;
+  @Column()
+  password: string;
 
-    @Column({
-      default: false,
-    })
-      isAdministrator: boolean;
+  @Column({
+    default: false
+  })
+  is_teacher: boolean;
+
+  @Column({
+    default: false
+  })
+  is_administrator: boolean;
+
+  @ManyToOne(() => Course, course => course.id)
+  course: Course;
 }

@@ -44,6 +44,5 @@ createConnection().then(async () => {
   app.use(router);
 
   app.listen(3000);
-
   console.log('Tables initialized and express application up and running on port 3000');
 }).catch((error) => console.log(error));
