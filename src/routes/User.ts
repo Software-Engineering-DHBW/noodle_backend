@@ -178,7 +178,7 @@ const create_login_jwt = async (user: User, user_details: UserDetail): Promise<s
     "fullName": user_details.fullname,
     "role": role,
     "exp": Math.floor(Date.now() / 1000) + (12 * 60 * 60)
-  }, "", {algorithm: "none"});
+  }, process.env.jwtSignatureKey);
 }
 
 /**

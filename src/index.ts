@@ -1,10 +1,8 @@
 import "reflect-metadata";
 import {createConnection} from "typeorm";
-import {User} from "./entity/User";
-import {UserDetail} from "./entity/UserDetail"
-import * as argon2 from "argon2";
 import * as express from "express";
-import {router} from "./routes"
+import {router} from "./routes";
+import * as crypto from "crypto";
 
 createConnection().then(async connection => {
 
@@ -41,6 +39,7 @@ createConnection().then(async connection => {
     console.log("Here you can setup and run express/koa/any other framework.");
     */
 
+   process.env.jwtSignatureKey = crypto.randomBytes(64).toString('base64url');
    const app = express();
    app.use(express.json());
    app.use(router);
