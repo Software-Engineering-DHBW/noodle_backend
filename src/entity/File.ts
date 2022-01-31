@@ -19,8 +19,8 @@ export class File {
     path: string;
 
     @Column()
-    upload_date: Date;
+    uploadDate: Date;
 
     @ManyToOne(() => ModuleItem, module_item => module_item.id)
-    uploaded_at: ModuleItem;
+    uploadedAt: ModuleItem;
 }

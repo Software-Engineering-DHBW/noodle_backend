@@ -34,10 +34,10 @@ interface DeleteCourse {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
-export const register_course = (req: Request, res: Response) => {
+export const registerCourse = (req: Request, res: Response) => {
     const data: RegisterCourse = req.body;
-    const new_course: Course = create_course(data);
-    save_new_course(new_course, res);
+    const new_course: Course = createCourse(data);
+    saveNewCourse(new_course, res);
 }
 
 /**
@@ -45,25 +45,25 @@ export const register_course = (req: Request, res: Response) => {
  * @param {RegisterCourse} data - Data of the new course
  * @returns {Course}
  */
-const create_course = (data: RegisterCourse): Course => {
-    const new_course = new Course();
-    new_course.name = data.name;
-    new_course.students = data.students;
-    return new_course;
+const createCourse = (data: RegisterCourse): Course => {
+    const newCourse = new Course();
+    newCourse.name = data.name;
+    newCourse.students = data.students;
+    return newCourse;
 }
 
 /**
  * Saves the create Course-Object inside the database.
  * No data is stored, if the object could not be stored, in this case a response with HTTP-Status 403 will be formed.
  * Forms a response with HTTP-Code 200 if the object could be stored.
- * @param {Course} new_course - New Course to store
+ * @param {Course} newCourse - New Course to store
  * @param {Response} res - Response object for sending the response
  */
-const save_new_course = async (new_course: Course, res: Response): Promise<void> => {
+const saveNewCourse = async (newCourse: Course, res: Response): Promise<void> => {
     const queryRunner = getConnection().createQueryRunner();
     await queryRunner.startTransaction();
     try {
-        await queryRunner.manager.save(new_course);
+        await queryRunner.manager.save(newCourse);
         await queryRunner.commitTransaction();
         res.sendStatus(200);
     } catch (_err) {
@@ -78,17 +78,17 @@ const save_new_course = async (new_course: Course, res: Response): Promise<void>
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
-export const add_student = async (req: Request, res: Response) => {
+export const addStudent = async (req: Request, res: Response) => {
     try {
         const data: ChangeStudent = req.body;
         if (data.name === undefined || data.name === null) {
             throw new Error();
         }
-        const course_repository = getRepository(Course);
-        const course: Course = await course_repository.findOneOrFail({ where: { name: data.name } })
-        const new_students: User[] = course.students;
-        new_students.concat(data.students);
-        await course_repository.update({ id: course.id }, { students: new_students })
+        const courseRepository = getRepository(Course);
+        const course: Course = await courseRepository.findOneOrFail({ where: { name: data.name } })
+        const newStudents: User[] = course.students;
+        newStudents.concat(data.students);
+        await courseRepository.update({ id: course.id }, { students: newStudents })
         res.status(200).send("The Students have been added")
     } catch (_err) {
         res.status(500).send("Students could not be added")

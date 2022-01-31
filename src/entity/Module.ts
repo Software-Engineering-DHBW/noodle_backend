@@ -13,11 +13,11 @@ export class Module {
 
     @OneToOne(() => User)
     @JoinColumn()
-    assigned_teacher: User;
+    assignedTeacher: User;
 
     @OneToOne(() => Course)
     @JoinColumn()
-    assigned_course: Course;
+    assignedCourse: Course;
 
     @OneToMany(() => Module, module => module.id)
     submodule: Module[];

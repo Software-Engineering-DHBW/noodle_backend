@@ -10,24 +10,24 @@ export class ModuleItem {
 
     @OneToOne(() => Module)
     @JoinColumn()
-    Module_id: Module;
+    ModuleId: Module;
 
     @Column()
     content: string;
 
     @Column()
-    web_link: string;
+    webLink: string;
 
     @OneToOne(() => File)
     @JoinColumn()
-    downloadable_file: File;
+    downloadableFile: File;
 
     @Column()
-    has_file_upload: boolean;
+    hasFileUpload: boolean;
 
     @OneToMany(() => File, file => file.id)
-    uploaded_files: File[];
+    uploadedFiles: File[];
 
     @Column()
-    is_visible: boolean;
+    isVisible: boolean;
 }
