@@ -1,4 +1,4 @@
-import Module = require("module");
+import { Module } from "./Module";
 import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { File } from "./File";
 
