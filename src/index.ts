@@ -2,7 +2,7 @@ import 'reflect-metadata';
 import { createConnection } from 'typeorm';
 import * as express from 'express';
 import * as crypto from 'crypto';
-import { router } from './routes/index';
+import router from './routes/index';
 
 createConnection().then(async () => {
   /* Just for demonstrating purposes, can be removed after understanding the code

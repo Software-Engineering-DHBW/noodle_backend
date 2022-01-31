@@ -1,33 +1,34 @@
-import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Module } from "./Module";
-import { File } from "./File";
+import {
+  Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn,
+} from 'typeorm';
+import Module from './Module';
+import File from './File';
 
 @Entity()
-export class ModuleItem {
-
+export default class ModuleItem {
     @PrimaryGeneratedColumn()
-    id: number;
+      id: number;
 
     @OneToOne(() => Module)
     @JoinColumn()
-    ModuleId: Module;
+      ModuleId: Module;
 
     @Column()
-    content: string;
+      content: string;
 
     @Column()
-    webLink: string;
+      webLink: string;
 
     @OneToOne(() => File)
     @JoinColumn()
-    downloadableFile: File;
+      downloadableFile: File;
 
     @Column()
-    hasFileUpload: boolean;
+      hasFileUpload: boolean;
 
-    @OneToMany(() => File, file => file.id)
-    uploadedFiles: File[];
+    @OneToMany(() => File, (file: File) => file.id)
+      uploadedFiles: File[];
 
     @Column()
-    isVisible: boolean;
+      isVisible: boolean;
 }

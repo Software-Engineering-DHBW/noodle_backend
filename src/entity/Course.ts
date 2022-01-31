@@ -1,17 +1,18 @@
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-import { User } from "./User";
+import {
+  Column, Entity, OneToMany, PrimaryGeneratedColumn,
+} from 'typeorm';
+import User from './User';
 
 @Entity()
-export class Course {
-
+export default class Course {
     @PrimaryGeneratedColumn()
-    id: number;
+      id: number;
 
     @Column({
-        unique: true
+      unique: true,
     })
-    name: string;
+      name: string;
 
-    @OneToMany(() => User, user => user.id)
-    students: User[]
+    @OneToMany(() => User, (user: User) => user.id)
+      students: User[];
 }

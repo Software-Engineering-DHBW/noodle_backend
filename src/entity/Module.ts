@@ -1,27 +1,28 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { Course } from "./Course";
-import { User } from "./User";
+import {
+  Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn,
+} from 'typeorm';
+import Course from './Course';
+import User from './User';
 
 @Entity()
-export class Module {
-
+export default class Module {
     @PrimaryGeneratedColumn()
-    id: number;
+      id: number;
 
     @Column()
-    description: string;
+      description: string;
 
     @OneToOne(() => User)
     @JoinColumn()
-    assignedTeacher: User;
+      assignedTeacher: User;
 
     @OneToOne(() => Course)
     @JoinColumn()
-    assignedCourse: Course;
+      assignedCourse: Course;
 
-    @OneToMany(() => Module, module => module.id)
-    submodule: Module[];
+    @OneToMany(() => Module, (module: Module) => module.id)
+      submodule: Module[];
 
-    @ManyToOne(() => Module, module => module.id)
-    seniormodule: Module;
+    @ManyToOne(() => Module, (module: Module) => module.id)
+      seniormodule: Module;
 }

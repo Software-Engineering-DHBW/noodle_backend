@@ -1,26 +1,27 @@
-import { Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { ModuleItem } from "./ModuleItem";
-import { User } from "./User";
+import {
+  Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn,
+} from 'typeorm';
+import ModuleItem from './ModuleItem';
+import User from './User';
 
 @Entity()
-export class File {
-
+export default class File {
     @PrimaryGeneratedColumn()
-    id: number;
+      id: number;
 
     @OneToOne(() => User)
     @JoinColumn()
-    owner: User;
+      owner: User;
 
     @Column()
-    name: string;
+      name: string;
 
     @Column()
-    path: string;
+      path: string;
 
     @Column()
-    uploadDate: Date;
+      uploadDate: Date;
 
-    @ManyToOne(() => ModuleItem, module_item => module_item.id)
-    uploadedAt: ModuleItem;
+    @ManyToOne(() => ModuleItem, (moduleItem: ModuleItem) => moduleItem.id)
+      uploadedAt: ModuleItem;
 }

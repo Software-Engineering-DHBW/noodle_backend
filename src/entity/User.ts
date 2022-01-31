@@ -1,30 +1,31 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne } from "typeorm";
-import { Course } from "./Course";
+import {
+  Entity, PrimaryGeneratedColumn, Column, ManyToOne,
+} from 'typeorm';
+import Course from './Course';
 
 @Entity()
-export class User {
-
+export default class User {
   @PrimaryGeneratedColumn()
-  id: number;
+    id: number;
 
   @Column({
-    unique: true
+    unique: true,
   })
-  username: string;
+    username: string;
 
   @Column()
-  password: string;
+    password: string;
 
   @Column({
-    default: false
+    default: false,
   })
-  is_teacher: boolean;
+    isTeacher: boolean;
 
   @Column({
-    default: false
+    default: false,
   })
-  is_administrator: boolean;
+    isAdministrator: boolean;
 
-  @ManyToOne(() => Course, course => course.id)
-  course: Course;
+  @ManyToOne(() => Course, (course: Course) => course.id)
+    course: Course;
 }
