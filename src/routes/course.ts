@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getConnection } from "typeorm";
+import { getConnection, getRepository } from "typeorm";
 import { Course } from "../entity/Course";
 import { User } from "../entity/User";
 
@@ -10,6 +10,22 @@ import { User } from "../entity/User";
 interface RegisterCourse {
     name: string;
     students: User[];
+}
+
+/**
+ * Representation of the incoming data for adding or removing a student
+ * @interface
+ */
+interface ChangeStudent extends DeleteCourse {
+    students: User[];
+}
+
+/**
+ * Representation of the incoming data for removing a course
+ * @interface
+ */
+interface DeleteCourse {
+    name: string;
 }
 
 /**
@@ -54,4 +70,28 @@ const save_new_course = async (new_course: Course, res: Response): Promise<void>
         await queryRunner.rollbackTransaction();
         res.sendStatus(403);
     }
+}
+
+/**
+ * @exports
+ * Adds a new student to a course with the data given by the HTTP-Request
+ * @param {Request} req - Holds the data from the HTTP-Request
+ * @param {Response} res - Used to form the response
+ */
+export const add_student = async (req: Request, res: Response) => {
+    try {
+        const data: ChangeStudent = req.body;
+        if (data.name === undefined || data.name === null) {
+            throw new Error();
+        }
+        const course_repository = getRepository(Course);
+        const course: Course = await course_repository.findOneOrFail({ where: { name: data.name } })
+        const new_students: User[] = course.students;
+        new_students.concat(data.students);
+        await course_repository.update({ id: course.id }, { students: new_students })
+        res.status(200).send("The Students have been added")
+    } catch (_err) {
+        res.status(500).send("Students could not be added")
+    }
+
 }

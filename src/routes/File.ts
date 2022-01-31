@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { getConnection } from "typeorm";
 import { File } from "../entity/File";
+import { Module } from "../entity/Module";
 import { User } from "../entity/User";
 
 /**
