@@ -1,6 +1,6 @@
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { User } from "./User";
 import { Course } from "./Course";
+import { User } from "./User";
 
 @Entity()
 export class Module {
