@@ -8,12 +8,20 @@ import {
   addStudent, registerCourse,
 } from './course';
 
+interface JwtPayload {
+  'id': number,
+  'username': string,
+  'fullName': string,
+  'role': string,
+  'exp': number
+}
 const router: express.Router = express.Router();
 
 router.use((req: express.Request, res: express.Response, next: express.Next) => {
   try {
     if (!(req.originalUrl === '/user/login')) {
-      req.session = jwt.verify(req.headers.authorization.split(' ')[1], process.env.jwtSignatureKey);
+      const jwtPayload: JwtPayload = jwt.verify(req.headers.authorization.split(' ')[1], process.env.jwtSignatureKey);
+      req.session = jwtPayload;
     }
     next();
   } catch (_err) {
