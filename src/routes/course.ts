@@ -155,7 +155,7 @@ export const selectCourse = async (req: Request, res: Response) => {
       Students: course.students,
     });
   } catch (_err) {
-    res.status(500).send('Students could not be removed');
+    res.status(500).send('Could not find the course');
   }
 };
 
@@ -189,8 +189,8 @@ export const deleteCourse = async (req: Request, res: Response) => {
     const data: DeleteCourse = req.body;
     const [course, courseRepository] = await getCourseAndRepo(data.name);
     await courseRepository.delete(course);
-    res.status(200).send('The Course has been updated');
+    res.status(200).send('The Course has been deleted');
   } catch (_err) {
-    res.status(500).send('Course could not be updated');
+    res.status(500).send('Course could not be deleted');
   }
 };
