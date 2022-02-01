@@ -10,6 +10,9 @@ export default class Module {
     id: number;
 
   @Column()
+    name: string;
+
+  @Column()
     description: string;
 
   @OneToMany(() => User, (user: User) => user.id)
