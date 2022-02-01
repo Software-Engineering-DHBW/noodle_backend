@@ -6,8 +6,8 @@ import {
 } from './User';
 import { registerModule } from './Module';
 import {
-  addStudent, registerCourse,
-} from './course';
+  addStudent, changeCourse, deleteCourse, registerCourse, removeStudent, selectCourse,
+} from './Course';
 import { getGradesForStudent, insertGradeForStudent } from './Grades';
 
 interface JwtPayload {
@@ -51,12 +51,28 @@ router.post('/module/register', (req: express.Request, res: express.Response) =>
   registerModule(req, res);
 });
 
+router.get('/course/selectCourse', (req: express.Request, res: express.Response) => {
+  selectCourse(req, res);
+});
+
+router.post('/course/changeCourse', (req: express.Request, res: express.Response) => {
+  changeCourse(req, res);
+});
+
 router.post('/course/register', (req: express.Request, res: express.Response) => {
   registerCourse(req, res);
 });
 
+router.post('/course/delete', (req: express.Request, res: express.Response) => {
+  deleteCourse(req, res);
+});
+
 router.post('/course/addStudent', (req: express.Request, res: express.Response) => {
   addStudent(req, res);
+});
+
+router.post('/course/removeStudent', (req: express.Request, res: express.Response) => {
+  removeStudent(req, res);
 });
 
 router.get('/grades/:studentId', (req: express.Request, res: express.Response) => {
@@ -66,4 +82,5 @@ router.get('/grades/:studentId', (req: express.Request, res: express.Response) =
 router.post('/grades/insert', (req: express.Request, res: express.Response) => {
   insertGradeForStudent(req, res);
 });
+
 export default router;

@@ -5,14 +5,14 @@ import User from './User';
 
 @Entity()
 export default class Course {
-    @PrimaryGeneratedColumn()
-      id: number;
+  @PrimaryGeneratedColumn()
+    id: number;
 
-    @Column({
-      unique: true,
-    })
-      name: string;
+  @Column({
+    unique: true,
+  })
+    name: string;
 
-    @OneToMany(() => User, (user: User) => user.id)
-      students: User[];
+  @OneToMany(() => User, (user: User) => user.id)
+    students: User[];
 }

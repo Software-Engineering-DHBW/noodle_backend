@@ -6,23 +6,25 @@ import User from './User';
 
 @Entity()
 export default class Module {
-    @PrimaryGeneratedColumn()
-      id: number;
+  @PrimaryGeneratedColumn()
+    id: number;
 
-    @Column()
-      description: string;
+  @Column()
+    name: string;
 
-    @OneToOne(() => User)
-    @JoinColumn()
-      assignedTeacher: User;
+  @Column()
+    description: string;
 
-    @OneToOne(() => Course)
-    @JoinColumn()
-      assignedCourse: Course;
+  @OneToMany(() => User, (user: User) => user.id)
+    assignedTeacher: User[];
 
-    @OneToMany(() => Module, (module: Module) => module.id)
-      submodule: Module[];
+  @OneToOne(() => Course)
+  @JoinColumn()
+    assignedCourse: Course;
 
-    @ManyToOne(() => Module, (module: Module) => module.id)
-      seniormodule: Module;
+  @OneToMany(() => Module, (module: Module) => module.id)
+    submodule: Module[];
+
+  @ManyToOne(() => Module, (module: Module) => module.id)
+    seniormodule: Module;
 }

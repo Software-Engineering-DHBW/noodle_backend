@@ -6,29 +6,29 @@ import File from './File';
 
 @Entity()
 export default class ModuleItem {
-    @PrimaryGeneratedColumn()
-      id: number;
+  @PrimaryGeneratedColumn()
+    id: number;
 
-    @OneToOne(() => Module)
-    @JoinColumn()
-      ModuleId: Module;
+  @OneToOne(() => Module)
+  @JoinColumn()
+    ModuleId: Module;
 
-    @Column()
-      content: string;
+  @Column()
+    content: string;
 
-    @Column()
-      webLink: string;
+  @Column()
+    webLink: string;
 
-    @OneToOne(() => File)
-    @JoinColumn()
-      downloadableFile: File;
+  @OneToOne(() => File)
+  @JoinColumn()
+    downloadableFile: File;
 
-    @Column()
-      hasFileUpload: boolean;
+  @Column()
+    hasFileUpload: boolean;
 
-    @OneToMany(() => File, (file: File) => file.id)
-      uploadedFiles: File[];
+  @OneToMany(() => File, (file: File) => file.id)
+    uploadedFiles: File[];
 
-    @Column()
-      isVisible: boolean;
+  @Column()
+    isVisible: boolean;
 }

@@ -2,6 +2,7 @@ import {
   Entity, PrimaryGeneratedColumn, Column, ManyToOne,
 } from 'typeorm';
 import Course from './Course';
+import Module from './Module';
 
 @Entity()
 export default class User {
@@ -25,6 +26,9 @@ export default class User {
     default: false,
   })
     isAdministrator: boolean;
+
+  @ManyToOne(() => Module, (module: Module) => module.id)
+    is_teacher: Module;
 
   @ManyToOne(() => Course, (course: Course) => course.id)
     course: Course;
