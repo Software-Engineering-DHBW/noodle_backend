@@ -4,9 +4,7 @@ import {
   registerUser, loginUser, deleteUser, changeUserPassword,
 } from './User';
 import { registerModule } from './Module';
-import {
-  addStudent, registerCourse,
-} from './course';
+import { addStudent, registerCourse, removeStudent } from './course';
 
 const router: express.Router = express.Router();
 
@@ -47,6 +45,10 @@ router.post('/course/register', (req: express.Request, res: express.Response) =>
 
 router.post('/course/addStudent', (req: express.Request, res: express.Response) => {
   addStudent(req, res);
+});
+
+router.post('/course/removeStudent', (req: express.Request, res: express.Response) => {
+  removeStudent(req, res);
 });
 
 export default router;

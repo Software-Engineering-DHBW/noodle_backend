@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getConnection, getRepository } from 'typeorm';
+import { getConnection, getRepository, Repository } from 'typeorm';
 import Course from '../entity/Course';
 import User from '../entity/User';
 
@@ -8,22 +8,22 @@ import User from '../entity/User';
  * @interface
  */
 interface RegisterCourse {
-    name: string;
-    students: User[];
+  name: string;
+  students: User[];
 }
 /**
  * Representation of the incoming data for removing a course
  * @interface
  */
 interface DeleteCourse {
-    name: string;
+  name: string;
 }
 /**
  * Representation of the incoming data for adding or removing a student
  * @interface
  */
 interface ChangeStudent extends DeleteCourse {
-    students: User[];
+  students: User[];
 }
 
 /**
@@ -38,6 +38,7 @@ const createCourse = (data: RegisterCourse): Course => {
   return newCourse;
 };
 /**
+ * @async
  * Saves the create Course-Object inside the database.
  * No data is stored, if the object could not be stored,
  * in this case a response with HTTP-Status 403 will be formed.
@@ -57,6 +58,22 @@ const saveNewCourse = async (newCourse: Course, res: Response): Promise<void> =>
     res.sendStatus(403);
   }
 };
+
+/**
+ * @async
+ * Find the Repository 'Course' and all courses with the given name
+ * @param {ChangeStudent} data - Given name from the request
+ * @returns {Promise<[Course, Repository<Course>]>}
+ */
+const getCourseAndRepository = async (data: ChangeStudent): Promise<[Course, Repository<Course>]> => {
+  if (data.name === undefined || data.name === null) {
+    throw new Error();
+  }
+  const courseRepository = getRepository(Course);
+  const course: Course = await courseRepository.findOneOrFail({ where: { name: data.name } });
+  return [course, courseRepository];
+};
+
 /**
  * @exports
  * Registers a new Course with the data given by the HTTP-Request
@@ -71,6 +88,7 @@ export const registerCourse = (req: Request, res: Response) => {
 
 /**
  * @exports
+ * @async
  * Adds a new student to a course with the data given by the HTTP-Request
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
@@ -78,16 +96,37 @@ export const registerCourse = (req: Request, res: Response) => {
 export const addStudent = async (req: Request, res: Response) => {
   try {
     const data: ChangeStudent = req.body;
-    if (data.name === undefined || data.name === null) {
-      throw new Error();
-    }
-    const courseRepository = getRepository(Course);
-    const course: Course = await courseRepository.findOneOrFail({ where: { name: data.name } });
-    const newStudents: User[] = course.students;
-    newStudents.concat(data.students);
-    await courseRepository.update({ id: course.id }, { students: newStudents });
+    const [course, courseRepository] = await getCourseAndRepository(data);
+    const { students } = course;
+    students.concat(data.students);
+    await courseRepository.update({ id: course.id }, { students });
     res.status(200).send('The Students have been added');
   } catch (_err) {
     res.status(500).send('Students could not be added');
+  }
+};
+
+/**
+ * @exports
+ * @async
+ * Reomves a student to a course with the data given by the HTTP-Request
+ * @param {Request} req - Holds the data from the HTTP-Request
+ * @param {Response} res - Used to form the response
+ */
+export const removeStudent = async (req: Request, res: Response) => {
+  try {
+    const data: ChangeStudent = req.body;
+    const [course, courseRepository] = await getCourseAndRepository(data);
+    const { students } = course;
+    data.students.forEach((element) => {
+      const index = students.indexOf(element);
+      if (index > -1) {
+        students.splice(index, 1);
+      }
+    });
+    await courseRepository.update({ id: course.id }, { students });
+    res.status(200).send('The Students have been removed');
+  } catch (_err) {
+    res.status(500).send('Students could not be removed');
   }
 };
