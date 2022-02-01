@@ -25,3 +25,12 @@ export const getObjects = async (
   const manager: EntityManager = getManager();
   return manager.find(objectType, findOptions);
 };
+
+
+export const deleteObjects = async (
+  findOptions: object,
+  objectType: Function,
+): Promise<object[]> => {
+  const manager: EntityManager = getManager();
+  return manager.delete(objectType, findOptions);
+};
