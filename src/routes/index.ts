@@ -1,5 +1,6 @@
 import * as express from 'express';
 import * as jwt from 'jsonwebtoken';
+import User from '../entity/User';
 import {
   registerUser, loginUser, deleteUser, changeUserPassword,
 } from './User';
@@ -7,13 +8,22 @@ import { registerModule } from './Module';
 import {
   addStudent, changeCourse, deleteCourse, registerCourse, removeStudent, selectCourse,
 } from './Course';
+import { getGradesForStudent, insertGradeForStudent } from './Grades';
 
+interface JwtPayload {
+  'id': number,
+  'username': string,
+  'fullName': string,
+  'role': string,
+  'exp': number
+}
 const router: express.Router = express.Router();
 
 router.use((req: express.Request, res: express.Response, next: express.Next) => {
   try {
     if (!(req.originalUrl === '/user/login')) {
-      req.session = jwt.verify(req.headers.authorization.split(' ')[1], process.env.jwtSignatureKey);
+      const jwtPayload: JwtPayload = jwt.verify(req.headers.authorization.split(' ')[1], process.env.jwtSignatureKey);
+      req.session = jwtPayload;
     }
     next();
   } catch (_err) {
@@ -63,6 +73,14 @@ router.post('/course/addStudent', (req: express.Request, res: express.Response) 
 
 router.post('/course/removeStudent', (req: express.Request, res: express.Response) => {
   removeStudent(req, res);
+});
+
+router.get('/grades/:studentId', (req: express.Request, res: express.Response) => {
+  getGradesForStudent(req, res);
+});
+
+router.post('/grades/insert', (req: express.Request, res: express.Response) => {
+  insertGradeForStudent(req, res);
 });
 
 export default router;

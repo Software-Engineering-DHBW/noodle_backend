@@ -38,8 +38,12 @@ createConnection().then(async () => {
     console.log("Here you can setup and run express/koa/any other framework.");
     */
 
-  process.env.jwtSignatureKey = crypto.randomBytes(64).toString('base64url');
-  const app = express();
+  if (process.env.NODE_ENV === 'production') {
+    process.env.jwtSignatureKey = crypto.randomBytes(64).toString('base64url');
+  } else {
+    process.env.jwtSignatureKey = 'Development';
+  }
+  const app: express.Application = express();
   app.use(express.json());
   app.use(router);
 
