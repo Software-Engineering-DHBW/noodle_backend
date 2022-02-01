@@ -6,7 +6,7 @@ import {
 import { registerModule } from './Module';
 import {
   addStudent, changeCourse, deleteCourse, registerCourse, removeStudent, selectCourse,
-} from './course';
+} from './Course';
 
 const router: express.Router = express.Router();
 
