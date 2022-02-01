@@ -27,6 +27,13 @@ interface ChangeStudent extends DeleteCourse {
 }
 
 /**
+ * Reprenstation of the incoming data for changing a course
+ * @interface
+ */
+interface ChangeCourse extends DeleteCourse {
+  newName: string;
+}
+/**
  * Creates a new Course with the given data
  * @param {RegisterCourse} data - Data of the new course
  * @returns {Course}
@@ -65,12 +72,12 @@ const saveNewCourse = async (newCourse: Course, res: Response): Promise<void> =>
  * @param {ChangeStudent} data - Given name from the request
  * @returns {Promise<[Course, Repository<Course>]>}
  */
-const getCourseAndRepository = async (data: ChangeStudent): Promise<[Course, Repository<Course>]> => {
-  if (data.name === undefined || data.name === null) {
+const getCourseAndRepo = async (name: string): Promise<[Course, Repository<Course>]> => {
+  if (name === undefined || name === null) {
     throw new Error();
   }
   const courseRepository = getRepository(Course);
-  const course: Course = await courseRepository.findOneOrFail({ where: { name: data.name } });
+  const course: Course = await courseRepository.findOneOrFail({ where: { name } });
   return [course, courseRepository];
 };
 
@@ -96,7 +103,7 @@ export const registerCourse = (req: Request, res: Response) => {
 export const addStudent = async (req: Request, res: Response) => {
   try {
     const data: ChangeStudent = req.body;
-    const [course, courseRepository] = await getCourseAndRepository(data);
+    const [course, courseRepository] = await getCourseAndRepo(data.name);
     const { students } = course;
     students.concat(data.students);
     await courseRepository.update({ id: course.id }, { students });
@@ -116,7 +123,7 @@ export const addStudent = async (req: Request, res: Response) => {
 export const removeStudent = async (req: Request, res: Response) => {
   try {
     const data: ChangeStudent = req.body;
-    const [course, courseRepository] = await getCourseAndRepository(data);
+    const [course, courseRepository] = await getCourseAndRepo(data.name);
     const { students } = course;
     data.students.forEach((element) => {
       const index = students.indexOf(element);
@@ -128,5 +135,62 @@ export const removeStudent = async (req: Request, res: Response) => {
     res.status(200).send('The Students have been removed');
   } catch (_err) {
     res.status(500).send('Students could not be removed');
+  }
+};
+
+/**
+ * @exports
+ * @async
+ * Returns the informations to a course with the data given by the HTTP-Request
+ * @param {Request} req - Holds the data from the HTTP-Request
+ * @param {Response} res - Used to form the response
+ */
+export const selectCourse = async (req: Request, res: Response) => {
+  try {
+    const data: DeleteCourse = req.body;
+    const [course] = await getCourseAndRepo(data.name);
+    res.status(200).json({
+      ID: course.id,
+      Name: course.name,
+      Students: course.students,
+    });
+  } catch (_err) {
+    res.status(500).send('Students could not be removed');
+  }
+};
+
+/**
+ * @exports
+ * @async
+ * Updates a course with the data given by the HTTP-Request
+ * @param {Request} req - Holds the data from the HTTP-Request
+ * @param {Response} res - Used to form the response
+ */
+export const changeCourse = async (req: Request, res: Response) => {
+  try {
+    const data: ChangeCourse = req.body;
+    const [course, courseRepository] = await getCourseAndRepo(data.name);
+    await courseRepository.update({ id: course.id }, { name: data.newName });
+    res.status(200).send('The Course has been updated');
+  } catch (_err) {
+    res.status(500).send('Course could not be updated');
+  }
+};
+
+/**
+ * @exports
+ * @async
+ * Updates a course with the data given by the HTTP-Request
+ * @param {Request} req - Holds the data from the HTTP-Request
+ * @param {Response} res - Used to form the response
+ */
+export const deleteCourse = async (req: Request, res: Response) => {
+  try {
+    const data: DeleteCourse = req.body;
+    const [course, courseRepository] = await getCourseAndRepo(data.name);
+    await courseRepository.delete(course);
+    res.status(200).send('The Course has been updated');
+  } catch (_err) {
+    res.status(500).send('Course could not be updated');
   }
 };

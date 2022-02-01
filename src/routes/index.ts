@@ -4,7 +4,9 @@ import {
   registerUser, loginUser, deleteUser, changeUserPassword,
 } from './User';
 import { registerModule } from './Module';
-import { addStudent, registerCourse, removeStudent } from './course';
+import {
+  addStudent, changeCourse, deleteCourse, registerCourse, removeStudent, selectCourse,
+} from './course';
 
 const router: express.Router = express.Router();
 
@@ -39,8 +41,20 @@ router.post('/module/register', (req: express.Request, res: express.Response) =>
   registerModule(req, res);
 });
 
+router.get('/course/selectCourse', (req: express.Request, res: express.Response) => {
+  selectCourse(req, res);
+});
+
+router.post('/course/changeCourse', (req: express.Request, res: express.Response) => {
+  changeCourse(req, res);
+});
+
 router.post('/course/register', (req: express.Request, res: express.Response) => {
   registerCourse(req, res);
+});
+
+router.post('/course/delete', (req: express.Request, res: express.Response) => {
+  deleteCourse(req, res);
 });
 
 router.post('/course/addStudent', (req: express.Request, res: express.Response) => {
