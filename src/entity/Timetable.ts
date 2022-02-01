@@ -22,5 +22,5 @@ export default class Timetable {
     description: string;
 
   @Column()
-    rooms: string;
+    room: string;
 }
