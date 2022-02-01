@@ -6,22 +6,22 @@ import User from './User';
 
 @Entity()
 export default class File {
-    @PrimaryGeneratedColumn()
-      id: number;
+  @PrimaryGeneratedColumn()
+    id: number;
 
-    @OneToOne(() => User)
-    @JoinColumn()
-      owner: User;
+  @OneToOne(() => User)
+  @JoinColumn()
+    owner: User;
 
-    @Column()
-      name: string;
+  @Column()
+    name: string;
 
-    @Column()
-      path: string;
+  @Column()
+    path: string;
 
-    @Column()
-      uploadDate: Date;
+  @Column()
+    uploadDate: Date;
 
-    @ManyToOne(() => ModuleItem, (moduleItem: ModuleItem) => moduleItem.id)
-      uploadedAt: ModuleItem;
+  @ManyToOne(() => ModuleItem, (moduleItem: ModuleItem) => moduleItem.id)
+    uploadedAt: ModuleItem;
 }

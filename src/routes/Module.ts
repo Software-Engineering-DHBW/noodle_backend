@@ -87,7 +87,7 @@ export const registerModule = (req: Request, res: Respone) => {
  */
 export const deleteModule = async (req: Request, res: Respone) => {
   const data = req.body;
-  const [module, moduleRepository] = getModuleAndRepo(data.name);
+  const [module, moduleRepository] = await getModuleAndRepo(data.name);
 };
 
 /**
