@@ -2,7 +2,6 @@ import { Request, Response } from 'express';
 import { getConnection, getRepository, Repository } from 'typeorm';
 import Course from '../entity/Course';
 import User from '../entity/User';
-import Module from '../entity/Module';
 
 /**
  * Representation of the incoming data of a new file

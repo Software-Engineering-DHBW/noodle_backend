@@ -10,7 +10,7 @@ import User from '../entity/User';
  */
 interface RegisterModule {
   description: string;
-  assignedTeacher: User;
+  assignedTeacher: User[];
   assignedCourse: Course;
   submodule: Module[];
 }
