@@ -1,5 +1,5 @@
 import {
-  PrimaryGeneratedColumn, Entity, Column, OneToOne, JoinColumn,
+  PrimaryGeneratedColumn, Entity, Column, ManyToOne, JoinColumn,
 } from 'typeorm';
 import Module from './Module';
 
@@ -14,7 +14,7 @@ export default class Timetable {
   @Column()
     endTime: Date;
 
-  @OneToOne(() => Module)
+  @ManyToOne(() => Module)
   @JoinColumn()
     assignedModule: Module;
 

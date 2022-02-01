@@ -1,5 +1,6 @@
 import * as express from 'express';
 import * as jwt from 'jsonwebtoken';
+import User from '../entity/User';
 import {
   registerUser, loginUser, deleteUser, changeUserPassword,
 } from './User';
@@ -7,6 +8,7 @@ import { registerModule } from './Module';
 import {
   addStudent, registerCourse,
 } from './course';
+import { getGradesForStudent, insertGradeForStudent } from './Grades';
 
 interface JwtPayload {
   'id': number,
@@ -57,4 +59,11 @@ router.post('/course/addStudent', (req: express.Request, res: express.Response) 
   addStudent(req, res);
 });
 
+router.get('/grades/:studentId', (req: express.Request, res: express.Response) => {
+  getGradesForStudent(req, res);
+});
+
+router.post('/grades/insert', (req: express.Request, res: express.Response) => {
+  insertGradeForStudent(req, res);
+});
 export default router;

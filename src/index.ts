@@ -39,7 +39,7 @@ createConnection().then(async () => {
     */
 
   process.env.jwtSignatureKey = crypto.randomBytes(64).toString('base64url');
-  const app = express();
+  const app: express.Application = express();
   app.use(express.json());
   app.use(router);
 
