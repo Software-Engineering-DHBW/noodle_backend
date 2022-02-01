@@ -3,6 +3,7 @@ import {
   PrimaryGeneratedColumn,
   Column,
   OneToOne,
+  JoinColumn,
 } from 'typeorm';
 import Module from './Module';
 import User from './User';
@@ -13,9 +14,11 @@ export default class Grades {
     id: number;
 
   @OneToOne(() => Module)
+  @JoinColumn()
     moduleId: Module;
 
   @OneToOne(() => User)
+  @JoinColumn()
     studentId: User;
 
   @Column()
