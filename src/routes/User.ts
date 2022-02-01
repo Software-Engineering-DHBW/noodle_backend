@@ -4,6 +4,7 @@ import * as argon2 from 'argon2';
 import * as jwt from 'jsonwebtoken';
 import User from '../entity/User';
 import UserDetail from '../entity/UserDetail';
+import { getOneObject, deleteObjects, saveObject } from './Manager';
 
 /**
  * Representation of the incoming data for removing a user
@@ -114,32 +115,6 @@ export const registerUser = async (req: Request, res: Response) => {
 
 /**
  * @async
- * Find all users with the given username in the Repository 'User'
- * @param {LoginUser} data - Given username from the request
- * @returns {Promise<User[]>}
- */
-const getUserLogin = async (data: LoginUser|DeleteUser): Promise<User> => {
-  if (data.username === undefined || data.username === null) {
-    throw new Error();
-  }
-  const userRepository = getRepository(User);
-  return userRepository.findOneOrFail({ where: { username: data.username } });
-};
-/**
- * @async
- * Find the user-details from the Repository 'UserDetail' for the already selected user
- * @param {User} user - Selected user
- * @returns {Promise<UserDetail[]>}
- */
-const getUserDetail = async (user: User): Promise<UserDetail> => {
-  if (user === undefined || user === null) {
-    throw new Error();
-  }
-  const userDetailRespository = getRepository(UserDetail);
-  return userDetailRespository.findOneOrFail({ where: { userId: user } });
-};
-/**
- * @async
  * Create a signed JWT with the found user and their user-details
  * @param {User} user - Selected user
  * @param {UserDetail} user_details - Details of the selected user
@@ -172,33 +147,17 @@ const createLoginJwt = async (user: User, userDetails: UserDetail): Promise<stri
 export const loginUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const data: LoginUser = req.body;
-    const user: User = await getUserLogin(data);
+    const user: any = await getOneObject({ where: { username: data.username } }, User);
     if (!await argon2.verify(user.password, data.password)) {
       throw new Error();
     }
-    const userDetails: UserDetail = await getUserDetail(user);
+    const userDetails: any = await getOneObject({ where: { userId: user } }, UserDetail);
     res.status(200).send(await createLoginJwt(user, userDetails));
   } catch (_err) {
     res.status(403).send('Wrong username or password');
   }
 };
 
-/**
- * Deletes the entry from the repository 'UserDetail'
- * @param {User} data - The user to delete
- */
-const deleteUserDetailsFromRepository = async (user: User) => {
-  const userDetailRespository: Repository<UserDetail> = getRepository(UserDetail);
-  await userDetailRespository.delete({ userId: user });
-};
-/**
- * Deletes the entry from the repository 'User'
- * @param {User} user - The user to delete
- */
-const deleteUserFromRepository = async (user: User) => {
-  const userRespository: Repository<User> = getRepository(User);
-  await userRespository.delete(user);
-};
 /**
  * @exports
  * Deletes the user with the given username and id
@@ -208,25 +167,15 @@ const deleteUserFromRepository = async (user: User) => {
 export const deleteUser = async (req: Request, res: Response) => {
   try {
     const data: DeleteUser = req.body;
-    const user: User = await getUserLogin(data);
-    await deleteUserDetailsFromRepository(user);
-    await deleteUserFromRepository(user);
+    const user: any = await getOneObject({ where: { username: data.username } }, User);
+    deleteObjects({ userId: user }, UserDetail);
+    deleteObjects(user, User);
     res.status(200).send('The user has been deleted');
   } catch (_err) {
     res.status(500).send('The user could not be deleted');
   }
 };
 
-/**
- * Change the attribute 'password' in the repository 'User' of the given user
- * @param {string} password - New pasword
- * @param {User} user - User, which want to change their password
- */
-const changePassword = async (newPassword: string, user: User) => {
-  const newPasswordHash = await argon2.hash(newPassword);
-  const userRespository: Repository<User> = getRepository(User);
-  await userRespository.update({ id: user.id }, { password: newPasswordHash });
-};
 /**
  * Changes the password of a user
  * @param {Request} req - Received request object
@@ -235,8 +184,9 @@ const changePassword = async (newPassword: string, user: User) => {
 export const changeUserPassword = async (req: Request, res: Response) => {
   try {
     const data: LoginUser = req.body;
-    const user: User = await getUserLogin(data);
-    await changePassword(data.password, user);
+    const user: any = await getOneObject({ where: { username: data.username } }, User);
+    user.password = await argon2.hash(data.password);
+    saveObject(user);
     res.status(200).send('The password has been changed.');
   } catch (_err) {
     res.staus(500).send('Password could not be changed.');
