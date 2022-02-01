@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { getConnection, getRepository, Repository } from 'typeorm';
 import Course from '../entity/Course';
 import User from '../entity/User';
+import Module from '../entity/Module';
 
 /**
  * Representation of the incoming data of a new file
@@ -69,7 +70,7 @@ const saveNewCourse = async (newCourse: Course, res: Response): Promise<void> =>
 /**
  * @async
  * Find the Repository 'Course' and all courses with the given name
- * @param {ChangeStudent} data - Given name from the request
+ * @param {string} name - Given name from the request
  * @returns {Promise<[Course, Repository<Course>]>}
  */
 const getCourseAndRepo = async (name: string): Promise<[Course, Repository<Course>]> => {
