@@ -79,7 +79,11 @@ const createUserDetail = (data: RegisterUser, newUser: User): UserDetail => {
  * @param {UserDetail} new_user_detail - Details of the new user
  * @param {Response} res - Response object for sending the response
  */
-const saveNewUser = async (newUser: User, newUserDetail: UserDetail, res: Response): Promise<void> => {
+const saveNewUser = async (
+  newUser: User,
+  newUserDetail: UserDetail,
+  res: Response,
+): Promise<void> => {
   const queryRunner = getConnection().createQueryRunner();
   await queryRunner.startTransaction();
   try {
@@ -132,7 +136,7 @@ const getUserDetail = async (user: User): Promise<UserDetail> => {
     throw new Error();
   }
   const userDetailRespository = getRepository(UserDetail);
-  return userDetailRespository.findOneOrFail({ where: { user_id: user } });
+  return userDetailRespository.findOneOrFail({ where: { userId: user } });
 };
 /**
  * @async
