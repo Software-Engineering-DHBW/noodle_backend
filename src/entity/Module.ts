@@ -12,7 +12,9 @@ export default class Module {
   @Column()
     name: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
     description: string;
 
   @OneToMany(() => User, (user: User) => user.id)

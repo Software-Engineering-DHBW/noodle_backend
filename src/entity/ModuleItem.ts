@@ -15,22 +15,34 @@ export default class ModuleItem {
   @JoinColumn()
     ModuleId: Module;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
     content: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
     webLink: string;
 
-  @OneToOne(() => File)
+  @OneToOne(() => File, {
+    nullable: true,
+  })
   @JoinColumn()
     downloadableFile: File;
 
-  @Column()
+  @Column({
+    default: false,
+  })
     hasFileUpload: boolean;
 
-  @OneToMany(() => File, (file: File) => file.id)
+  @OneToMany(() => File, (file: File) => file.id, {
+    nullable: true,
+  })
     uploadedFiles: File[];
 
-  @Column()
+  @Column({
+    default: false,
+  })
     isVisible: boolean;
 }
