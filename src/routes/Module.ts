@@ -180,7 +180,7 @@ export const addCourse = async (req: Request, res: Respone) => {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res- Used to form the response
  */
-export const deleteCourse = async (req: Request, res: Respone) => {
+export const removeCourse = async (req: Request, res: Respone) => {
   try {
     const data: GeneralModule = req.body;
     const module: Module = getModule(data);
