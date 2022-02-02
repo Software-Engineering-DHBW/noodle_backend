@@ -97,7 +97,7 @@ export const addStudent = async (req: Request, res: Response) => {
     const { students } = course;
     students.concat(data.students);
     course.students = students;
-    await saveObject(course);
+    await saveObject(course, Course);
     res.status(200).send('The Students have been added');
   } catch (_err) {
     res.status(500).send('Students could not be added');
@@ -123,7 +123,7 @@ export const removeStudent = async (req: Request, res: Response) => {
       }
     });
     course.students = students;
-    await saveObject(course);
+    await saveObject(course, Course);
     res.status(200).send('The Students have been removed');
   } catch (_err) {
     res.status(500).send('Students could not be removed');
@@ -163,7 +163,7 @@ export const changeCourse = async (req: Request, res: Response) => {
     const data: ChangeCourse = req.body;
     const course: Course = getCourse(data);
     course.name = data.newName;
-    await saveObject(course);
+    await saveObject(course, Course);
     res.status(200).send('The Course has been updated');
   } catch (_err) {
     res.status(500).send('Course could not be updated');

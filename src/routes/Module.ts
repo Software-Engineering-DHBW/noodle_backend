@@ -115,7 +115,7 @@ export const addTeacher = async (req: Request, res: Respone) => {
     const teacher: User[] = module.assignedTeacher;
     teacher.concat(data.assignedTeacher);
     module.assignedTeacher = teacher;
-    await saveObject(module);
+    await saveObject(module, Module);
     res.status(200).send('The Teachers have been added');
   } catch (_err) {
     res.status(500).send('Teachers could not be added');
@@ -144,7 +144,7 @@ export const deleteTeacher = async (req: Request, res: Respone) => {
       }
     });
     module.assignedTeacher = teacher;
-    await saveObject(module);
+    await saveObject(module, Module);
     res.status(200).send('The Teachers have been removed');
   } catch (_err) {
     res.status(500).send('Teachers could not be removed');
@@ -166,7 +166,7 @@ export const addCourse = async (req: Request, res: Respone) => {
     }
     const module: Module = getModule(data);
     module.assignedCourse = data.assignedCourse;
-    await saveObject(module);
+    await saveObject(module, Module);
     res.status(200).send('The Course has been added');
   } catch (_err) {
     res.status(500).send('Course could not be added');
@@ -185,7 +185,7 @@ export const removeCourse = async (req: Request, res: Respone) => {
     const data: GeneralModule = req.body;
     const module: Module = getModule(data);
     module.assignedCourse = null;
-    await saveObject(module);
+    await saveObject(module, Module);
     res.status(200).send('The Course has been deleted');
   } catch (_err) {
     res.status(500).send('Course could not be deleted');
@@ -204,7 +204,7 @@ export const changeDescription = async (req: Request, res: Respone) => {
     const data: GeneralModule = req.body;
     const module: Module = getModule(data);
     module.description = data.description;
-    await saveObject(module);
+    await saveObject(module, Module);
     res.status(200).send('The Description has been changed');
   } catch (_err) {
     res.send(500).send('Description could not be changed');
@@ -228,7 +228,7 @@ export const addSubmodule = async (req: Request, res: Respone) => {
     const { submodule } = module;
     submodule.concat(data.submodule);
     module.submodule = submodule;
-    await saveObject(module);
+    await saveObject(module, Module);
     res.status(200).send('The Submodule have been added');
   } catch (_err) {
     res.status(500).send('Submodule could not be added');
@@ -257,7 +257,7 @@ export const deleteSubmodule = async (req: Request, res: Respone) => {
       }
     });
     module.submodule = submodule;
-    await saveObject(module);
+    await saveObject(module, Module);
     res.status(200).send('The Submodule have been removed');
   } catch (_err) {
     res.status(500).send('Submodule could not be removed');
@@ -278,7 +278,7 @@ export const changeName = async (req: Request, res: Respone) => {
     }
     const module: Module = getModule(data);
     module.name = data.name;
-    await saveObject(module);
+    await saveObject(module, Module);
     res.status(200).send('The Name has been changed');
   } catch (_err) {
     res.send(500).send('Name could not be changed');
