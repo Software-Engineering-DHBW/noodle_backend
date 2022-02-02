@@ -1,11 +1,11 @@
 import { Request, Response } from 'express';
 import { getConnection } from 'typeorm';
+import { deleteObjects, getOneObject, saveObject } from './Manager';
 import Course from '../entity/Course';
 import User from '../entity/User';
-import { deleteObjects, getOneObject, saveObject } from './Manager';
 
 /**
- * Representation of the incoming data for a course Request
+ * Representation of the incoming data of a course Request
  * @interface
  */
 interface GeneralCourse {
