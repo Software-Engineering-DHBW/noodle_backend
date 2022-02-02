@@ -190,7 +190,7 @@ export const changeUserPassword = async (req: Request, res: Response) => {
     const data: LoginUser = req.body;
     const user: any = await getOneObject({ where: { username: data.username } }, User);
     user.password = await argon2.hash(data.password);
-    saveObject(user);
+    saveObject(user, User);
     res.status(200).send('The password has been changed');
   } catch (_err) {
     res.staus(500).send('Password could not be changed');
