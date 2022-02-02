@@ -78,21 +78,6 @@ const saveNewModule = async (newModule: Module, res: Respone): Promise<void> => 
 };
 
 /**
- * @async
- * Find the Repository 'Module' and all modules with the given name
- * @param {string} name - Given name from the request
- * @returns {Promise<[Module, Repository<Module>]>}
- */
-const getModuleAndRepo = async (name: string): Promise<[Module, Repository<Module>]> => {
-  if (name === undefined || name === null) {
-    throw new Error();
-  }
-  const moduleRepository = getRepository(Module);
-  const module: Module = await moduleRepository.findOneOrFail({ where: { name } });
-  return [module, moduleRepository];
-};
-
-/**
  * @exports
  * Registers a new Module with the data given in the HTTP-Request
  * @param {Request} req - Holds the data from the HTTP-Request
@@ -177,7 +162,15 @@ export const deleteTeacher = async (req: Request, res: Respone) => {
  * @param {Response} res- Used to form the response
  */
 export const addCourse = async (req: Request, res: Respone) => {
-
+  try {
+    const data: GeneralModule = req.body;
+    const module: Module = getModule(data);
+    module.assignedCourse = data.assignedCourse;
+    await saveObject(module);
+    res.status(200).send('The Course has been added');
+  } catch (_err) {
+    res.status(500).send('Course could not be added');
+  }
 };
 
 /**
@@ -188,7 +181,15 @@ export const addCourse = async (req: Request, res: Respone) => {
  * @param {Response} res- Used to form the response
  */
 export const deleteCourse = async (req: Request, res: Respone) => {
-
+  try {
+    const data: GeneralModule = req.body;
+    const module: Module = getModule(data);
+    module.assignedCourse = null;
+    await saveObject(module);
+    res.status(200).send('The Course has been deleted');
+  } catch (_err) {
+    res.status(500).send('Course could not be deleted');
+  }
 };
 
 /**
@@ -199,7 +200,15 @@ export const deleteCourse = async (req: Request, res: Respone) => {
  * @param {Response} res- Used to form the response
  */
 export const changeDescription = async (req: Request, res: Respone) => {
-
+  try {
+    const data: GeneralModule = req.body;
+    const module: Module = getModule(data);
+    module.description = data.description;
+    await saveObject(module);
+    res.status(200).send('The Description has been changed');
+  } catch (_err) {
+    res.send(500).send('Description could not be changed');
+  }
 };
 
 /**
@@ -210,7 +219,17 @@ export const changeDescription = async (req: Request, res: Respone) => {
  * @param {Response} res- Used to form the response
  */
 export const addSubmodule = async (req: Request, res: Respone) => {
-
+  try {
+    const data: GeneralModule = req.body;
+    const module: Module = getModule(data);
+    const { submodule } = module;
+    submodule.concat(data.submodule);
+    module.submodule = submodule;
+    await saveObject(module);
+    res.status(200).send('The Submodule have been added');
+  } catch (_err) {
+    res.status(500).send('Submodule could not be added');
+  }
 };
 
 /**
@@ -221,4 +240,20 @@ export const addSubmodule = async (req: Request, res: Respone) => {
  * @param {Response} res- Used to form the response
  */
 export const deleteSubmodule = async (req: Request, res: Respone) => {
+  try {
+    const data: GeneralModule = req.body;
+    const module: Module = getModule(data);
+    const { submodule } = module;
+    data.submodule.forEach((element) => {
+      const index = submodule.indexOf(element);
+      if (index > -1) {
+        submodule.splice(index, 1);
+      }
+    });
+    module.submodule = submodule;
+    await saveObject(module);
+    res.status(200).send('The Submodule have been removed');
+  } catch (_err) {
+    res.status(500).send('Submodule could not be removed');
+  }
 };
