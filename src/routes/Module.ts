@@ -38,6 +38,7 @@ const getModule = (data: GeneralModule): Module => {
  */
 const createModule = (data: GeneralModule): Module => {
   const newModule = new Module();
+  newModule.name = data.name;
   newModule.description = data.description;
   newModule.assignedTeacher = data.assignedTeacher;
   newModule.submodule = data.submodule;
@@ -107,6 +108,9 @@ export const deleteModule = async (req: Request, res: Respone) => {
 export const addTeacher = async (req: Request, res: Respone) => {
   try {
     const data: GeneralModule = req.body;
+    if (data.assignedTeacher == null) {
+      throw new Error();
+    }
     const module: Module = getModule(data);
     const teacher: User[] = module.assignedTeacher;
     teacher.concat(data.assignedTeacher);
@@ -128,6 +132,9 @@ export const addTeacher = async (req: Request, res: Respone) => {
 export const deleteTeacher = async (req: Request, res: Respone) => {
   try {
     const data: GeneralModule = req.body;
+    if (data.assignedTeacher == null) {
+      throw new Error();
+    }
     const module: Module = getModule(data);
     const teacher: User[] = module.assignedTeacher;
     data.assignedTeacher.forEach((element) => {
@@ -154,6 +161,9 @@ export const deleteTeacher = async (req: Request, res: Respone) => {
 export const addCourse = async (req: Request, res: Respone) => {
   try {
     const data: GeneralModule = req.body;
+    if (data.assignedCourse == null) {
+      throw new Error();
+    }
     const module: Module = getModule(data);
     module.assignedCourse = data.assignedCourse;
     await saveObject(module);
@@ -211,6 +221,9 @@ export const changeDescription = async (req: Request, res: Respone) => {
 export const addSubmodule = async (req: Request, res: Respone) => {
   try {
     const data: GeneralModule = req.body;
+    if (data.submodule == null) {
+      throw new Error();
+    }
     const module: Module = getModule(data);
     const { submodule } = module;
     submodule.concat(data.submodule);
@@ -232,6 +245,9 @@ export const addSubmodule = async (req: Request, res: Respone) => {
 export const deleteSubmodule = async (req: Request, res: Respone) => {
   try {
     const data: GeneralModule = req.body;
+    if (data.submodule == null) {
+      throw new Error();
+    }
     const module: Module = getModule(data);
     const { submodule } = module;
     data.submodule.forEach((element) => {
@@ -257,6 +273,9 @@ export const deleteSubmodule = async (req: Request, res: Respone) => {
 export const changeName = async (req: Request, res: Respone) => {
   try {
     const data: GeneralModule = req.body;
+    if (data.name == null) {
+      throw new Error();
+    }
     const module: Module = getModule(data);
     module.name = data.name;
     await saveObject(module);
