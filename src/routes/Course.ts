@@ -5,7 +5,7 @@ import User from '../entity/User';
 import { deleteObjects, getOneObject, saveObject } from './Manager';
 
 /**
- * Reprenstation of the incoming data for a course Request
+ * Representation of the incoming data for a course Request
  * @interface
  */
 interface GeneralCourse {
@@ -14,7 +14,7 @@ interface GeneralCourse {
   students?: User[];
 }
 /**
- * Reprenstation of the incoming data for changing a course
+ * Representation of the incoming data for changing a course
  * @interface
  */
 interface ChangeCourse extends GeneralCourse {
