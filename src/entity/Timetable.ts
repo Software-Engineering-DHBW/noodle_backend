@@ -14,11 +14,15 @@ export default class Timetable {
   @Column()
     endTime: Date;
 
-  @ManyToOne(() => Module)
+  @ManyToOne(() => Module, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
     assignedModule: Module;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
     description: string;
 
   @Column()

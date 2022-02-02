@@ -1,7 +1,7 @@
 import * as express from 'express';
 import * as jwt from 'jsonwebtoken';
 import {
-  registerUser, loginUser, deleteUser, changeUserPassword,
+  registerUser, loginUser, deleteUser, changeUserPassword, getAllUsers,
 } from './User';
 import {
   addCourse, addSubmodule, addTeacher, changeDescription, changeName, deleteModule, deleteSubmodule,
@@ -10,7 +10,12 @@ import {
 import {
   addStudent, changeCourse, deleteCourse, registerCourse, removeStudent, selectCourse,
 } from './Course';
-import { getGradesForStudent, insertGradeForStudent } from './Grades';
+import { getGradesForStudent, insertGradeForStudent, deleteGradeForStudent } from './Grades';
+import {
+  deleteTimeTableEntriesModule,
+  getTimeTableEntriesCourse, getTimeTableEntriesModule,
+  getTimeTableEntriesPerson, insertTimetableEntry,
+} from './TimeTable';
 
 interface JwtPayload {
   'id': number,
@@ -48,6 +53,10 @@ router.post('/user/delete', (req: express.Request, res: express.Response) => {
 
 router.post('/user/changePassword', (req: express.Request, res: express.Response) => {
   changeUserPassword(req, res);
+});
+
+router.get('/user/getAll', (req: express.Request, res: express.Response) => {
+  getAllUsers(req, res);
 });
 
 // API Calls for Module
@@ -123,6 +132,31 @@ router.get('/grades/:studentId', (req: express.Request, res: express.Response) =
 
 router.post('/grades/insert', (req: express.Request, res: express.Response) => {
   insertGradeForStudent(req, res);
+});
+
+router.post('/grades/delete', (req: express.Request, res: express.Response) => {
+  deleteGradeForStudent(req, res);
+});
+
+// API Calls for Timetable
+router.post('/timetable/insert', (req: express.Request, res: express.Response) => {
+  insertTimetableEntry(req, res);
+});
+
+router.get('/timetable/getPerson', (req: express.Request, res: express.Response) => {
+  getTimeTableEntriesPerson(req, res);
+});
+
+router.get('/timetable/getModule/:moduleId', (req: express.Request, res: express.Response) => {
+  getTimeTableEntriesModule(req, res);
+});
+
+router.get('/timetable/getCourse/:courseId', (req: express.Request, res: express.Response) => {
+  getTimeTableEntriesCourse(req, res);
+});
+
+router.post('/timetable/delete', (req: express.Request, res: express.Response) => {
+  deleteTimeTableEntriesModule(req, res);
 });
 
 export default router;
