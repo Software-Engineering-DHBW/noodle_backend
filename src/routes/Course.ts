@@ -2,44 +2,49 @@ import { Request, Response } from 'express';
 import { getConnection, getRepository, Repository } from 'typeorm';
 import Course from '../entity/Course';
 import User from '../entity/User';
+import { deleteObjects, getOneObject, saveObject } from './Manager';
 
 /**
- * Representation of the incoming data of a new file
+ * Reprenstation of the incoming data for a course Request
  * @interface
  */
-interface RegisterCourse {
-  name: string;
-  students: User[];
+interface GeneralCourse {
+  id?: number;
+  name?: string;
+  students?: User[];
 }
-/**
- * Representation of the incoming data for removing a course
- * @interface
- */
-interface DeleteCourse {
-  name: string;
-}
-/**
- * Representation of the incoming data for adding or removing a student
- * @interface
- */
-interface ChangeStudent extends DeleteCourse {
-  students: User[];
-}
-
 /**
  * Reprenstation of the incoming data for changing a course
  * @interface
  */
-interface ChangeCourse extends DeleteCourse {
+interface ChangeCourse extends GeneralCourse {
   newName: string;
 }
+
 /**
- * Creates a new Course with the given data
- * @param {RegisterCourse} data - Data of the new course
+ * Return the course with the given ID or name
+ * @param {GeneralCourse} data - Data from the Requst
  * @returns {Course}
  */
-const createCourse = (data: RegisterCourse): Course => {
+const getCourse = (data: GeneralCourse): Course => {
+  if (data.id == null && data.name == null) {
+    throw new Error();
+  }
+  const course: any = data.id
+    ? getOneObject({ where: { id: data.id } }, Course)
+    : getOneObject({ where: { name: data.name } }, Course);
+  return course;
+};
+/**
+ * Creates a new Course with the given data
+ * @param {GeneralCourse} data - Data of the new course
+ * @returns {Course}
+ */
+const createCourse = (data: GeneralCourse): Course => {
   const newCourse = new Course();
+  if (data.name == null || data.students == null) {
+    throw new Error();
+  }
   newCourse.name = data.name;
   newCourse.students = data.students;
   return newCourse;
@@ -67,21 +72,6 @@ const saveNewCourse = async (newCourse: Course, res: Response): Promise<void> =>
 };
 
 /**
- * @async
- * Find the Repository 'Course' and all courses with the given name
- * @param {string} name - Given name from the request
- * @returns {Promise<[Course, Repository<Course>]>}
- */
-const getCourseAndRepo = async (name: string): Promise<[Course, Repository<Course>]> => {
-  if (name === undefined || name === null) {
-    throw new Error();
-  }
-  const courseRepository = getRepository(Course);
-  const course: Course = await courseRepository.findOneOrFail({ where: { name } });
-  return [course, courseRepository];
-};
-
-/**
  * @exports
  * Registers a new Course with the data given by the HTTP-Request
  * @param {Request} req - Holds the data from the HTTP-Request
@@ -102,11 +92,12 @@ export const registerCourse = (req: Request, res: Response) => {
  */
 export const addStudent = async (req: Request, res: Response) => {
   try {
-    const data: ChangeStudent = req.body;
-    const [course, courseRepository] = await getCourseAndRepo(data.name);
+    const data: GeneralCourse = req.body;
+    const course: Course = getCourse(data);
     const { students } = course;
     students.concat(data.students);
-    await courseRepository.update({ id: course.id }, { students });
+    course.students = students;
+    await saveObject(course);
     res.status(200).send('The Students have been added');
   } catch (_err) {
     res.status(500).send('Students could not be added');
@@ -122,8 +113,8 @@ export const addStudent = async (req: Request, res: Response) => {
  */
 export const removeStudent = async (req: Request, res: Response) => {
   try {
-    const data: ChangeStudent = req.body;
-    const [course, courseRepository] = await getCourseAndRepo(data.name);
+    const data: GeneralCourse = req.body;
+    const course: Course = getCourse(data);
     const { students } = course;
     data.students.forEach((element) => {
       const index = students.indexOf(element);
@@ -131,7 +122,8 @@ export const removeStudent = async (req: Request, res: Response) => {
         students.splice(index, 1);
       }
     });
-    await courseRepository.update({ id: course.id }, { students });
+    course.students = students;
+    await saveObject(course);
     res.status(200).send('The Students have been removed');
   } catch (_err) {
     res.status(500).send('Students could not be removed');
@@ -147,8 +139,8 @@ export const removeStudent = async (req: Request, res: Response) => {
  */
 export const selectCourse = async (req: Request, res: Response) => {
   try {
-    const data: DeleteCourse = req.body;
-    const [course] = await getCourseAndRepo(data.name);
+    const data: GeneralCourse = req.body;
+    const course: Course = getCourse(data);
     res.status(200).json({
       ID: course.id,
       Name: course.name,
@@ -169,8 +161,9 @@ export const selectCourse = async (req: Request, res: Response) => {
 export const changeCourse = async (req: Request, res: Response) => {
   try {
     const data: ChangeCourse = req.body;
-    const [course, courseRepository] = await getCourseAndRepo(data.name);
-    await courseRepository.update({ id: course.id }, { name: data.newName });
+    const course: Course = getCourse(data);
+    course.name = data.newName;
+    await saveObject(course);
     res.status(200).send('The Course has been updated');
   } catch (_err) {
     res.status(500).send('Course could not be updated');
@@ -186,9 +179,9 @@ export const changeCourse = async (req: Request, res: Response) => {
  */
 export const deleteCourse = async (req: Request, res: Response) => {
   try {
-    const data: DeleteCourse = req.body;
-    const [course, courseRepository] = await getCourseAndRepo(data.name);
-    await courseRepository.delete(course);
+    const data: GeneralCourse = req.body;
+    const course: Course = getCourse(data);
+    await deleteObjects(course, Course);
     res.status(200).send('The Course has been deleted');
   } catch (_err) {
     res.status(500).send('Course could not be deleted');
