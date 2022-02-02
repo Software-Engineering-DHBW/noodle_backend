@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getConnection, getRepository, Repository } from 'typeorm';
+import { getConnection } from 'typeorm';
 import Course from '../entity/Course';
 import User from '../entity/User';
 import { deleteObjects, getOneObject, saveObject } from './Manager';
@@ -78,7 +78,7 @@ const saveNewCourse = async (newCourse: Course, res: Response): Promise<void> =>
  * @param {Response} res - Used to form the response
  */
 export const registerCourse = (req: Request, res: Response) => {
-  const data: RegisterCourse = req.body;
+  const data: GeneralCourse = req.body;
   const newCourse: Course = createCourse(data);
   saveNewCourse(newCourse, res);
 };
