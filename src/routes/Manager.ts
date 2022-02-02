@@ -26,7 +26,6 @@ export const getObjects = async (
   return manager.find(objectType, findOptions);
 };
 
-
 export const deleteObjects = async (
   findOptions: object,
   objectType: Function,
