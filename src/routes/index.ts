@@ -9,7 +9,11 @@ import {
   addStudent, changeCourse, deleteCourse, registerCourse, removeStudent, selectCourse,
 } from './Course';
 import { getGradesForStudent, insertGradeForStudent, deleteGradeForStudent } from './Grades';
-import { getTimeTableEntriesPerson, insertTimetableEntry } from './TimeTable';
+import {
+  deleteTimeTableEntriesModule,
+  getTimeTableEntriesCourse, getTimeTableEntriesModule,
+  getTimeTableEntriesPerson, insertTimetableEntry,
+} from './TimeTable';
 
 interface JwtPayload {
   'id': number,
@@ -98,6 +102,18 @@ router.post('/timetable/insert', (req: express.Request, res: express.Response) =
 
 router.get('/timetable/getPerson', (req: express.Request, res: express.Response) => {
   getTimeTableEntriesPerson(req, res);
+});
+
+router.get('/timetable/getModule/:moduleId', (req: express.Request, res: express.Response) => {
+  getTimeTableEntriesModule(req, res);
+});
+
+router.get('/timetable/getCourse/:courseId', (req: express.Request, res: express.Response) => {
+  getTimeTableEntriesCourse(req, res);
+});
+
+router.post('/timetable/delete', (req: express.Request, res: express.Response) => {
+  deleteTimeTableEntriesModule(req, res);
 });
 
 export default router;
