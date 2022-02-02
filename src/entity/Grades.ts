@@ -17,7 +17,9 @@ export default class Grades {
   @JoinColumn()
     moduleId: Module;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
     studentId: User;
 

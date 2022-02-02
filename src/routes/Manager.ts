@@ -1,8 +1,9 @@
 import { getManager, EntityManager } from 'typeorm';
 
-export const saveObject = async (obj: object) => {
+export const saveObject = async (obj: object, objectType: Function) => {
   const manager: EntityManager = getManager();
-  await manager.save(obj);
+  const classObject = manager.create(objectType, obj);
+  await manager.save(classObject);
 };
 
 export const getOneObject = async (
@@ -25,7 +26,6 @@ export const getObjects = async (
   const manager: EntityManager = getManager();
   return manager.find(objectType, findOptions);
 };
-
 
 export const deleteObjects = async (
   findOptions: object,
