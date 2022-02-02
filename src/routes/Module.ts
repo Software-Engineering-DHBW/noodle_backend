@@ -1,20 +1,10 @@
 import { Request, Respone } from 'express';
-import { getConnection, getRepository, Repository } from 'typeorm';
+import { getConnection } from 'typeorm';
 import { deleteObjects, getOneObject, saveObject } from './Manager';
 import Module from '../entity/Module';
 import Course from '../entity/Course';
 import User from '../entity/User';
 
-/**
- * Representation of the incoming data of a new module
- * @interface
- */
-interface RegisterModule {
-  description: string;
-  assignedTeacher: User[];
-  assignedCourse: Course;
-  submodule: Module[];
-}
 /**
  * Representation of the incoming data of a module Request
  * @interface
@@ -43,10 +33,10 @@ const getModule = (data: GeneralModule): Module => {
 };
 /**
  * Creates a new Module with the given data
- * @param {RegisterModule} data - Data of the new module
+ * @param {GeneralModule} data - Data of the new module
  * @returns {Module}
  */
-const createModule = (data: RegisterModule): Module => {
+const createModule = (data: GeneralModule): Module => {
   const newModule = new Module();
   newModule.description = data.description;
   newModule.assignedTeacher = data.assignedTeacher;
@@ -84,7 +74,7 @@ const saveNewModule = async (newModule: Module, res: Respone): Promise<void> => 
  * @param {Response} res- Used to form the response
  */
 export const registerModule = (req: Request, res: Respone) => {
-  const data: RegisterModule = req.body;
+  const data: GeneralModule = req.body;
   const newModule: Module = createModule(data);
   saveNewModule(newModule, res);
 };
@@ -255,5 +245,23 @@ export const deleteSubmodule = async (req: Request, res: Respone) => {
     res.status(200).send('The Submodule have been removed');
   } catch (_err) {
     res.status(500).send('Submodule could not be removed');
+  }
+};
+/**
+ * @exports
+ * @async
+ * Changes the name of a Module with the data given in the HTTP-Request
+ * @param {Request} req - Holds the data from the HTTP-Request
+ * @param {Response} res- Used to form the response
+ */
+export const changeName = async (req: Request, res: Respone) => {
+  try {
+    const data: GeneralModule = req.body;
+    const module: Module = getModule(data);
+    module.name = data.name;
+    await saveObject(module);
+    res.status(200).send('The Name has been changed');
+  } catch (_err) {
+    res.send(500).send('Name could not be changed');
   }
 };
