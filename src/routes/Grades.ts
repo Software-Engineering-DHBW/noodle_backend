@@ -65,7 +65,7 @@ export const deleteGradeForStudent = async (req: Request, res: Response) => {
     const data: Grades = req.body;
     deleteObjects(data, Grades);
     res.status(200).send('The grade has been deleted');
-  } catch (err) {
+  } catch (_err) {
     res.status(500).send('The grade could not be deleted');
   }
 };

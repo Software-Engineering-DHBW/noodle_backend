@@ -2,7 +2,7 @@ import * as express from 'express';
 import * as jwt from 'jsonwebtoken';
 import User from '../entity/User';
 import {
-  registerUser, loginUser, deleteUser, changeUserPassword,
+  registerUser, loginUser, deleteUser, changeUserPassword, getAllUsers,
 } from './User';
 import { registerModule } from './Module';
 import {
@@ -45,6 +45,10 @@ router.post('/user/delete', (req: express.Request, res: express.Response) => {
 
 router.post('/user/changePassword', (req: express.Request, res: express.Response) => {
   changeUserPassword(req, res);
+});
+
+router.get('/user/getAll', (req: express.Request, res: express.Response) => {
+  getAllUsers(req, res);
 });
 
 router.post('/module/register', (req: express.Request, res: express.Response) => {

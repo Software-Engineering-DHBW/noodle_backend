@@ -4,7 +4,9 @@ import * as argon2 from 'argon2';
 import * as jwt from 'jsonwebtoken';
 import User from '../entity/User';
 import UserDetail from '../entity/UserDetail';
-import { getOneObject, deleteObjects, saveObject } from './Manager';
+import {
+  getObjects, getOneObject, deleteObjects, saveObject,
+} from './Manager';
 
 /**
  * Representation of the incoming data for removing a user
@@ -177,6 +179,8 @@ export const deleteUser = async (req: Request, res: Response) => {
 };
 
 /**
+ * @exports
+ * @async
  * Changes the password of a user
  * @param {Request} req - Received request object
  * @param {Response} res - Received response object
@@ -187,8 +191,39 @@ export const changeUserPassword = async (req: Request, res: Response) => {
     const user: any = await getOneObject({ where: { username: data.username } }, User);
     user.password = await argon2.hash(data.password);
     saveObject(user);
-    res.status(200).send('The password has been changed.');
+    res.status(200).send('The password has been changed');
   } catch (_err) {
-    res.staus(500).send('Password could not be changed.');
+    res.staus(500).send('Password could not be changed');
+  }
+};
+
+/**
+ * @exports
+ * @async
+ * Get all users from the repository
+ * @param {Request} req - Received request object
+ * @param {Response} res - Received response object
+ */
+export const getAllUsers = async (req: Request, res: Response) => {
+  try {
+    const users: UserDetail[] = await getRepository(UserDetail)
+      .createQueryBuilder('')
+      .select([
+        'UserDetail.id',
+        'UserDetail.fullname',
+        'UserDetail.address',
+        'UserDetail.matriculationNumber',
+        'UserDetail.mail',
+        'UserDetail.userId',
+        'User.id',
+        'User.username',
+        'User.isTeacher',
+        'User.isAdministrator',
+      ])
+      .leftJoin('UserDetail.userId', 'User')
+      .getMany();
+    res.status(200).send(users);
+  } catch (_err) {
+    res.status(500).send('The users could not be retrieved');
   }
 };
