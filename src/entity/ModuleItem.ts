@@ -9,7 +9,9 @@ export default class ModuleItem {
   @PrimaryGeneratedColumn()
     id: number;
 
-  @OneToOne(() => Module)
+  @OneToOne(() => Module, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn()
     ModuleId: Module;
 

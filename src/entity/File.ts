@@ -22,6 +22,8 @@ export default class File {
   @Column()
     uploadDate: Date;
 
-  @ManyToOne(() => ModuleItem, (moduleItem: ModuleItem) => moduleItem.id)
+  @ManyToOne(() => ModuleItem, (moduleItem: ModuleItem) => moduleItem.id, {
+    onDelete: 'CASCADE',
+  })
     uploadedAt: ModuleItem;
 }
