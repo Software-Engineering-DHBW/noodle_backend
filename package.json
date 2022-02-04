@@ -3,6 +3,9 @@
   "version": "0.0.1",
   "description": "Awesome project developed with TypeORM.",
   "main":"build/index.js",
+  "bin": {
+    "noodleBackend": "./build/index.js"
+  },
   "devDependencies": {
     "@babel/core": "^7.16.12",
     "@babel/plugin-proposal-decorators": "^7.16.7",
