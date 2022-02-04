@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { getConnection, getRepository, Repository } from 'typeorm';
-import * as argon2 from 'argon2';
-import * as jwt from 'jsonwebtoken';
+import { hash, verify } from 'argon2';
+import { sign } from 'jsonwebtoken';
 import User from '../entity/User';
 import UserDetail from '../entity/UserDetail';
 import {
@@ -45,7 +45,7 @@ interface RegisterUser extends LoginUser {
 const createUser = async (data: RegisterUser): Promise<User> => {
   const newUser = new User();
   newUser.username = data.username;
-  newUser.password = await argon2.hash(data.password);
+  newUser.password = await hash(data.password);
   switch (data.role) {
     case 'teacher':
       newUser.isTeacher = true; break;
@@ -129,7 +129,7 @@ const createLoginJwt = async (user: User, userDetails: UserDetail): Promise<stri
   } else if (user.isTeacher) {
     role = 'teacher';
   }
-  return jwt.sign({
+  return sign({
     id: user.id,
     username: user.username,
     fullName: userDetails.fullname,
@@ -150,7 +150,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const data: LoginUser = req.body;
     const user: any = await getOneObject({ where: { username: data.username } }, User);
-    if (!await argon2.verify(user.password, data.password)) {
+    if (!await verify(user.password, data.password)) {
       throw new Error();
     }
     const userDetails: any = await getOneObject({ where: { userId: user } }, UserDetail);
@@ -189,11 +189,11 @@ export const changeUserPassword = async (req: Request, res: Response) => {
   try {
     const data: LoginUser = req.body;
     const user: any = await getOneObject({ where: { username: data.username } }, User);
-    user.password = await argon2.hash(data.password);
+    user.password = await hash(data.password);
     saveObject(user, User);
     res.status(200).send('The password has been changed');
   } catch (_err) {
-    res.staus(500).send('Password could not be changed');
+    res.status(500).send('Password could not be changed');
   }
 };
 
