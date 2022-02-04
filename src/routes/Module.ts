@@ -1,6 +1,8 @@
 import { Request, Respone } from 'express';
 import { getConnection } from 'typeorm';
-import { deleteObjects, getOneObject, saveObject } from './Manager';
+import {
+  deleteObjects, getObjects, getOneObject, saveObject,
+} from './Manager';
 import Module from '../entity/Module';
 import Course from '../entity/Course';
 import User from '../entity/User';
@@ -322,9 +324,28 @@ export const changeName = async (req: Request, res: Respone) => {
     res.send(500).send('Name could not be changed');
   }
 };
+/**
+ * @exports
+ * @async
+ * Returns the informations of a module
+ * @param {Request} req - Holds the data from the HTTP-Request
+ * @param {Respone} req - Used to form the response
+ */
+export const selectModule = async (req: Request, res: Respone) => {
+  try {
+    const { moduleId } = req.params;
+    const module = await getObjects({
+      select: ['name', 'description', 'assignedTeacher', 'assignedCourse', 'submodule'],
+      where: { id: moduleId },
+    }, Module);
+    res.status(200).send(module);
+  } catch (_err) {
+    res.status(500).send('Could not find the module');
+  }
+};
 
 export const addModuleItem = async (req: Request, res: Respone) => {
   const data: ModuleItem = req.body;
   data.moduleId = req.params.moduleId;
-  addItem(data);
+  addItem(data, res);
 };
