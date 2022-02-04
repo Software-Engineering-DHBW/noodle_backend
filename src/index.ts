@@ -1,12 +1,20 @@
 #!/usr/bin/env node
 import 'reflect-metadata';
-import { createConnection } from 'typeorm';
+import { ConnectionOptions, createConnection } from 'typeorm';
 import * as express from 'express';
 import * as crypto from 'crypto';
 import router from './routes/index';
-import ormconfig from '../ormconfig';
 
-createConnection(ormconfig).then(async () => {
+const ormOptions: ConnectionOptions = {
+  type: 'postgres',
+  host: 'localhost',
+  port: 5432,
+  username: 'noodle',
+  password: 'noodle',
+  database: 'noodle',
+};
+
+createConnection(ormOptions).then(async () => {
   /* Just for demonstrating purposes, can be removed after understanding the code
     //Add test-user to user
       console.log("Inserting a new user into the database...");
