@@ -120,6 +120,52 @@ describe('Tests for a user login', () => {
     expect(res.send).toHaveBeenCalledWith({ id: testUser.id, username: testUser.username });
   });
 
+  test('Successfull login a teacher', async () => {
+    const testUser = {
+      id: 1, username: 'test', password: 'test', isTeacher: true,
+    };
+    const testJwtObject = {
+      id: 1,
+      username: 'test',
+      fullName: 'test',
+      role: 'student',
+      exp: (12 * 60 * 60),
+    };
+    const req = mockRequest(testUser);
+    const res = mockResponse();
+    mocked(manager.getOneObject).mockImplementationOnce(async (obj, objClass) => testUser);
+    mocked(manager.getOneObject).mockImplementationOnce(async (obj, objClass) => ({ fullname: 'test' }));
+    mocked(jwt.sign).mockImplementationOnce(async (obj, key) => ({ id: obj.id, username: obj.username, role: obj.role }));
+    await loginUser(req, res);
+    expect(manager.getOneObject).toHaveBeenCalledWith({ where: { username: testUser.username } }, User);
+    expect(manager.getOneObject).toHaveBeenCalledWith({ where: { userId: testUser } }, UserDetail);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.send).toHaveBeenCalledWith({ id: testUser.id, username: testUser.username, role: 'teacher' });
+  });
+
+  test('Successfull login a administrator', async () => {
+    const testUser = {
+      id: 1, username: 'test', password: 'test', isAdministrator: true,
+    };
+    const testJwtObject = {
+      id: 1,
+      username: 'test',
+      fullName: 'test',
+      role: 'student',
+      exp: (12 * 60 * 60),
+    };
+    const req = mockRequest(testUser);
+    const res = mockResponse();
+    mocked(manager.getOneObject).mockImplementationOnce(async (obj, objClass) => testUser);
+    mocked(manager.getOneObject).mockImplementationOnce(async (obj, objClass) => ({ fullname: 'test' }));
+    mocked(jwt.sign).mockImplementationOnce(async (obj, key) => ({ id: obj.id, username: obj.username, role: obj.role }));
+    await loginUser(req, res);
+    expect(manager.getOneObject).toHaveBeenCalledWith({ where: { username: testUser.username } }, User);
+    expect(manager.getOneObject).toHaveBeenCalledWith({ where: { userId: testUser } }, UserDetail);
+    expect(res.status).toHaveBeenCalledWith(200);
+    expect(res.send).toHaveBeenCalledWith({ id: testUser.id, username: testUser.username, role: 'administrator' });
+  });
+
   test('Fail on wrong password', async () => {
     const testUser = { id: 1, username: 'test', password: 'test' };
     const req = mockRequest(testUser);
@@ -151,4 +197,8 @@ describe('Tests for a user login', () => {
     expect(res.status).toHaveBeenCalledWith(403);
     expect(res.send).toHaveBeenCalledWith('Wrong username or password');
   });
+});
+
+describe('Test for registering a new user', () => {
+
 });
