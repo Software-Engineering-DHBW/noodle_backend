@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
 import { getConnection } from 'typeorm';
-import { deleteObjects, getOneObject, saveObject } from './Manager';
+import {
+  deleteObjects, getOneObject, saveObject, getObjects,
+} from './Manager';
 import Course from '../entity/Course';
 import User from '../entity/User';
 
@@ -9,7 +11,6 @@ import User from '../entity/User';
  * @interface
  */
 interface GeneralCourse {
-  id?: number;
   name?: string;
   students?: User[];
 }
@@ -17,24 +18,17 @@ interface GeneralCourse {
  * Representation of the incoming data for changing a course
  * @interface
  */
-interface ChangeCourse extends GeneralCourse {
+ interface ChangeStudents {
+  students: User[];
+}
+/**
+ * Representation of the incoming data for changing a course
+ * @interface
+ */
+interface ChangeCourse {
   newName: string;
 }
 
-/**
- * Return the course with the given ID or name
- * @param {GeneralCourse} data - Data from the Requst
- * @returns {Course}
- */
-const getCourse = (data: GeneralCourse): Course => {
-  if (data.id == null && data.name == null) {
-    throw new Error();
-  }
-  const course: any = data.id
-    ? getOneObject({ where: { id: data.id } }, Course)
-    : getOneObject({ where: { name: data.name } }, Course);
-  return course;
-};
 /**
  * Creates a new Course with the given data
  * @param {GeneralCourse} data - Data of the new course
@@ -92,9 +86,10 @@ export const registerCourse = (req: Request, res: Response) => {
  */
 export const addStudent = async (req: Request, res: Response) => {
   try {
-    const data: GeneralCourse = req.body;
-    const course: Course = getCourse(data);
+    const { courseId } = req.params;
+    const course: any = getOneObject({ where: { id: courseId } }, Course);
     const { students } = course;
+    const data: ChangeStudents = req.body;
     students.concat(data.students);
     course.students = students;
     await saveObject(course, Course);
@@ -113,9 +108,10 @@ export const addStudent = async (req: Request, res: Response) => {
  */
 export const removeStudent = async (req: Request, res: Response) => {
   try {
-    const data: GeneralCourse = req.body;
-    const course: Course = getCourse(data);
+    const { courseId } = req.params;
+    const course: any = getOneObject({ where: { id: courseId } }, Course);
     const { students } = course;
+    const data: ChangeStudents = req.body;
     data.students.forEach((element) => {
       const index = students.indexOf(element);
       if (index > -1) {
@@ -139,13 +135,12 @@ export const removeStudent = async (req: Request, res: Response) => {
  */
 export const selectCourse = async (req: Request, res: Response) => {
   try {
-    const data: GeneralCourse = req.body;
-    const course: Course = getCourse(data);
-    res.status(200).json({
-      ID: course.id,
-      Name: course.name,
-      Students: course.students,
-    });
+    const { courseId } = req.params;
+    const course: any = await getObjects({
+      select: ['name', 'students'],
+      where: { courseId },
+    }, Course);
+    res.status(200).send(course);
   } catch (_err) {
     res.status(500).send('Could not find the course');
   }
@@ -160,8 +155,9 @@ export const selectCourse = async (req: Request, res: Response) => {
  */
 export const changeCourse = async (req: Request, res: Response) => {
   try {
+    const { courseId } = req.params;
+    const course: any = getOneObject({ where: { id: courseId } }, Course);
     const data: ChangeCourse = req.body;
-    const course: Course = getCourse(data);
     course.name = data.newName;
     await saveObject(course, Course);
     res.status(200).send('The Course has been updated');
@@ -179,8 +175,8 @@ export const changeCourse = async (req: Request, res: Response) => {
  */
 export const deleteCourse = async (req: Request, res: Response) => {
   try {
-    const data: GeneralCourse = req.body;
-    const course: Course = getCourse(data);
+    const { courseId } = req.params;
+    const course: any = getOneObject({ where: { id: courseId } }, Course);
     await deleteObjects(course, Course);
     res.status(200).send('The Course has been deleted');
   } catch (_err) {

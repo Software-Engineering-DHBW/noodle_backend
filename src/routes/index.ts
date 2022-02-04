@@ -4,7 +4,7 @@ import {
   registerUser, loginUser, deleteUser, changeUserPassword, getAllUsers,
 } from './User';
 import {
-  addCourse, addSubmodule, addTeacher, changeDescription, changeName, deleteModule, deleteSubmodule,
+  addCourse, addModuleItem, addSubmodule, addTeacher, changeDescription, changeName, deleteModule, deleteSubmodule,
   deleteTeacher, registerModule, removeCourse,
 } from './Module';
 import {
@@ -100,12 +100,16 @@ router.post('/module/deleteModule', (req: express.Request, res: express.Respone)
   deleteModule(req, res);
 });
 
+router.post('/module/:moduleId/addMoudulItem', (req: express.Request, res: express.Respone) => {
+  addModuleItem(req, res);
+});
+
 // API Calls for Course
-router.get('/course/selectCourse', (req: express.Request, res: express.Response) => {
+router.get('/course/:courseId', (req: express.Request, res: express.Response) => {
   selectCourse(req, res);
 });
 
-router.post('/course/changeCourse', (req: express.Request, res: express.Response) => {
+router.post('/course/:courseId/changeCourse', (req: express.Request, res: express.Response) => {
   changeCourse(req, res);
 });
 
@@ -113,15 +117,15 @@ router.post('/course/register', (req: express.Request, res: express.Response) =>
   registerCourse(req, res);
 });
 
-router.post('/course/delete', (req: express.Request, res: express.Response) => {
+router.post('/course/:courseId/delete', (req: express.Request, res: express.Response) => {
   deleteCourse(req, res);
 });
 
-router.post('/course/addStudent', (req: express.Request, res: express.Response) => {
+router.post('/course/:courseId/addStudent', (req: express.Request, res: express.Response) => {
   addStudent(req, res);
 });
 
-router.post('/course/removeStudent', (req: express.Request, res: express.Response) => {
+router.post('/course/:courseId/removeStudent', (req: express.Request, res: express.Response) => {
   removeStudent(req, res);
 });
 

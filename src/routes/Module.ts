@@ -4,6 +4,8 @@ import { deleteObjects, getOneObject, saveObject } from './Manager';
 import Module from '../entity/Module';
 import Course from '../entity/Course';
 import User from '../entity/User';
+import File from '../entity/File';
+import { addItem } from './ModuleItem';
 
 /**
  * Representation of the incoming data of a module Request
@@ -17,6 +19,20 @@ interface GeneralModule {
   assignedCourse?: Course;
   submodule?: Module[];
   seniormodule?: Module;
+}
+/**
+ * Representation of the incoming data of a moduleItem
+ * @interface
+ */
+interface moduleItem {
+  id?: number;
+  moduleId?: number;
+  content?: string;
+  webLink?: string;
+  downloadableFile?: File;
+  hasFileUpload: boolean;
+  uploadedFiles?: File[];
+  isVisible: boolean;
 }
 
 /**
@@ -283,4 +299,10 @@ export const changeName = async (req: Request, res: Respone) => {
   } catch (_err) {
     res.send(500).send('Name could not be changed');
   }
+};
+
+export const addModuleItem = async (req: Request, res: Respone) => {
+  const data: moduleItem = req.body;
+  data.moduleId = req.params.moduleId;
+  addItem(data);
 };
