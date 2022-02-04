@@ -39,9 +39,5 @@
     "watch": "nodemon src/index.ts",
     "test": "jest --coverage",
     "build": "tsc"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Software-Engineering-DHBW/noodle_backend.git"
   }
 }
