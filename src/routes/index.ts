@@ -64,39 +64,39 @@ router.post('/module/register', (req: express.Request, res: express.Response) =>
   registerModule(req, res);
 });
 
-router.post('/module/changeName', (req: express.Request, res: express.Respone) => {
+router.post('/module/:moduleId/changeName', (req: express.Request, res: express.Respone) => {
   changeName(req, res);
 });
 
-router.post('/module/deleteSubmodule', (req: express.Request, res: express.Respone) => {
+router.post('/module/:moduleId/deleteSubmodule', (req: express.Request, res: express.Respone) => {
   deleteSubmodule(req, res);
 });
 
-router.post('/module/addSubmodule', (req: express.Request, res: express.Respone) => {
+router.post('/module/:moduleId/addSubmodule', (req: express.Request, res: express.Respone) => {
   addSubmodule(req, res);
 });
 
-router.post('/module/changeDescription', (req: express.Request, res: express.Respone) => {
+router.post('/module/:moduleId/changeDescription', (req: express.Request, res: express.Respone) => {
   changeDescription(req, res);
 });
 
-router.post('/module/removeCourse', (req: express.Request, res: express.Respone) => {
+router.post('/module/:moduleId/removeCourse', (req: express.Request, res: express.Respone) => {
   removeCourse(req, res);
 });
 
-router.post('/module/addCourse', (req: express.Request, res: express.Respone) => {
+router.post('/module/:moduleId/addCourse', (req: express.Request, res: express.Respone) => {
   addCourse(req, res);
 });
 
-router.post('/module/deleteTeacher', (req: express.Request, res: express.Respone) => {
+router.post('/module/:moduleId/deleteTeacher', (req: express.Request, res: express.Respone) => {
   deleteTeacher(req, res);
 });
 
-router.post('/module/addTeacher', (req: express.Request, res: express.Respone) => {
+router.post('/module/:moduleId/addTeacher', (req: express.Request, res: express.Respone) => {
   addTeacher(req, res);
 });
 
-router.post('/module/deleteModule', (req: express.Request, res: express.Respone) => {
+router.post('/module/:moduleId/deleteModule', (req: express.Request, res: express.Respone) => {
   deleteModule(req, res);
 });
 

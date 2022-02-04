@@ -20,7 +20,9 @@ export default class Module {
   @OneToMany(() => User, (user: User) => user.id)
     assignedTeacher: User[];
 
-  @OneToOne(() => Course)
+  @OneToOne(() => Course, {
+    nullable: true,
+  })
   @JoinColumn()
     assignedCourse: Course;
 

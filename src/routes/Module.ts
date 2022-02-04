@@ -8,23 +8,21 @@ import File from '../entity/File';
 import { addItem } from './ModuleItem';
 
 /**
- * Representation of the incoming data of a module Request
+ * Representation of the incoming data for adding a module
  * @interface
  */
 interface GeneralModule {
-  id?: number;
-  name?: string;
+  name: string;
   description?: string;
-  assignedTeacher?: User[];
+  assignedTeacher: User[];
   assignedCourse?: Course;
-  submodule?: Module[];
-  seniormodule?: Module;
+  submodule: Module[];
 }
 /**
  * Representation of the incoming data of a moduleItem
  * @interface
  */
-interface moduleItem {
+interface ModuleItem {
   id?: number;
   moduleId?: number;
   content?: string;
@@ -34,19 +32,36 @@ interface moduleItem {
   uploadedFiles?: File[];
   isVisible: boolean;
 }
-
 /**
- * Return the module with the given ID
- * @param {GeneralModule} data - Data from the Requst
- * @returns {Module}
+ * Representation of the incoming data for changing the name or description of a module
+ * @interface
  */
-const getModule = (data: GeneralModule): Module => {
-  if (data.id == null) {
-    throw new Error();
-  }
-  const module: any = getOneObject({ where: { id: data.id } }, Module);
-  return module;
-};
+interface ChangeString {
+  name?: string;
+  description?: string;
+}
+/**
+ * Representation of the incoming data for changing the submodule of a module
+ * @interface
+ */
+interface ChangeSubmodule {
+  submodule: Module[];
+}
+/**
+ * Representation of the incoming data for changing the course of a module
+ * @interface
+ */
+ interface ChangeCourse {
+  course: Course;
+}
+/**
+ * Representation of the incoming data for changing the teacher of a module
+ * @interface
+ */
+ interface ChangeTeacher {
+  teacher: User[];
+}
+
 /**
  * Creates a new Module with the given data
  * @param {GeneralModule} data - Data of the new module
@@ -105,8 +120,8 @@ export const registerModule = (req: Request, res: Respone) => {
  */
 export const deleteModule = async (req: Request, res: Respone) => {
   try {
-    const data: GeneralModule = req.body;
-    const module: Module = getModule(data);
+    const { moduleId } = req.params;
+    const module: any = getOneObject({ where: { id: moduleId } }, Module);
     await deleteObjects(module, Module);
     res.status(200).send('The Module has been deleted');
   } catch (_err) {
@@ -123,13 +138,14 @@ export const deleteModule = async (req: Request, res: Respone) => {
  */
 export const addTeacher = async (req: Request, res: Respone) => {
   try {
-    const data: GeneralModule = req.body;
-    if (data.assignedTeacher == null) {
+    const { moduleId } = req.params;
+    const data: ChangeTeacher = req.body;
+    if (data.teacher == null) {
       throw new Error();
     }
-    const module: Module = getModule(data);
+    const module: any = getOneObject({ where: { id: moduleId } }, Module);
     const teacher: User[] = module.assignedTeacher;
-    teacher.concat(data.assignedTeacher);
+    teacher.concat(data.teacher);
     module.assignedTeacher = teacher;
     await saveObject(module, Module);
     res.status(200).send('The Teachers have been added');
@@ -147,13 +163,14 @@ export const addTeacher = async (req: Request, res: Respone) => {
  */
 export const deleteTeacher = async (req: Request, res: Respone) => {
   try {
-    const data: GeneralModule = req.body;
-    if (data.assignedTeacher == null) {
+    const { moduleId } = req.params;
+    const data: ChangeTeacher = req.body;
+    if (data.teacher == null) {
       throw new Error();
     }
-    const module: Module = getModule(data);
+    const module: any = getOneObject({ where: { id: moduleId } }, Module);
     const teacher: User[] = module.assignedTeacher;
-    data.assignedTeacher.forEach((element) => {
+    data.teacher.forEach((element) => {
       const index = teacher.indexOf(element);
       if (index > -1) {
         teacher.splice(index, 1);
@@ -176,12 +193,13 @@ export const deleteTeacher = async (req: Request, res: Respone) => {
  */
 export const addCourse = async (req: Request, res: Respone) => {
   try {
-    const data: GeneralModule = req.body;
-    if (data.assignedCourse == null) {
+    const { moduleId } = req.params;
+    const data: ChangeCourse = req.body;
+    if (data.course == null) {
       throw new Error();
     }
-    const module: Module = getModule(data);
-    module.assignedCourse = data.assignedCourse;
+    const module: any = getOneObject({ where: { id: moduleId } }, Module);
+    module.assignedCourse = data.course;
     await saveObject(module, Module);
     res.status(200).send('The Course has been added');
   } catch (_err) {
@@ -198,8 +216,8 @@ export const addCourse = async (req: Request, res: Respone) => {
  */
 export const removeCourse = async (req: Request, res: Respone) => {
   try {
-    const data: GeneralModule = req.body;
-    const module: Module = getModule(data);
+    const { moduleId } = req.params;
+    const module: any = getOneObject({ where: { id: moduleId } }, Module);
     module.assignedCourse = null;
     await saveObject(module, Module);
     res.status(200).send('The Course has been deleted');
@@ -217,8 +235,9 @@ export const removeCourse = async (req: Request, res: Respone) => {
  */
 export const changeDescription = async (req: Request, res: Respone) => {
   try {
-    const data: GeneralModule = req.body;
-    const module: Module = getModule(data);
+    const { moduleId } = req.params;
+    const data: ChangeString = req.body;
+    const module: any = getOneObject({ where: { id: moduleId } }, Module);
     module.description = data.description;
     await saveObject(module, Module);
     res.status(200).send('The Description has been changed');
@@ -236,11 +255,12 @@ export const changeDescription = async (req: Request, res: Respone) => {
  */
 export const addSubmodule = async (req: Request, res: Respone) => {
   try {
-    const data: GeneralModule = req.body;
+    const { moduleId } = req.params;
+    const data: ChangeSubmodule = req.body;
     if (data.submodule == null) {
       throw new Error();
     }
-    const module: Module = getModule(data);
+    const module: any = getOneObject({ where: { id: moduleId } }, Module);
     const { submodule } = module;
     submodule.concat(data.submodule);
     module.submodule = submodule;
@@ -260,11 +280,12 @@ export const addSubmodule = async (req: Request, res: Respone) => {
  */
 export const deleteSubmodule = async (req: Request, res: Respone) => {
   try {
-    const data: GeneralModule = req.body;
+    const { moduleId } = req.params;
+    const data: ChangeSubmodule = req.body;
     if (data.submodule == null) {
       throw new Error();
     }
-    const module: Module = getModule(data);
+    const module: any = getOneObject({ where: { id: moduleId } }, Module);
     const { submodule } = module;
     data.submodule.forEach((element) => {
       const index = submodule.indexOf(element);
@@ -288,11 +309,12 @@ export const deleteSubmodule = async (req: Request, res: Respone) => {
  */
 export const changeName = async (req: Request, res: Respone) => {
   try {
-    const data: GeneralModule = req.body;
+    const { moduleId } = req.params;
+    const data: ChangeString = req.body;
     if (data.name == null) {
       throw new Error();
     }
-    const module: Module = getModule(data);
+    const module: any = getOneObject({ where: { id: moduleId } }, Module);
     module.name = data.name;
     await saveObject(module, Module);
     res.status(200).send('The Name has been changed');
@@ -302,7 +324,7 @@ export const changeName = async (req: Request, res: Respone) => {
 };
 
 export const addModuleItem = async (req: Request, res: Respone) => {
-  const data: moduleItem = req.body;
+  const data: ModuleItem = req.body;
   data.moduleId = req.params.moduleId;
   addItem(data);
 };

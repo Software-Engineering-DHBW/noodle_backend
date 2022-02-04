@@ -7,7 +7,7 @@ import Course from '../entity/Course';
 import User from '../entity/User';
 
 /**
- * Representation of the incoming data of a course Request
+ * Representation of the incoming data for adding a course
  * @interface
  */
 interface GeneralCourse {
@@ -15,14 +15,14 @@ interface GeneralCourse {
   students?: User[];
 }
 /**
- * Representation of the incoming data for changing a course
+ * Representation of the incoming data for changing the students of a course
  * @interface
  */
  interface ChangeStudents {
   students: User[];
 }
 /**
- * Representation of the incoming data for changing a course
+ * Representation of the incoming data for changing the name of a course
  * @interface
  */
 interface ChangeCourse {
