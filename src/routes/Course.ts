@@ -73,14 +73,15 @@ const saveNewCourse = async (newCourse: Course, res: Response): Promise<void> =>
 
 /**
  * @exports
+ * @async
  * Registers a new Course with the data given by the HTTP-Request
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
-export const registerCourse = (req: Request, res: Response) => {
+export const registerCourse = async (req: Request, res: Response) => {
   const data: GeneralCourse = req.body;
   const newCourse: Course = createCourse(data);
-  saveNewCourse(newCourse, res);
+  await saveNewCourse(newCourse, res);
 };
 
 /**

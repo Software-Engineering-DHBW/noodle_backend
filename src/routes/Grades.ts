@@ -1,22 +1,11 @@
 import { Request, Response } from 'express';
 import { getRepository } from 'typeorm';
 import Grades from '../entity/Grades';
-import Module from '../entity/Module';
 import { getObjects, deleteObjects } from './Manager';
 
 /**
- * @interface
- * Interface for the request data when deleting a grade
- */
-interface DeleteGrade {
-  id?: number;
-  moduleId: number;
-  studentId: number;
-}
-
-/**
- * exports
- * async
+ * @exports
+ * @async
  * Insert or update a grade
  * @param {Request} req - Received request object
  * @param {Response} res - Received response object
