@@ -90,6 +90,23 @@ export const registerModuleItem = (req: Request, res: Response) => {
   }
 };
 
-export const usless = () => {
+// link, content, visibility, hasfileupload
+export const changeModuleItem = (req: Request, res: Response) => {
+
+};
+// löschen komplett
+export const deleteModuleITem = (req:Request, res:Response) => {
+
+};
+// alles auflisten
+export const selectModuleItem = (req:Request, res:Response) => {
+
+};
+// downloadfile hinzufügen
+export const addDownloadFile = (req:Request, res:Response) => {
+
+};
+// downloadfile löschen
+export const removeDownloadFile = (req:Request, res:Response) => {
 
 };
