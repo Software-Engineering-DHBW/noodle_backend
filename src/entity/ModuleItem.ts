@@ -13,7 +13,7 @@ export default class ModuleItem {
     onDelete: 'CASCADE',
   })
   @JoinColumn()
-    ModuleId: Module;
+    moduleId: Module;
 
   @Column({
     nullable: true,

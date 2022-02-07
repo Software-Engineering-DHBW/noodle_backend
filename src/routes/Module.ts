@@ -7,7 +7,7 @@ import Module from '../entity/Module';
 import Course from '../entity/Course';
 import User from '../entity/User';
 import File from '../entity/File';
-import { addItem } from './ModuleItem';
+import { registerModuleItem } from './ModuleItem';
 
 /**
  * Representation of the incoming data for adding a module
@@ -24,15 +24,18 @@ interface GeneralModule {
  * Representation of the incoming data of a moduleItem
  * @interface
  */
-interface ModuleItem {
-  id?: number;
-  moduleId?: number;
+export interface RegisterModuleItem {
+  moduleId?: Module;
   content?: string;
   webLink?: string;
   downloadableFile?: File;
   hasFileUpload: boolean;
   uploadedFiles?: File[];
   isVisible: boolean;
+  fileOwner: User;
+  fileName: string;
+  filePath: string;
+  fileUploadDate: Date;
 }
 /**
  * Representation of the incoming data for changing the name or description of a module
@@ -347,5 +350,5 @@ export const selectModule = async (req: Request, res: Respone) => {
 export const addModuleItem = async (req: Request, res: Respone) => {
   const data: ModuleItem = req.body;
   data.moduleId = req.params.moduleId;
-  addItem(data, res);
+  registerModuleItem(data, res);
 };
