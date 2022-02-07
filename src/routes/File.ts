@@ -48,6 +48,7 @@ const saveNewFile = async (newFile: File, res: Response): Promise<void> => {
     res.sendStatus(403);
   }
 };
+
 /**
  * @exports
  * Registers a new File with the data given by the HTTP-Request

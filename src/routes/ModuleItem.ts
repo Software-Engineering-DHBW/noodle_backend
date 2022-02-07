@@ -1,9 +1,27 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import { getConnection } from 'typeorm';
 import File from '../entity/File';
 import ModuleItem from '../entity/ModuleItem';
-import { RegisterModuleItem } from './Module';
-import { RegisterFile } from './File';
+import Module from '../entity/Module';
+import User from '../entity/User';
+
+/**
+ * Representation of the incoming data of a moduleItem
+ * @interface
+ */
+export interface RegisterModuleItem {
+  moduleId?: Module;
+  content?: string;
+  webLink?: string;
+  downloadableFile?: File;
+  hasFileUpload: boolean;
+  uploadedFiles?: File[];
+  isVisible: boolean;
+  fileOwner: User;
+  fileName: string;
+  filePath: string;
+  fileUploadDate: Date;
+}
 
 /**
  * Creates a new ModuleItem with the given data
@@ -33,6 +51,7 @@ const createFile = (data: RegisterModuleItem, newModuleItem: ModuleItem): File =
   newFile.uploadedAt = newModuleItem;
   return newFile;
 };
+
 /**
  * @async
  * Saves the create ModuleItem- and File-Object inside the database.
@@ -59,7 +78,9 @@ const saveNewModuleItem = async (newModuleItem:ModuleItem, res: Response, newFil
   }
 };
 
-export const registerModuleItem = (data: RegisterModuleItem, res: Response) => {
+export const registerModuleItem = (req: Request, res: Response) => {
+  const data: RegisterModuleItem = req.body;
+  data.moduleId = req.params.moduleId;
   const newModuleItem: ModuleItem = createModuleItem(data);
   if (data.downloadableFile != null) {
     const newFile: File = createFile(data, newModuleItem);

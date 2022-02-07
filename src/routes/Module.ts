@@ -1,4 +1,4 @@
-import { Request, Respone } from 'express';
+import { Request, Response } from 'express';
 import { getConnection } from 'typeorm';
 import {
   deleteObjects, getObjects, getOneObject, saveObject,
@@ -6,9 +6,6 @@ import {
 import Module from '../entity/Module';
 import Course from '../entity/Course';
 import User from '../entity/User';
-import File from '../entity/File';
-import { registerModuleItem } from './ModuleItem';
-
 /**
  * Representation of the incoming data for adding a module
  * @interface
@@ -19,23 +16,6 @@ interface GeneralModule {
   assignedTeacher: User[];
   assignedCourse?: Course;
   submodule: Module[];
-}
-/**
- * Representation of the incoming data of a moduleItem
- * @interface
- */
-export interface RegisterModuleItem {
-  moduleId?: Module;
-  content?: string;
-  webLink?: string;
-  downloadableFile?: File;
-  hasFileUpload: boolean;
-  uploadedFiles?: File[];
-  isVisible: boolean;
-  fileOwner: User;
-  fileName: string;
-  filePath: string;
-  fileUploadDate: Date;
 }
 /**
  * Representation of the incoming data for changing the name or description of a module
@@ -88,9 +68,9 @@ const createModule = (data: GeneralModule): Module => {
  * in this case a response with HTTP-Status 403 will be formed.
  * Forms a response with HTTP-Code 200 if the object could be stored.
  * @param {Module} newModule - New Module to store
- * @param {Respone} res - Response object for sending the response
+ * @param {Response} res - Response object for sending the response
  */
-const saveNewModule = async (newModule: Module, res: Respone): Promise<void> => {
+const saveNewModule = async (newModule: Module, res: Response): Promise<void> => {
   const queryRunner = getConnection().createQueryRunner();
   await queryRunner.startTransaction();
   try {
@@ -110,7 +90,7 @@ const saveNewModule = async (newModule: Module, res: Respone): Promise<void> => 
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res- Used to form the response
  */
-export const registerModule = (req: Request, res: Respone) => {
+export const registerModule = (req: Request, res: Response) => {
   const data: GeneralModule = req.body;
   const newModule: Module = createModule(data);
   saveNewModule(newModule, res);
@@ -123,7 +103,7 @@ export const registerModule = (req: Request, res: Respone) => {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res- Used to form the response
  */
-export const deleteModule = async (req: Request, res: Respone) => {
+export const deleteModule = async (req: Request, res: Response) => {
   try {
     const { moduleId } = req.params;
     const module: any = getOneObject({ where: { id: moduleId } }, Module);
@@ -141,7 +121,7 @@ export const deleteModule = async (req: Request, res: Respone) => {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res- Used to form the response
  */
-export const addTeacher = async (req: Request, res: Respone) => {
+export const addTeacher = async (req: Request, res: Response) => {
   try {
     const { moduleId } = req.params;
     const data: ChangeTeacher = req.body;
@@ -166,7 +146,7 @@ export const addTeacher = async (req: Request, res: Respone) => {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res- Used to form the response
  */
-export const deleteTeacher = async (req: Request, res: Respone) => {
+export const deleteTeacher = async (req: Request, res: Response) => {
   try {
     const { moduleId } = req.params;
     const data: ChangeTeacher = req.body;
@@ -196,7 +176,7 @@ export const deleteTeacher = async (req: Request, res: Respone) => {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res- Used to form the response
  */
-export const addCourse = async (req: Request, res: Respone) => {
+export const addCourse = async (req: Request, res: Response) => {
   try {
     const { moduleId } = req.params;
     const data: ChangeCourse = req.body;
@@ -219,7 +199,7 @@ export const addCourse = async (req: Request, res: Respone) => {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res- Used to form the response
  */
-export const removeCourse = async (req: Request, res: Respone) => {
+export const removeCourse = async (req: Request, res: Response) => {
   try {
     const { moduleId } = req.params;
     const module: any = getOneObject({ where: { id: moduleId } }, Module);
@@ -238,7 +218,7 @@ export const removeCourse = async (req: Request, res: Respone) => {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res- Used to form the response
  */
-export const changeDescription = async (req: Request, res: Respone) => {
+export const changeDescription = async (req: Request, res: Response) => {
   try {
     const { moduleId } = req.params;
     const data: ChangeString = req.body;
@@ -258,7 +238,7 @@ export const changeDescription = async (req: Request, res: Respone) => {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res- Used to form the response
  */
-export const addSubmodule = async (req: Request, res: Respone) => {
+export const addSubmodule = async (req: Request, res: Response) => {
   try {
     const { moduleId } = req.params;
     const data: ChangeSubmodule = req.body;
@@ -283,7 +263,7 @@ export const addSubmodule = async (req: Request, res: Respone) => {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res- Used to form the response
  */
-export const deleteSubmodule = async (req: Request, res: Respone) => {
+export const deleteSubmodule = async (req: Request, res: Response) => {
   try {
     const { moduleId } = req.params;
     const data: ChangeSubmodule = req.body;
@@ -312,7 +292,7 @@ export const deleteSubmodule = async (req: Request, res: Respone) => {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res- Used to form the response
  */
-export const changeName = async (req: Request, res: Respone) => {
+export const changeName = async (req: Request, res: Response) => {
   try {
     const { moduleId } = req.params;
     const data: ChangeString = req.body;
@@ -332,9 +312,9 @@ export const changeName = async (req: Request, res: Respone) => {
  * @async
  * Returns the informations of a module
  * @param {Request} req - Holds the data from the HTTP-Request
- * @param {Respone} req - Used to form the response
+ * @param {Response} req - Used to form the response
  */
-export const selectModule = async (req: Request, res: Respone) => {
+export const selectModule = async (req: Request, res: Response) => {
   try {
     const { moduleId } = req.params;
     const module = await getObjects({
@@ -345,10 +325,4 @@ export const selectModule = async (req: Request, res: Respone) => {
   } catch (_err) {
     res.status(500).send('Could not find the module');
   }
-};
-
-export const addModuleItem = async (req: Request, res: Respone) => {
-  const data: ModuleItem = req.body;
-  data.moduleId = req.params.moduleId;
-  registerModuleItem(data, res);
 };

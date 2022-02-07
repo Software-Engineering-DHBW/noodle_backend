@@ -4,7 +4,7 @@ import {
   registerUser, loginUser, deleteUser, changeUserPassword, getAllUsers,
 } from './User';
 import {
-  addCourse, addModuleItem, addSubmodule, addTeacher, changeDescription, changeName, deleteModule, deleteSubmodule,
+  addCourse, addSubmodule, addTeacher, changeDescription, changeName, deleteModule, deleteSubmodule,
   deleteTeacher, registerModule, removeCourse,
 } from './Module';
 import {
@@ -16,6 +16,7 @@ import {
   getTimeTableEntriesCourse, getTimeTableEntriesModule,
   getTimeTableEntriesPerson, insertTimetableEntry,
 } from './TimeTable';
+import { registerModuleItem } from './ModuleItem';
 
 interface JwtPayload {
   'id': number,
@@ -100,8 +101,9 @@ router.post('/module/:moduleId/deleteModule', (req: express.Request, res: expres
   deleteModule(req, res);
 });
 
+// API Calls for ModuleItem
 router.post('/module/:moduleId/addMoudulItem', (req: express.Request, res: express.Respone) => {
-  addModuleItem(req, res);
+  registerModuleItem(req, res);
 });
 
 // API Calls for Course
