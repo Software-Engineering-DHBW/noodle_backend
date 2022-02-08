@@ -8,7 +8,7 @@ import {
   deleteModule, registerModule, removeCourse, selectModule,
 } from './Module';
 import {
-  addStudent, changeCourse, deleteCourse, registerCourse, removeStudent, selectCourse,
+  changeCourse, changeStudents, deleteCourse, registerCourse, selectCourse,
 } from './Course';
 import { getGradesForStudent, insertGradeForStudent, deleteGradeForStudent } from './Grades';
 import {
@@ -122,12 +122,8 @@ router.post('/course/:courseId/delete', (req: express.Request, res: express.Resp
   deleteCourse(req, res);
 });
 
-router.post('/course/:courseId/addStudent', (req: express.Request, res: express.Response) => {
-  addStudent(req, res);
-});
-
-router.post('/course/:courseId/removeStudent', (req: express.Request, res: express.Response) => {
-  removeStudent(req, res);
+router.post('/course/:courseId/changeStudent', (req: express.Request, res: express.Response) => {
+  changeStudents(req, res);
 });
 
 // API Calls for Grades

@@ -81,10 +81,39 @@ export const registerCourse = async (req: Request, res: Response) => {
 /**
  * @exports
  * @async
+ * Adds and removes students to a course with the data given by the HTTP-Request
+ * @param {Request} req - Holds the data from the HTTP-Request
+ * @param {Response} res - Used to form the response
+ */
+export const changeStudents = async (req: Request, res: Response) => {
+  try {
+    const { courseId } = req.params;
+    const course: any = await getOneObject({ where: { id: courseId } }, Course);
+    const { students } = course;
+    const data: ChangeStudents = req.body;
+    data.students.forEach((element) => {
+      const index = students.indexOf(element);
+      if (index === -1) {
+        students.push(element);
+      } else if (index > -1) {
+        students.splice(index, 1);
+      }
+    });
+    course.students = students;
+    await saveObject(course, Course);
+    res.status(200).send('The Students have been removed');
+  } catch (_err) {
+    res.status(500).send('Students could not be removed');
+  }
+};
+/**
+ * @exports
+ * @async
  * Adds a new student to a course with the data given by the HTTP-Request
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
+/**
 export const addStudent = async (req: Request, res: Response) => {
   try {
     const { courseId } = req.params;
@@ -99,7 +128,7 @@ export const addStudent = async (req: Request, res: Response) => {
     res.status(500).send('Students could not be added');
   }
 };
-
+*/
 /**
  * @exports
  * @async
@@ -107,6 +136,7 @@ export const addStudent = async (req: Request, res: Response) => {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
+/**
 export const removeStudent = async (req: Request, res: Response) => {
   try {
     const { courseId } = req.params;
@@ -126,7 +156,7 @@ export const removeStudent = async (req: Request, res: Response) => {
     res.status(500).send('Students could not be removed');
   }
 };
-
+*/
 /**
  * @exports
  * @async
