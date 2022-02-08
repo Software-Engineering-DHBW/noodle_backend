@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getConnection, getRepository } from 'typeorm';
+import { getConnection, getRepository, Repository } from 'typeorm';
 import File from '../entity/File';
 import ModuleItem from '../entity/ModuleItem';
 import Module from '../entity/Module';
@@ -18,10 +18,10 @@ interface RegisterModuleItem {
   hasFileUpload: boolean;
   uploadedFiles?: File[];
   isVisible: boolean;
-  fileOwner: User;
-  fileName: string;
-  filePath: string;
-  fileUploadDate: Date;
+  fileOwner?: User;
+  fileName?: string;
+  filePath?: string;
+  fileUploadDate?: Date;
 }
 /**
  * Representation of the incoming data of a moduleItem

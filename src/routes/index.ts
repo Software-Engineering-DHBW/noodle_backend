@@ -110,7 +110,7 @@ router.post('/module/:moduleId/addMouduleItem', (req: express.Request, res: expr
   registerModuleItem(req, res);
 });
 
-router.post('/module/:moduleId/:moduleItemId', (req: express.Request, res: express.Respone) => {
+router.get('/module/:moduleId/:moduleItemId', (req: express.Request, res: express.Respone) => {
   selectModuleItem(req, res);
 });
 
