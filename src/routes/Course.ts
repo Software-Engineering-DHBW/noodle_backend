@@ -88,7 +88,7 @@ export const registerCourse = async (req: Request, res: Response) => {
 export const addStudent = async (req: Request, res: Response) => {
   try {
     const { courseId } = req.params;
-    const course: any = getOneObject({ where: { id: courseId } }, Course);
+    const course: any = await getOneObject({ where: { id: courseId } }, Course);
     const { students } = course;
     const data: ChangeStudents = req.body;
     students.concat(data.students);
@@ -110,7 +110,7 @@ export const addStudent = async (req: Request, res: Response) => {
 export const removeStudent = async (req: Request, res: Response) => {
   try {
     const { courseId } = req.params;
-    const course: any = getOneObject({ where: { id: courseId } }, Course);
+    const course: any = await getOneObject({ where: { id: courseId } }, Course);
     const { students } = course;
     const data: ChangeStudents = req.body;
     data.students.forEach((element) => {
@@ -157,7 +157,7 @@ export const selectCourse = async (req: Request, res: Response) => {
 export const changeCourse = async (req: Request, res: Response) => {
   try {
     const { courseId } = req.params;
-    const course: any = getOneObject({ where: { id: courseId } }, Course);
+    const course: any = await getOneObject({ where: { id: courseId } }, Course);
     const data: ChangeCourse = req.body;
     course.name = data.newName;
     await saveObject(course, Course);
@@ -177,7 +177,7 @@ export const changeCourse = async (req: Request, res: Response) => {
 export const deleteCourse = async (req: Request, res: Response) => {
   try {
     const { courseId } = req.params;
-    const course: any = getOneObject({ where: { id: courseId } }, Course);
+    const course: any = await getOneObject({ where: { id: courseId } }, Course);
     await deleteObjects(course, Course);
     res.status(200).send('The Course has been deleted');
   } catch (_err) {

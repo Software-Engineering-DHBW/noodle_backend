@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getConnection } from 'typeorm';
+import { getConnection, getRepository } from 'typeorm';
 import File from '../entity/File';
 import ModuleItem from '../entity/ModuleItem';
 import Module from '../entity/Module';
@@ -89,6 +89,7 @@ const saveNewModuleItem = async (newModuleItem:ModuleItem, res: Response, newFil
       await queryRunner.manager.save(newFile);
     }
     await queryRunner.commitTransaction();
+    console.log(newModuleItem.id);
     res.sendStatus(200);
   } catch (_err) {
     await queryRunner.rollbackTransaction();
@@ -123,13 +124,24 @@ export const selectModuleItem = async (req:Request, res:Response) => {
   try {
     // const { moduleId } = req.params;
     const { moduleItemId } = req.params;
-    const moduleItem = await getObjects({
-      select: ['module.name', 'content', 'webLink', 'downloadableFile.name', 'hasFileUpload', 'uploadedFiles.name', 'isVisible'],
-      relations: ['moduleItem', 'module', 'file'],
-      where: { id: moduleItemId },
-    }, ModuleItem);
+    // const moduleItem = await getObjects({
+    //   select: ['module.name', 'content', 'webLink', 'downloadableFile.name', 'hasFileUpload', 'uploadedFiles.name', 'isVisible'],
+    //   where: { id: moduleItemId },
+    //   relations: ['moduleItem', 'moduleItem.moduleId', 'file'],
+    // }, ModuleItem);
+    const moduleItem: ModuleItem = await getRepository(ModuleItem)
+      .createQueryBuilder('')
+      .select([
+        'ModuleItem.content',
+        'ModuleItem.webLink',
+        'ModuleItem.hasFileUpload',
+        'ModuleItem.isVisible',
+      ])
+      .where('ModuleItem.id', moduleItemId)
+      .getOne();
     res.status(200).send(moduleItem);
   } catch (_err) {
+    console.log(_err);
     res.status(500).send('blöd');
   }
 };

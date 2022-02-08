@@ -5,7 +5,7 @@ import {
 } from './User';
 import {
   addCourse, addSubmodule, addTeacher, changeDescription, changeName, deleteModule, deleteSubmodule,
-  deleteTeacher, registerModule, removeCourse,
+  deleteTeacher, registerModule, removeCourse, selectModule,
 } from './Module';
 import {
   addStudent, changeCourse, deleteCourse, registerCourse, removeStudent, selectCourse,
@@ -16,7 +16,7 @@ import {
   getTimeTableEntriesCourse, getTimeTableEntriesModule,
   getTimeTableEntriesPerson, insertTimetableEntry,
 } from './TimeTable';
-import { registerModuleItem } from './ModuleItem';
+import { registerModuleItem, selectModuleItem } from './ModuleItem';
 
 interface JwtPayload {
   'id': number,
@@ -101,9 +101,17 @@ router.post('/module/:moduleId/deleteModule', (req: express.Request, res: expres
   deleteModule(req, res);
 });
 
+router.get('/module/:moduleId', (req: express.Request, res: express.Respone) => {
+  selectModule(req, res);
+});
+
 // API Calls for ModuleItem
-router.post('/module/:moduleId/addMoudulItem', (req: express.Request, res: express.Respone) => {
+router.post('/module/:moduleId/addMouduleItem', (req: express.Request, res: express.Respone) => {
   registerModuleItem(req, res);
+});
+
+router.post('/module/:moduleId/:moduleItemId', (req: express.Request, res: express.Respone) => {
+  selectModuleItem(req, res);
 });
 
 // API Calls for Course

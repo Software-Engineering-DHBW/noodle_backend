@@ -76,7 +76,7 @@ const saveNewModule = async (newModule: Module, res: Response): Promise<void> =>
   try {
     await queryRunner.manager.save(newModule);
     await queryRunner.commitTransaction();
-
+    console.log(newModule.id);
     res.sendStatus(200);
   } catch (_err) {
     await queryRunner.rollbackTransaction();
@@ -106,7 +106,7 @@ export const registerModule = (req: Request, res: Response) => {
 export const deleteModule = async (req: Request, res: Response) => {
   try {
     const { moduleId } = req.params;
-    const module: any = getOneObject({ where: { id: moduleId } }, Module);
+    const module: any = await getOneObject({ where: { id: moduleId } }, Module);
     await deleteObjects(module, Module);
     res.status(200).send('The Module has been deleted');
   } catch (_err) {
@@ -128,7 +128,7 @@ export const addTeacher = async (req: Request, res: Response) => {
     if (data.teacher == null) {
       throw new Error();
     }
-    const module: any = getOneObject({ where: { id: moduleId } }, Module);
+    const module: any = await getOneObject({ where: { id: moduleId } }, Module);
     const teacher: User[] = module.assignedTeacher;
     teacher.concat(data.teacher);
     module.assignedTeacher = teacher;
@@ -153,7 +153,7 @@ export const deleteTeacher = async (req: Request, res: Response) => {
     if (data.teacher == null) {
       throw new Error();
     }
-    const module: any = getOneObject({ where: { id: moduleId } }, Module);
+    const module: any = await getOneObject({ where: { id: moduleId } }, Module);
     const teacher: User[] = module.assignedTeacher;
     data.teacher.forEach((element) => {
       const index = teacher.indexOf(element);
@@ -183,7 +183,7 @@ export const addCourse = async (req: Request, res: Response) => {
     if (data.course == null) {
       throw new Error();
     }
-    const module: any = getOneObject({ where: { id: moduleId } }, Module);
+    const module: any = await getOneObject({ where: { id: moduleId } }, Module);
     module.assignedCourse = data.course;
     await saveObject(module, Module);
     res.status(200).send('The Course has been added');
@@ -202,7 +202,7 @@ export const addCourse = async (req: Request, res: Response) => {
 export const removeCourse = async (req: Request, res: Response) => {
   try {
     const { moduleId } = req.params;
-    const module: any = getOneObject({ where: { id: moduleId } }, Module);
+    const module: any = await getOneObject({ where: { id: moduleId } }, Module);
     module.assignedCourse = null;
     await saveObject(module, Module);
     res.status(200).send('The Course has been deleted');
@@ -222,12 +222,12 @@ export const changeDescription = async (req: Request, res: Response) => {
   try {
     const { moduleId } = req.params;
     const data: ChangeString = req.body;
-    const module: any = getOneObject({ where: { id: moduleId } }, Module);
+    const module: any = await getOneObject({ where: { id: moduleId } }, Module);
     module.description = data.description;
     await saveObject(module, Module);
     res.status(200).send('The Description has been changed');
   } catch (_err) {
-    res.send(500).send('Description could not be changed');
+    res.status(500).send('Description could not be changed');
   }
 };
 
@@ -245,7 +245,7 @@ export const addSubmodule = async (req: Request, res: Response) => {
     if (data.submodule == null) {
       throw new Error();
     }
-    const module: any = getOneObject({ where: { id: moduleId } }, Module);
+    const module: any = await getOneObject({ where: { id: moduleId } }, Module);
     const { submodule } = module;
     submodule.concat(data.submodule);
     module.submodule = submodule;
@@ -270,7 +270,7 @@ export const deleteSubmodule = async (req: Request, res: Response) => {
     if (data.submodule == null) {
       throw new Error();
     }
-    const module: any = getOneObject({ where: { id: moduleId } }, Module);
+    const module: any = await getOneObject({ where: { id: moduleId } }, Module);
     const { submodule } = module;
     data.submodule.forEach((element) => {
       const index = submodule.indexOf(element);
@@ -299,12 +299,12 @@ export const changeName = async (req: Request, res: Response) => {
     if (data.name == null) {
       throw new Error();
     }
-    const module: any = getOneObject({ where: { id: moduleId } }, Module);
+    const module: any = await getOneObject({ where: { id: moduleId } }, Module);
     module.name = data.name;
     await saveObject(module, Module);
     res.status(200).send('The Name has been changed');
   } catch (_err) {
-    res.send(500).send('Name could not be changed');
+    res.status(500).send('Name could not be changed');
   }
 };
 /**
