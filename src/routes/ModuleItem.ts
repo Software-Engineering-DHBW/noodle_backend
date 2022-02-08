@@ -4,12 +4,13 @@ import File from '../entity/File';
 import ModuleItem from '../entity/ModuleItem';
 import Module from '../entity/Module';
 import User from '../entity/User';
+import { getObjects } from './Manager';
 
 /**
  * Representation of the incoming data of a moduleItem
  * @interface
  */
-export interface RegisterModuleItem {
+interface RegisterModuleItem {
   moduleId?: Module;
   content?: string;
   webLink?: string;
@@ -21,6 +22,23 @@ export interface RegisterModuleItem {
   fileName: string;
   filePath: string;
   fileUploadDate: Date;
+}
+/**
+ * Representation of the incoming data of a moduleItem
+ * @interface
+ */
+interface ChangeModuleItem {
+  content?: string;
+  webLink?: string;
+  hasFileUpload?: boolean;
+  isVisible?: boolean;
+}
+/**
+ * Representation of the incoming data of a moduleItem
+ * @interface
+ */
+interface ChangeDownloadableFile {
+  downloadableFile: File;
 }
 
 /**
@@ -92,21 +110,36 @@ export const registerModuleItem = (req: Request, res: Response) => {
 
 // link, content, visibility, hasfileupload
 export const changeModuleItem = (req: Request, res: Response) => {
-
+  const data: ChangeModuleItem = req.body;
+  const { moduleId } = req.params;
 };
 // löschen komplett
-export const deleteModuleITem = (req:Request, res:Response) => {
-
+export const deleteModuleItem = (req:Request, res:Response) => {
+  const { moduleItemId } = req.params;
+  const { moduleId } = req.params;
 };
 // alles auflisten
-export const selectModuleItem = (req:Request, res:Response) => {
-
+export const selectModuleItem = async (req:Request, res:Response) => {
+  try {
+    // const { moduleId } = req.params;
+    const { moduleItemId } = req.params;
+    const moduleItem = await getObjects({
+      select: ['module.name', 'content', 'webLink', 'downloadableFile.name', 'hasFileUpload', 'uploadedFiles.name', 'isVisible'],
+      relations: ['moduleItem', 'module', 'file'],
+      where: { id: moduleItemId },
+    }, ModuleItem);
+    res.status(200).send(moduleItem);
+  } catch (_err) {
+    res.status(500).send('blöd');
+  }
 };
 // downloadfile hinzufügen
 export const addDownloadFile = (req:Request, res:Response) => {
-
+  const data = req.body;
+  const { moduleId } = req.params;
 };
 // downloadfile löschen
 export const removeDownloadFile = (req:Request, res:Response) => {
-
+  const data = req.body;
+  const { moduleId } = req.params;
 };
