@@ -6,6 +6,7 @@ import {
 import * as express from 'express';
 import * as crypto from 'crypto';
 import * as argon2 from 'argon2';
+import rateLimit from 'express-rate-limit';
 import router from './routes/index';
 import User from './entity/User';
 import UserDetail from './entity/UserDetail';
@@ -46,39 +47,6 @@ if (args[0] === 'init') {
   initDatabase(ormOptions);
 } else {
   createConnection(ormOptions).then(async () => {
-  /* Just for demonstrating purposes, can be removed after understanding the code
-    //Add test-user to user
-      console.log("Inserting a new user into the database...");
-      const user = new User();
-      user.username = "Test";
-      user.password = await argon2.hash("Test");
-      await connection.manager.save(user);
-      console.log("Saved a new user with id: " + user.id);
-    }
-
-    //Add test-user to userDetails
-    console.log("Loading users from the database...");
-    const users = await connection.manager.findOne(User);
-    console.log("Loaded users: ", users);
-
-    const testUserDetail = await connection.manager.findOne(UserDetail, { where: {user_id: users}});
-    if (!testUserDetail) {
-      const testUserDetail = new UserDetail();
-      testUserDetail.user_id = users;
-      testUserDetail.fullname = "Test Test";
-      testUserDetail.address = "Test";
-      testUserDetail.matriculation_number = "12345";
-      testUserDetail.mail = "test@test.com";
-      await connection.manager.save(testUserDetail)
-    }
-
-    console.log("Loading users from the database...");
-    const usersDetail = await connection.manager.findOne(UserDetail, {relations: ["user_id"]});
-    console.log("Loaded users: ", usersDetail);
-
-    console.log("Here you can setup and run express/koa/any other framework.");
-    */
-
     if (process.env.NODE_ENV === 'production') {
       process.env.jwtSignatureKey = crypto.randomBytes(64).toString('base64url');
     } else {
@@ -86,6 +54,14 @@ if (args[0] === 'init') {
     }
     const app: express.Application = express();
     app.use(express.json());
+
+    const loginLimiter = rateLimit({
+      windowMs: 15 * 60 * 1000,
+      max: 100,
+      standardHeaders: true,
+      legacyHeaders: true,
+    });
+    app.use('/user/login', loginLimiter);
     app.use(router);
 
     app.listen(3000);

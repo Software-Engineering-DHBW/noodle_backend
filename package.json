@@ -2,7 +2,7 @@
   "name": "@software-engineering-dhbw/noodle_backend",
   "version": "0.0.1",
   "description": "Awesome project developed with TypeORM.",
-  "main":"build/index.js",
+  "main": "build/index.js",
   "bin": {
     "noodleBackend": "./build/index.js"
   },
@@ -31,6 +31,7 @@
   "dependencies": {
     "argon2": "^0.28.3",
     "express": "^4.17.2",
+    "express-rate-limit": "^6.2.0",
     "jsonwebtoken": "^8.5.1",
     "pg": "^8.4.0",
     "reflect-metadata": "^0.1.10",
