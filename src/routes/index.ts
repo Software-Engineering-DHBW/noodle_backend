@@ -4,8 +4,8 @@ import {
   registerUser, loginUser, deleteUser, changeUserPassword, getAllUsers,
 } from './User';
 import {
-  addCourse, addSubmodule, addTeacher, changeDescription, changeName, deleteModule, deleteSubmodule,
-  deleteTeacher, registerModule, removeCourse, selectModule,
+  addCourse, changeSubmodule, changeTeacher, changeDescription, changeName,
+  deleteModule, registerModule, removeCourse, selectModule,
 } from './Module';
 import {
   addStudent, changeCourse, deleteCourse, registerCourse, removeStudent, selectCourse,
@@ -69,12 +69,8 @@ router.post('/module/:moduleId/changeName', (req: express.Request, res: express.
   changeName(req, res);
 });
 
-router.post('/module/:moduleId/deleteSubmodule', (req: express.Request, res: express.Respone) => {
-  deleteSubmodule(req, res);
-});
-
-router.post('/module/:moduleId/addSubmodule', (req: express.Request, res: express.Respone) => {
-  addSubmodule(req, res);
+router.post('/module/:moduleId/changeSubmodule', (req: express.Request, res: express.Respone) => {
+  changeSubmodule(req, res);
 });
 
 router.post('/module/:moduleId/changeDescription', (req: express.Request, res: express.Respone) => {
@@ -89,14 +85,9 @@ router.post('/module/:moduleId/addCourse', (req: express.Request, res: express.R
   addCourse(req, res);
 });
 
-router.post('/module/:moduleId/deleteTeacher', (req: express.Request, res: express.Respone) => {
-  deleteTeacher(req, res);
+router.post('/module/:moduleId/changeTeacher', (req: express.Request, res: express.Respone) => {
+  changeTeacher(req, res);
 });
-
-router.post('/module/:moduleId/addTeacher', (req: express.Request, res: express.Respone) => {
-  addTeacher(req, res);
-});
-
 router.post('/module/:moduleId/deleteModule', (req: express.Request, res: express.Respone) => {
   deleteModule(req, res);
 });
