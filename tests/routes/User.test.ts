@@ -2,10 +2,10 @@
 import * as argon2 from 'argon2';
 import { mocked } from 'jest-mock';
 import * as jwt from 'jsonwebtoken';
-import User from '../entity/User';
-import UserDetail from '../entity/UserDetail';
-import * as manager from './Manager';
-import { changeUserPassword, deleteUser, loginUser } from './User';
+import User from '../../src/entity/User';
+import UserDetail from '../../src/entity/UserDetail';
+import * as manager from '../../src/routes/Manager';
+import { changeUserPassword, deleteUser, loginUser } from '../../src/routes/User';
 
 const mockRequest = (body) => ({
   body,
