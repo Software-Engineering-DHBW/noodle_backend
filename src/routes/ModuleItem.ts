@@ -89,7 +89,6 @@ const saveNewModuleItem = async (newModuleItem:ModuleItem, res: Response, newFil
       await queryRunner.manager.save(newFile);
     }
     await queryRunner.commitTransaction();
-    console.log(newModuleItem.id);
     res.sendStatus(200);
   } catch (_err) {
     await queryRunner.rollbackTransaction();
@@ -141,7 +140,6 @@ export const selectModuleItem = async (req:Request, res:Response) => {
       .getOne();
     res.status(200).send(moduleItem);
   } catch (_err) {
-    console.log(_err);
     res.status(500).send('blöd');
   }
 };
