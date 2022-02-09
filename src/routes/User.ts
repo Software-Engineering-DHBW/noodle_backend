@@ -4,9 +4,7 @@ import { hash, verify } from 'argon2';
 import { sign } from 'jsonwebtoken';
 import User from '../entity/User';
 import UserDetail from '../entity/UserDetail';
-import {
-  getObjects, getOneObject, deleteObjects, saveObject,
-} from './Manager';
+import { getOneObject, deleteObjects, saveObject } from './Manager';
 
 /**
  * Representation of the incoming data for removing a user
@@ -59,7 +57,7 @@ const createUser = async (data: RegisterUser): Promise<User> => {
 /**
  * Creates a new UserDetail with the given data
  * @param {RegisterUser} data - Details of the new User
- * @param {User} new_user - Already created User-Object
+ * @param {User} newUser - Already created User-Object
  * @returns {UserDetail}
  */
 const createUserDetail = (data: RegisterUser, newUser: User): UserDetail => {
@@ -78,8 +76,8 @@ const createUserDetail = (data: RegisterUser, newUser: User): UserDetail => {
  * No data is stored, if one of the objects could not be stored,
  * in this case a response with HTTP-Status 403 will be formed.
  * Forms a response with HTTP-Code 200 if the objects could be stored.
- * @param {User} new_user - New User to store
- * @param {UserDetail} new_user_detail - Details of the new user
+ * @param {User} newUser - New User to store
+ * @param {UserDetail} newUserDetail - Details of the new user
  * @param {Response} res - Response object for sending the response
  */
 const saveNewUser = async (
@@ -119,7 +117,7 @@ export const registerUser = async (req: Request, res: Response) => {
  * @async
  * Create a signed JWT with the found user and their user-details
  * @param {User} user - Selected user
- * @param {UserDetail} user_details - Details of the selected user
+ * @param {UserDetail} userDetails - Details of the selected user
  * @returns {Promise<String>} Signed JWT as string
  */
 const createLoginJwt = async (user: User, userDetails: UserDetail): Promise<string> => {
@@ -162,6 +160,7 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
 
 /**
  * @exports
+ * @async
  * Deletes the user with the given username and id
  * @param {Request} req - Received request object
  * @param {Response} res - Received response object

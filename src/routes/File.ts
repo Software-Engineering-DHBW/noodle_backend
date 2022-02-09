@@ -29,6 +29,7 @@ const createFile = (data: RegisterFile): File => {
 };
 
 /**
+ * @async
  * Saves the create File-Object inside the database.
  * No data is stored, if the object could not be stored,
  * in this case a response with HTTP-Status 403 will be formed.
@@ -50,12 +51,17 @@ const saveNewFile = async (newFile: File, res: Response): Promise<void> => {
 };
 /**
  * @exports
+ * @async
  * Registers a new File with the data given by the HTTP-Request
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
-export const registerFile = (req: Request, res: Response) => {
+export const registerFile = async (req: Request, res: Response) => {
   const data: RegisterFile = req.body;
   const newFile: File = createFile(data);
-  saveNewFile(newFile, res);
+  await saveNewFile(newFile, res);
+};
+
+export const usless = () => {
+
 };
