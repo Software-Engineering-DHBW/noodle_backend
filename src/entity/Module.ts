@@ -26,7 +26,9 @@ export default class Module {
   @JoinColumn()
     assignedCourse: Course;
 
-  @OneToMany(() => Module, (module: Module) => module.id)
+  @OneToMany(() => Module, (module: Module) => module.seniormodule, {
+    cascade: true,
+  })
     submodule: Module[];
 
   @ManyToOne(() => Module, (module: Module) => module.id)

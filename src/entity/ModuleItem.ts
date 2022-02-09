@@ -36,8 +36,9 @@ export default class ModuleItem {
   })
     hasFileUpload: boolean;
 
-  @OneToMany(() => File, (file: File) => file.id, {
+  @OneToMany(() => File, (file: File) => file.uploadedAt, {
     nullable: true,
+    cascade: true,
   })
     uploadedFiles: File[];
 

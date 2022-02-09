@@ -1,5 +1,5 @@
 import {
-  Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinColumn,
+  Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany,
 } from 'typeorm';
 import Course from './Course';
 import Module from './Module';
@@ -30,7 +30,6 @@ export default class User {
   @ManyToMany(() => Module, (module: Module) => module.id)
     teacherOfModule: Module[];
 
-  @ManyToOne(() => Course, (course: Course) => course.students)
-  @JoinColumn({ name: 'course_id' })
+  @ManyToOne(() => Course, (course: Course) => course.id)
     course: Course;
 }

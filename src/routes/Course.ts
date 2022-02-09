@@ -136,7 +136,6 @@ export const addStudent = async (req: Request, res: Response) => {
         students.push(studentsNull[index]);
       }
     });
-    // students.concat(studentList);
     course.students = students;
     await saveObject(course, Course);
     res.status(200).send('The Students have been added');
@@ -162,9 +161,7 @@ export const removeStudent = async (req: Request, res: Response) => {
     const studentList: User[] = [];
     students.forEach((element, index) => {
       const indexData = data.students.indexOf(element.id);
-      if (indexData > -1) {
-        console.log(students[index]);
-      } else if (indexData === -1) {
+      if (indexData === -1) {
         studentList.push(students[index]);
       }
     });
@@ -172,7 +169,6 @@ export const removeStudent = async (req: Request, res: Response) => {
     await saveObject(course, Course);
     res.status(200).send('The Students have been removed');
   } catch (_err) {
-    console.log(_err);
     res.status(500).send('Students could not be removed');
   }
 };
