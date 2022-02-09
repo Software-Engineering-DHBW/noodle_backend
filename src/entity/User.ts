@@ -1,5 +1,5 @@
 import {
-  Entity, PrimaryGeneratedColumn, Column, ManyToOne,
+  Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany, JoinColumn,
 } from 'typeorm';
 import Course from './Course';
 import Module from './Module';
@@ -27,9 +27,10 @@ export default class User {
   })
     isAdministrator: boolean;
 
-  @ManyToOne(() => Module, (module: Module) => module.id)
-    is_teacher: Module;
+  @ManyToMany(() => Module, (module: Module) => module.id)
+    teacherOfModule: Module[];
 
-  @ManyToOne(() => Course, (course: Course) => course.id)
+  @ManyToOne(() => Course, (course: Course) => course.students)
+  @JoinColumn({ name: 'course_id' })
     course: Course;
 }

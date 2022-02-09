@@ -13,8 +13,9 @@ export default class Course {
   })
     name: string;
 
-  @OneToMany(() => User, (user: User) => user.id, {
+  @OneToMany(() => User, (user: User) => user.course, {
     nullable: true,
+    cascade: true,
   })
     students: User[];
 }

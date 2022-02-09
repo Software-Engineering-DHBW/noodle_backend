@@ -24,7 +24,7 @@ const createFile = (data: RegisterFile): File => {
   newFile.owner = data.owner;
   newFile.name = data.name;
   newFile.path = data.path;
-  newFile.uploadDate = data.uploadDate; // can maybe changed to Date.now() or similar function
+  newFile.uploadDate = data.uploadDate;
   return newFile;
 };
 

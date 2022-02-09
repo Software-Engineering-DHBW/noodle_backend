@@ -1,5 +1,5 @@
 import {
-  Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn,
+  Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn,
 } from 'typeorm';
 import Course from './Course';
 import User from './User';
@@ -17,7 +17,7 @@ export default class Module {
   })
     description: string;
 
-  @OneToMany(() => User, (user: User) => user.id)
+  @ManyToMany(() => User, (user: User) => user.id)
     assignedTeacher: User[];
 
   @OneToOne(() => Course, {

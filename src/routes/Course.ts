@@ -34,13 +34,21 @@ interface ChangeCourse {
  * @param {GeneralCourse} data - Data of the new course
  * @returns {Course}
  */
-const createCourse = (data: GeneralCourse): Course => {
+const createCourse = async (data: GeneralCourse): Promise<Course> => {
   const newCourse = new Course();
   if (data.name == null || data.students == null) {
     throw new Error();
   }
   newCourse.name = data.name;
-  newCourse.students = data.students;
+  const studentList: User[] = [];
+  data.students.forEach(async (element) => {
+    const student: any = await getOneObject({ where: { id: element } }, User);
+    if (student.isAdministrator || student.isTeacher) {
+      console.log(`assigned student ${element} is teacher or admin`);
+    }
+    studentList.push(student);
+  });
+  newCourse.students = studentList;
   return newCourse;
 };
 /**
@@ -74,7 +82,7 @@ const saveNewCourse = async (newCourse: Course, res: Response): Promise<void> =>
  */
 export const registerCourse = async (req: Request, res: Response) => {
   const data: GeneralCourse = req.body;
-  const newCourse: Course = createCourse(data);
+  const newCourse: Course = await createCourse(data);
   await saveNewCourse(newCourse, res);
 };
 
@@ -85,6 +93,7 @@ export const registerCourse = async (req: Request, res: Response) => {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
+/**
 export const changeStudents = async (req: Request, res: Response) => {
   try {
     const { courseId } = req.params;
@@ -101,11 +110,12 @@ export const changeStudents = async (req: Request, res: Response) => {
     });
     course.students = students;
     await saveObject(course, Course);
-    res.status(200).send('The Students have been removed');
+    res.status(200).send('The Students have been changed');
   } catch (_err) {
-    res.status(500).send('Students could not be removed');
+    res.status(500).send('Students could not be changed');
   }
 };
+*/
 /**
  * @exports
  * @async
@@ -113,7 +123,6 @@ export const changeStudents = async (req: Request, res: Response) => {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
-/**
 export const addStudent = async (req: Request, res: Response) => {
   try {
     const { courseId } = req.params;
@@ -125,10 +134,11 @@ export const addStudent = async (req: Request, res: Response) => {
     await saveObject(course, Course);
     res.status(200).send('The Students have been added');
   } catch (_err) {
+    console.log(_err);
     res.status(500).send('Students could not be added');
   }
 };
-*/
+
 /**
  * @exports
  * @async
@@ -136,7 +146,6 @@ export const addStudent = async (req: Request, res: Response) => {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
-/**
 export const removeStudent = async (req: Request, res: Response) => {
   try {
     const { courseId } = req.params;
@@ -153,10 +162,11 @@ export const removeStudent = async (req: Request, res: Response) => {
     await saveObject(course, Course);
     res.status(200).send('The Students have been removed');
   } catch (_err) {
+    console.log(_err);
     res.status(500).send('Students could not be removed');
   }
 };
-*/
+
 /**
  * @exports
  * @async
