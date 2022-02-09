@@ -44,7 +44,7 @@ const createCourse = async (data: GeneralCourse): Promise<Course> => {
   data.students.forEach(async (element) => {
     const student: any = await getOneObject({ where: { id: element } }, User);
     if (student.isAdministrator || student.isTeacher) {
-      console.log(`assigned student ${element} is teacher or admin`);
+      console.log(`assigned student ${student.fullName} is teacher or admin`);
     }
     studentList.push(student);
   });
@@ -127,9 +127,16 @@ export const addStudent = async (req: Request, res: Response) => {
   try {
     const { courseId } = req.params;
     const course: any = await getOneObject({ where: { id: courseId } }, Course);
-    const { students } = course;
+    const students: any = await getObjects({ where: { course: courseId } }, User);
+    const studentsNull: any = await getObjects({ where: { course: null } }, User);
     const data: ChangeStudents = req.body;
-    students.concat(data.students);
+    studentsNull.forEach((element, index) => {
+      const indexData = data.students.indexOf(element.id);
+      if (indexData > -1) {
+        students.push(studentsNull[index]);
+      }
+    });
+    // students.concat(studentList);
     course.students = students;
     await saveObject(course, Course);
     res.status(200).send('The Students have been added');
@@ -150,15 +157,18 @@ export const removeStudent = async (req: Request, res: Response) => {
   try {
     const { courseId } = req.params;
     const course: any = await getOneObject({ where: { id: courseId } }, Course);
-    const { students } = course;
+    const students: any = await getObjects({ where: { course: courseId } }, User);
     const data: ChangeStudents = req.body;
-    data.students.forEach((element) => {
-      const index = students.indexOf(element);
-      if (index > -1) {
-        students.splice(index, 1);
+    const studentList: User[] = [];
+    students.forEach((element, index) => {
+      const indexData = data.students.indexOf(element.id);
+      if (indexData > -1) {
+        console.log(students[index]);
+      } else if (indexData === -1) {
+        studentList.push(students[index]);
       }
     });
-    course.students = students;
+    course.students = studentList;
     await saveObject(course, Course);
     res.status(200).send('The Students have been removed');
   } catch (_err) {
