@@ -16,7 +16,7 @@ import {
   getTimeTableEntriesCourse, getTimeTableEntriesModule,
   getTimeTableEntriesPerson, insertTimetableEntry,
 } from './TimeTable';
-import { checkAdministrator, checkAdministratorOrOwnUsername } from './PermissionCheck';
+import { checkAdministrator, checkAdministratorOrOwnUsername, checkAdministratorOrOwnID } from './PermissionCheck';
 
 export interface JwtPayload {
   'id': number,
@@ -133,7 +133,9 @@ router.post('/course/removeStudent', (req: express.Request, res: express.Respons
 
 // API Calls for Grades
 router.get('/grades/:studentId', (req: express.Request, res: express.Response) => {
-  getGradesForStudent(req, res);
+  req.body.id = parseInt(req.params.studentId, 10);
+  console.log(typeof (req.body.id));
+  checkAdministratorOrOwnID(req, res, getGradesForStudent);
 });
 
 router.post('/grades/insert', (req: express.Request, res: express.Response) => {
