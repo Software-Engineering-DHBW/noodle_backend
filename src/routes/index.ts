@@ -4,11 +4,11 @@ import {
   registerUser, loginUser, deleteUser, changeUserPassword, getAllUsers,
 } from './User';
 import {
-  addCourse, addSubmodule, addTeacher, changeDescription, changeName, deleteModule, deleteSubmodule,
-  deleteTeacher, registerModule, removeCourse,
+  addCourse, addSubmodule, deleteSubmodule, addTeacher, deleteTeacher, changeDescription, changeName,
+  deleteModule, registerModule, removeCourse, selectModule,
 } from './Module';
 import {
-  addStudent, changeCourse, deleteCourse, registerCourse, removeStudent, selectCourse,
+  changeCourse, addStudent, removeStudent, deleteCourse, registerCourse, selectCourse,
 } from './Course';
 import { getGradesForStudent, insertGradeForStudent, deleteGradeForStudent } from './Grades';
 import {
@@ -16,6 +16,7 @@ import {
   getTimeTableEntriesCourse, getTimeTableEntriesModule,
   getTimeTableEntriesPerson, insertTimetableEntry,
 } from './TimeTable';
+import { registerModuleItem, selectModuleItem } from './ModuleItem';
 
 interface JwtPayload {
   'id': number,
@@ -64,48 +65,61 @@ router.post('/module/register', (req: express.Request, res: express.Response) =>
   registerModule(req, res);
 });
 
-router.post('/module/changeName', (req: express.Request, res: express.Respone) => {
+router.post('/module/:moduleId/changeName', (req: express.Request, res: express.Respone) => {
   changeName(req, res);
 });
 
-router.post('/module/deleteSubmodule', (req: express.Request, res: express.Respone) => {
-  deleteSubmodule(req, res);
-});
-
-router.post('/module/addSubmodule', (req: express.Request, res: express.Respone) => {
+router.post('/module/:moduleId/addSubmodule', (req: express.Request, res: express.Respone) => {
   addSubmodule(req, res);
 });
 
-router.post('/module/changeDescription', (req: express.Request, res: express.Respone) => {
+router.post('/module/:moduleId/deleteSubmodule', (req: express.Request, res: express.Respone) => {
+  deleteSubmodule(req, res);
+});
+
+router.post('/module/:moduleId/changeDescription', (req: express.Request, res: express.Respone) => {
   changeDescription(req, res);
 });
 
-router.post('/module/removeCourse', (req: express.Request, res: express.Respone) => {
+router.post('/module/:moduleId/removeCourse', (req: express.Request, res: express.Respone) => {
   removeCourse(req, res);
 });
 
-router.post('/module/addCourse', (req: express.Request, res: express.Respone) => {
+router.post('/module/:moduleId/addCourse', (req: express.Request, res: express.Respone) => {
   addCourse(req, res);
 });
 
-router.post('/module/deleteTeacher', (req: express.Request, res: express.Respone) => {
-  deleteTeacher(req, res);
-});
-
-router.post('/module/addTeacher', (req: express.Request, res: express.Respone) => {
+router.post('/module/:moduleId/addTeacher', (req: express.Request, res: express.Respone) => {
   addTeacher(req, res);
 });
 
-router.post('/module/deleteModule', (req: express.Request, res: express.Respone) => {
+router.post('/module/:moduleId/deleteTeacher', (req: express.Request, res: express.Respone) => {
+  deleteTeacher(req, res);
+});
+
+router.post('/module/:moduleId/deleteModule', (req: express.Request, res: express.Respone) => {
   deleteModule(req, res);
 });
 
+router.get('/module/:moduleId', (req: express.Request, res: express.Respone) => {
+  selectModule(req, res);
+});
+
+// API Calls for ModuleItem
+router.post('/module/:moduleId/addMouduleItem', (req: express.Request, res: express.Respone) => {
+  registerModuleItem(req, res);
+});
+
+router.get('/module/:moduleId/:moduleItemId', (req: express.Request, res: express.Respone) => {
+  selectModuleItem(req, res);
+});
+
 // API Calls for Course
-router.get('/course/selectCourse', (req: express.Request, res: express.Response) => {
+router.get('/course/:courseId', (req: express.Request, res: express.Response) => {
   selectCourse(req, res);
 });
 
-router.post('/course/changeCourse', (req: express.Request, res: express.Response) => {
+router.post('/course/:courseId/changeCourse', (req: express.Request, res: express.Response) => {
   changeCourse(req, res);
 });
 
@@ -113,15 +127,15 @@ router.post('/course/register', (req: express.Request, res: express.Response) =>
   registerCourse(req, res);
 });
 
-router.post('/course/delete', (req: express.Request, res: express.Response) => {
+router.post('/course/:courseId/delete', (req: express.Request, res: express.Response) => {
   deleteCourse(req, res);
 });
 
-router.post('/course/addStudent', (req: express.Request, res: express.Response) => {
+router.post('/course/:courseId/addStudent', (req: express.Request, res: express.Response) => {
   addStudent(req, res);
 });
 
-router.post('/course/removeStudent', (req: express.Request, res: express.Response) => {
+router.post('/course/:courseId/removeStudent', (req: express.Request, res: express.Response) => {
   removeStudent(req, res);
 });
 

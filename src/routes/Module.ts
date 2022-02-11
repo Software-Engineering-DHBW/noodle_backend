@@ -1,36 +1,54 @@
-import { Request, Respone } from 'express';
-import { getConnection } from 'typeorm';
-import { deleteObjects, getOneObject, saveObject } from './Manager';
+import { Request, Response } from 'express';
+import {
+  getConnection, getRepository, Not,
+} from 'typeorm';
+import {
+  deleteObjects, getObjects, getOneObject, saveObject,
+} from './Manager';
 import Module from '../entity/Module';
 import Course from '../entity/Course';
 import User from '../entity/User';
-
 /**
- * Representation of the incoming data of a module Request
+ * Representation of the incoming data for adding a module
  * @interface
  */
 interface GeneralModule {
-  id?: number;
+  name: string;
+  description?: string;
+  assignedTeacher: User[];
+  assignedCourse?: Course;
+  submodule: Module[];
+}
+/**
+ * Representation of the incoming data for changing the name or description of a module
+ * @interface
+ */
+interface ChangeString {
   name?: string;
   description?: string;
-  assignedTeacher?: User[];
-  assignedCourse?: Course;
-  submodule?: Module[];
-  seniormodule?: Module;
+}
+/**
+ * Representation of the incoming data for changing the submodule of a module
+ * @interface
+ */
+interface ChangeSubmodule {
+  submodule: Module[];
+}
+/**
+ * Representation of the incoming data for changing the course of a module
+ * @interface
+ */
+ interface ChangeCourse {
+  course: Course;
+}
+/**
+ * Representation of the incoming data for changing the teacher of a module
+ * @interface
+ */
+ interface ChangeTeacher {
+  teacher: User[];
 }
 
-/**
- * Return the module with the given ID
- * @param {GeneralModule} data - Data from the Requst
- * @returns {Module}
- */
-const getModule = (data: GeneralModule): Module => {
-  if (data.id == null) {
-    throw new Error();
-  }
-  const module: any = getOneObject({ where: { id: data.id } }, Module);
-  return module;
-};
 /**
  * Creates a new Module with the given data
  * @param {GeneralModule} data - Data of the new module
@@ -40,8 +58,27 @@ const createModule = (data: GeneralModule): Module => {
   const newModule = new Module();
   newModule.name = data.name;
   newModule.description = data.description;
-  newModule.assignedTeacher = data.assignedTeacher;
-  newModule.submodule = data.submodule;
+  const teacherList: User[] = [];
+  data.assignedTeacher.forEach(async (element) => {
+    const teacher: any = await getOneObject({ where: { id: element } }, User);
+    if (!teacher.isTeacher) {
+      console.log(`Assigned User ${teacher.fullName} is not a teacher`);
+    }
+    teacherList.push(teacher);
+  });
+  console.log(teacherList);
+  newModule.assignedTeacher = teacherList;
+  if (data.submodule != null) {
+    const moduleList: Module[] = [];
+    data.submodule.forEach(async (element) => {
+      const module: any = await getOneObject({ where: { id: element } }, Module);
+      moduleList.push(module);
+    });
+    newModule.submodule = moduleList;
+  } else {
+    newModule.submodule = null;
+  }
+  newModule.assignedCourse = data.assignedCourse;
   return newModule;
 };
 
@@ -52,15 +89,14 @@ const createModule = (data: GeneralModule): Module => {
  * in this case a response with HTTP-Status 403 will be formed.
  * Forms a response with HTTP-Code 200 if the object could be stored.
  * @param {Module} newModule - New Module to store
- * @param {Respone} res - Response object for sending the response
+ * @param {Response} res - Response object for sending the response
  */
-const saveNewModule = async (newModule: Module, res: Respone): Promise<void> => {
+const saveNewModule = async (newModule: Module, res: Response): Promise<void> => {
   const queryRunner = getConnection().createQueryRunner();
   await queryRunner.startTransaction();
   try {
     await queryRunner.manager.save(newModule);
     await queryRunner.commitTransaction();
-
     res.sendStatus(200);
   } catch (_err) {
     await queryRunner.rollbackTransaction();
@@ -74,7 +110,7 @@ const saveNewModule = async (newModule: Module, res: Respone): Promise<void> => 
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res- Used to form the response
  */
-export const registerModule = (req: Request, res: Respone) => {
+export const registerModule = (req: Request, res: Response) => {
   const data: GeneralModule = req.body;
   const newModule: Module = createModule(data);
   saveNewModule(newModule, res);
@@ -87,10 +123,10 @@ export const registerModule = (req: Request, res: Respone) => {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res- Used to form the response
  */
-export const deleteModule = async (req: Request, res: Respone) => {
+export const deleteModule = async (req: Request, res: Response) => {
   try {
-    const data: GeneralModule = req.body;
-    const module: Module = getModule(data);
+    const { moduleId } = req.params;
+    const module: any = await getOneObject({ where: { id: moduleId } }, Module);
     await deleteObjects(module, Module);
     res.status(200).send('The Module has been deleted');
   } catch (_err) {
@@ -105,16 +141,24 @@ export const deleteModule = async (req: Request, res: Respone) => {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res- Used to form the response
  */
-export const addTeacher = async (req: Request, res: Respone) => {
+export const addTeacher = async (req: Request, res: Response) => {
   try {
-    const data: GeneralModule = req.body;
-    if (data.assignedTeacher == null) {
+    const { moduleId } = req.params;
+    const data: ChangeTeacher = req.body;
+    if (data.teacher == null) {
       throw new Error();
     }
-    const module: Module = getModule(data);
-    const teacher: User[] = module.assignedTeacher;
-    teacher.concat(data.assignedTeacher);
-    module.assignedTeacher = teacher;
+    const module: any = await getOneObject({ where: { id: moduleId }, relations: ['assignedTeacher'] }, Module);
+    const allTeachers: any = await getObjects({ where: { isTeacher: true } }, User);
+    const teachers = module.assignedTeacher;
+    allTeachers.forEach((element, index) => {
+      const indexData = data.teacher.indexOf(element.id);
+      const indexTeacher = teachers.indexOf(element.id);
+      if (indexData > -1 && indexTeacher === -1) {
+        teachers.push(allTeachers[index]);
+      }
+    });
+    module.assignedTeacher = teachers;
     await saveObject(module, Module);
     res.status(200).send('The Teachers have been added');
   } catch (_err) {
@@ -129,21 +173,23 @@ export const addTeacher = async (req: Request, res: Respone) => {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res- Used to form the response
  */
-export const deleteTeacher = async (req: Request, res: Respone) => {
+export const deleteTeacher = async (req: Request, res: Response) => {
   try {
-    const data: GeneralModule = req.body;
-    if (data.assignedTeacher == null) {
+    const { moduleId } = req.params;
+    const data: ChangeTeacher = req.body;
+    if (data.teacher == null) {
       throw new Error();
     }
-    const module: Module = getModule(data);
-    const teacher: User[] = module.assignedTeacher;
-    data.assignedTeacher.forEach((element) => {
-      const index = teacher.indexOf(element);
-      if (index > -1) {
-        teacher.splice(index, 1);
+    const module: any = await getOneObject({ where: { id: moduleId }, relations: ['assignedTeacher'] }, Module);
+    const teacherList: User[] = [];
+    const teachers = module.assignedTeacher;
+    teachers.forEach((element, index) => {
+      const indexData = data.teacher.indexOf(element.id);
+      if (indexData === -1) {
+        teacherList.push(teachers[index]);
       }
     });
-    module.assignedTeacher = teacher;
+    module.assignedTeacher = teacherList;
     await saveObject(module, Module);
     res.status(200).send('The Teachers have been removed');
   } catch (_err) {
@@ -158,14 +204,15 @@ export const deleteTeacher = async (req: Request, res: Respone) => {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res- Used to form the response
  */
-export const addCourse = async (req: Request, res: Respone) => {
+export const addCourse = async (req: Request, res: Response) => {
   try {
-    const data: GeneralModule = req.body;
-    if (data.assignedCourse == null) {
+    const { moduleId } = req.params;
+    const data: ChangeCourse = req.body;
+    if (data.course == null) {
       throw new Error();
     }
-    const module: Module = getModule(data);
-    module.assignedCourse = data.assignedCourse;
+    const module: any = await getOneObject({ where: { id: moduleId } }, Module);
+    module.assignedCourse = data.course;
     await saveObject(module, Module);
     res.status(200).send('The Course has been added');
   } catch (_err) {
@@ -180,10 +227,10 @@ export const addCourse = async (req: Request, res: Respone) => {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res- Used to form the response
  */
-export const removeCourse = async (req: Request, res: Respone) => {
+export const removeCourse = async (req: Request, res: Response) => {
   try {
-    const data: GeneralModule = req.body;
-    const module: Module = getModule(data);
+    const { moduleId } = req.params;
+    const module: any = await getOneObject({ where: { id: moduleId } }, Module);
     module.assignedCourse = null;
     await saveObject(module, Module);
     res.status(200).send('The Course has been deleted');
@@ -199,15 +246,16 @@ export const removeCourse = async (req: Request, res: Respone) => {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res- Used to form the response
  */
-export const changeDescription = async (req: Request, res: Respone) => {
+export const changeDescription = async (req: Request, res: Response) => {
   try {
-    const data: GeneralModule = req.body;
-    const module: Module = getModule(data);
+    const { moduleId } = req.params;
+    const data: ChangeString = req.body;
+    const module: any = await getOneObject({ where: { id: moduleId } }, Module);
     module.description = data.description;
     await saveObject(module, Module);
     res.status(200).send('The Description has been changed');
   } catch (_err) {
-    res.send(500).send('Description could not be changed');
+    res.status(500).send('Description could not be changed');
   }
 };
 
@@ -218,19 +266,29 @@ export const changeDescription = async (req: Request, res: Respone) => {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res- Used to form the response
  */
-export const addSubmodule = async (req: Request, res: Respone) => {
+export const addSubmodule = async (req: Request, res: Response) => {
   try {
-    const data: GeneralModule = req.body;
+    const { moduleId } = req.params;
+    const data: ChangeSubmodule = req.body;
     if (data.submodule == null) {
       throw new Error();
     }
-    const module: Module = getModule(data);
-    const { submodule } = module;
-    submodule.concat(data.submodule);
-    module.submodule = submodule;
+    const module: any = await getOneObject({ where: { id: moduleId } }, Module);
+    const submodules: any = await getObjects({ where: { seniormodule: moduleId } }, Module);
+    const submodulesOtherModules: any = await getObjects({ where: { seniormodule: Not(moduleId) } }, Module);
+    const submodulesNull: any = await getObjects({ where: { seniormodule: null } }, Module);
+    const submodulesAll = submodulesOtherModules.concat(submodulesNull);
+    submodulesAll.forEach((element, index) => {
+      const indexData = data.submodule.indexOf(element.id);
+      if (indexData > -1) {
+        submodules.push(submodulesAll[index]);
+      }
+    });
+    module.submodule = submodules;
     await saveObject(module, Module);
     res.status(200).send('The Submodule have been added');
   } catch (_err) {
+    console.log(_err);
     res.status(500).send('Submodule could not be added');
   }
 };
@@ -242,27 +300,30 @@ export const addSubmodule = async (req: Request, res: Respone) => {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res- Used to form the response
  */
-export const deleteSubmodule = async (req: Request, res: Respone) => {
+export const deleteSubmodule = async (req: Request, res: Response) => {
   try {
-    const data: GeneralModule = req.body;
+    const { moduleId } = req.params;
+    const data: ChangeSubmodule = req.body;
     if (data.submodule == null) {
       throw new Error();
     }
-    const module: Module = getModule(data);
-    const { submodule } = module;
-    data.submodule.forEach((element) => {
-      const index = submodule.indexOf(element);
-      if (index > -1) {
-        submodule.splice(index, 1);
+    const module: any = await getOneObject({ where: { id: moduleId } }, Module);
+    const submodules: any = await getObjects({ where: { seniormodule: moduleId } }, Module);
+    const submodulesList: Module[] = [];
+    submodules.forEach((element, index) => {
+      const indexData = data.submodule.indexOf(element.id);
+      if (indexData === -1) {
+        submodulesList.push(submodules[index]);
       }
     });
-    module.submodule = submodule;
+    module.submodule = submodulesList;
     await saveObject(module, Module);
     res.status(200).send('The Submodule have been removed');
   } catch (_err) {
     res.status(500).send('Submodule could not be removed');
   }
 };
+
 /**
  * @exports
  * @async
@@ -270,17 +331,34 @@ export const deleteSubmodule = async (req: Request, res: Respone) => {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res- Used to form the response
  */
-export const changeName = async (req: Request, res: Respone) => {
+export const changeName = async (req: Request, res: Response) => {
   try {
-    const data: GeneralModule = req.body;
+    const { moduleId } = req.params;
+    const data: ChangeString = req.body;
     if (data.name == null) {
       throw new Error();
     }
-    const module: Module = getModule(data);
+    const module: any = await getOneObject({ where: { id: moduleId } }, Module);
     module.name = data.name;
     await saveObject(module, Module);
     res.status(200).send('The Name has been changed');
   } catch (_err) {
-    res.send(500).send('Name could not be changed');
+    res.status(500).send('Name could not be changed');
+  }
+};
+/**
+ * @exports
+ * @async
+ * Returns the informations of a module
+ * @param {Request} req - Holds the data from the HTTP-Request
+ * @param {Response} req - Used to form the response
+ */
+export const selectModule = async (req: Request, res: Response) => {
+  try {
+    const { moduleId } = req.params;
+    const module: any = await getOneObject({ where: { id: moduleId }, relations: ['assignedTeacher', 'submodule'] }, Module);
+    res.status(200).send(module);
+  } catch (_err) {
+    res.status(500).send('Could not find the module');
   }
 };
