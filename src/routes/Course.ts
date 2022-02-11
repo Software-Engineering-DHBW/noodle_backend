@@ -1,52 +1,54 @@
 import { Request, Response } from 'express';
-import { getConnection } from 'typeorm';
-import { deleteObjects, getOneObject, saveObject } from './Manager';
+import { getConnection, Not } from 'typeorm';
+import {
+  deleteObjects, getOneObject, saveObject, getObjects,
+} from './Manager';
 import Course from '../entity/Course';
 import User from '../entity/User';
 
 /**
- * Representation of the incoming data of a course Request
+ * Representation of the incoming data for adding a course
  * @interface
  */
 interface GeneralCourse {
-  id?: number;
   name?: string;
   students?: User[];
 }
 /**
- * Representation of the incoming data for changing a course
+ * Representation of the incoming data for changing the students of a course
  * @interface
  */
-interface ChangeCourse extends GeneralCourse {
+ interface ChangeStudents {
+  students: User[];
+}
+/**
+ * Representation of the incoming data for changing the name of a course
+ * @interface
+ */
+interface ChangeCourse {
   newName: string;
 }
 
-/**
- * Return the course with the given ID or name
- * @param {GeneralCourse} data - Data from the Requst
- * @returns {Course}
- */
-const getCourse = (data: GeneralCourse): Course => {
-  if (data.id == null && data.name == null) {
-    throw new Error();
-  }
-  const course: any = data.id
-    ? getOneObject({ where: { id: data.id } }, Course)
-    : getOneObject({ where: { name: data.name } }, Course);
-  return course;
-};
 /**
  * Creates a new Course with the given data
  * @param {GeneralCourse} data - Data of the new course
  * @returns {Course}
  */
-const createCourse = (data: GeneralCourse): Course => {
+const createCourse = async (data: GeneralCourse): Promise<Course> => {
   const newCourse = new Course();
   if (data.name == null || data.students == null) {
     throw new Error();
   }
   newCourse.name = data.name;
-  newCourse.students = data.students;
+  const studentList: User[] = [];
+  data.students.forEach(async (element) => {
+    const student: any = await getOneObject({ where: { id: element } }, User);
+    if (student.isAdministrator || student.isTeacher) {
+      console.log(`assigned student ${student.fullName} is teacher or admin`);
+    }
+    studentList.push(student);
+  });
+  newCourse.students = studentList;
   return newCourse;
 };
 /**
@@ -80,7 +82,7 @@ const saveNewCourse = async (newCourse: Course, res: Response): Promise<void> =>
  */
 export const registerCourse = async (req: Request, res: Response) => {
   const data: GeneralCourse = req.body;
-  const newCourse: Course = createCourse(data);
+  const newCourse: Course = await createCourse(data);
   await saveNewCourse(newCourse, res);
 };
 
@@ -93,10 +95,17 @@ export const registerCourse = async (req: Request, res: Response) => {
  */
 export const addStudent = async (req: Request, res: Response) => {
   try {
-    const data: GeneralCourse = req.body;
-    const course: Course = getCourse(data);
-    const { students } = course;
-    students.concat(data.students);
+    const { courseId } = req.params;
+    const course: any = await getOneObject({ where: { id: courseId } }, Course);
+    const students: any = await getObjects({ where: { course: courseId } }, User);
+    const otherStudents: any = await getObjects({ where: [{ course: Not(courseId) }, { course: null }] }, User);
+    const data: ChangeStudents = req.body;
+    otherStudents.forEach((element, index) => {
+      const indexData = data.students.indexOf(element.id);
+      if (indexData > -1) {
+        students.push(otherStudents[index]);
+      }
+    });
     course.students = students;
     await saveObject(course, Course);
     res.status(200).send('The Students have been added');
@@ -114,16 +123,18 @@ export const addStudent = async (req: Request, res: Response) => {
  */
 export const removeStudent = async (req: Request, res: Response) => {
   try {
-    const data: GeneralCourse = req.body;
-    const course: Course = getCourse(data);
-    const { students } = course;
-    data.students.forEach((element) => {
-      const index = students.indexOf(element);
-      if (index > -1) {
-        students.splice(index, 1);
+    const { courseId } = req.params;
+    const course: any = await getOneObject({ where: { id: courseId } }, Course);
+    const students: any = await getObjects({ where: { course: courseId } }, User);
+    const data: ChangeStudents = req.body;
+    const studentList: User[] = [];
+    students.forEach((element, index) => {
+      const indexData = data.students.indexOf(element.id);
+      if (indexData === -1) {
+        studentList.push(students[index]);
       }
     });
-    course.students = students;
+    course.students = studentList;
     await saveObject(course, Course);
     res.status(200).send('The Students have been removed');
   } catch (_err) {
@@ -140,13 +151,12 @@ export const removeStudent = async (req: Request, res: Response) => {
  */
 export const selectCourse = async (req: Request, res: Response) => {
   try {
-    const data: GeneralCourse = req.body;
-    const course: Course = getCourse(data);
-    res.status(200).json({
-      ID: course.id,
-      Name: course.name,
-      Students: course.students,
-    });
+    const { courseId } = req.params;
+    const course: any = await getObjects({
+      select: ['name', 'students'],
+      where: { courseId },
+    }, Course);
+    res.status(200).send(course);
   } catch (_err) {
     res.status(500).send('Could not find the course');
   }
@@ -161,8 +171,9 @@ export const selectCourse = async (req: Request, res: Response) => {
  */
 export const changeCourse = async (req: Request, res: Response) => {
   try {
+    const { courseId } = req.params;
+    const course: any = await getOneObject({ where: { id: courseId } }, Course);
     const data: ChangeCourse = req.body;
-    const course: Course = getCourse(data);
     course.name = data.newName;
     await saveObject(course, Course);
     res.status(200).send('The Course has been updated');
@@ -180,8 +191,8 @@ export const changeCourse = async (req: Request, res: Response) => {
  */
 export const deleteCourse = async (req: Request, res: Response) => {
   try {
-    const data: GeneralCourse = req.body;
-    const course: Course = getCourse(data);
+    const { courseId } = req.params;
+    const course: any = await getOneObject({ where: { id: courseId } }, Course);
     await deleteObjects(course, Course);
     res.status(200).send('The Course has been deleted');
   } catch (_err) {

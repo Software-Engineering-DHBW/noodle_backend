@@ -1,5 +1,5 @@
 import {
-  Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn,
+  Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn,
 } from 'typeorm';
 import Course from './Course';
 import User from './User';
@@ -12,17 +12,27 @@ export default class Module {
   @Column()
     name: string;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
     description: string;
 
-  @OneToMany(() => User, (user: User) => user.id)
+  @ManyToMany(() => User, {
+    cascade: true,
+  })
+  @JoinTable()
     assignedTeacher: User[];
 
-  @OneToOne(() => Course)
+  @ManyToOne(() => Course, (course: Course) => course.assignedModules, {
+    nullable: true,
+  })
   @JoinColumn()
     assignedCourse: Course;
 
-  @OneToMany(() => Module, (module: Module) => module.id)
+  @OneToMany(() => Module, (module: Module) => module.seniormodule, {
+    cascade: true,
+    nullable: true,
+  })
     submodule: Module[];
 
   @ManyToOne(() => Module, (module: Module) => module.id)
