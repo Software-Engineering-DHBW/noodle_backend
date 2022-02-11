@@ -136,42 +136,10 @@ export const deleteModule = async (req: Request, res: Response) => {
 /**
  * @exports
  * @async
- * Adds and removes Teachers to a Module with the data given in the HTTP-Request
- * @param {Request} req - Holds the data from the HTTP-Request
- * @param {Response} res- Used to form the response
- */
-export const changeTeacher = async (req: Request, res: Response) => {
-  try {
-    const { moduleId } = req.params;
-    const data: ChangeTeacher = req.body;
-    if (data.teacher == null) {
-      throw new Error();
-    }
-    const module: any = await getOneObject({ where: { id: moduleId } }, Module);
-    const teacher: User[] = module.assignedTeacher;
-    data.teacher.forEach((element) => {
-      const index = teacher.indexOf(element);
-      if (index === -1) {
-        teacher.push(element);
-      } else if (index > -1) {
-        teacher.splice(index, 1);
-      }
-    });
-    module.assignedTeacher = teacher;
-    await saveObject(module, Module);
-    res.status(200).send('The Teachers have been removed');
-  } catch (_err) {
-    res.status(500).send('Teachers could not be removed');
-  }
-};
-/**
- * @exports
- * @async
  * Adds a Teacher to a Module with the data given in the HTTP-Request
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res- Used to form the response
  */
-/**
 export const addTeacher = async (req: Request, res: Response) => {
   try {
     const { moduleId } = req.params;
@@ -189,7 +157,7 @@ export const addTeacher = async (req: Request, res: Response) => {
     res.status(500).send('Teachers could not be added');
   }
 };
-*/
+
 /**
  * @exports
  * @async
@@ -197,7 +165,6 @@ export const addTeacher = async (req: Request, res: Response) => {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res- Used to form the response
  */
-/**
 export const deleteTeacher = async (req: Request, res: Response) => {
   try {
     const { moduleId } = req.params;
@@ -220,7 +187,7 @@ export const deleteTeacher = async (req: Request, res: Response) => {
     res.status(500).send('Teachers could not be removed');
   }
 };
-*/
+
 /**
  * @exports
  * @async
@@ -286,42 +253,10 @@ export const changeDescription = async (req: Request, res: Response) => {
 /**
  * @exports
  * @async
- * Adds and removes a Submodule to a Module with the data given in the HTTP-Request
- * @param {Request} req - Holds the data from the HTTP-Request
- * @param {Response} res- Used to form the response
- */
-export const changeSubmodule = async (req: Request, res: Response) => {
-  try {
-    const { moduleId } = req.params;
-    const data: ChangeSubmodule = req.body;
-    if (data.submodule == null) {
-      throw new Error();
-    }
-    const module: any = await getOneObject({ where: { id: moduleId } }, Module);
-    const { submodule } = module;
-    data.submodule.forEach((element) => {
-      const index = submodule.indexOf(element);
-      if (index === -1) {
-        submodule.push(element);
-      } else if (index > -1) {
-        submodule.splice(index, 1);
-      }
-    });
-    module.submodule = submodule;
-    await saveObject(module, Module);
-    res.status(200).send('The Submodules have been changed');
-  } catch (_err) {
-    res.status(500).send('Submodules could not be changed');
-  }
-};
-/**
- * @exports
- * @async
  * Adds a Submodule to a Module with the data given in the HTTP-Request
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res- Used to form the response
  */
-/**
 export const addSubmodule = async (req: Request, res: Response) => {
   try {
     const { moduleId } = req.params;
@@ -339,7 +274,7 @@ export const addSubmodule = async (req: Request, res: Response) => {
     res.status(500).send('Submodule could not be added');
   }
 };
-*/
+
 /**
  * @exports
  * @async
@@ -347,7 +282,6 @@ export const addSubmodule = async (req: Request, res: Response) => {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res- Used to form the response
  */
-/**
 export const deleteSubmodule = async (req: Request, res: Response) => {
   try {
     const { moduleId } = req.params;
@@ -370,7 +304,7 @@ export const deleteSubmodule = async (req: Request, res: Response) => {
     res.status(500).send('Submodule could not be removed');
   }
 };
-*/
+
 /**
  * @exports
  * @async
