@@ -1,5 +1,5 @@
 import {
-  Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn,
+  Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn,
 } from 'typeorm';
 import Course from './Course';
 import User from './User';
@@ -17,10 +17,11 @@ export default class Module {
   })
     description: string;
 
-  @ManyToMany(() => User, (user: User) => user.id)
+  @ManyToMany(() => User)
+  @JoinTable()
     assignedTeacher: User[];
 
-  @OneToOne(() => Course, {
+  @ManyToOne(() => Course, (course: Course) => course.assignedModules, {
     nullable: true,
   })
   @JoinColumn()
@@ -28,6 +29,7 @@ export default class Module {
 
   @OneToMany(() => Module, (module: Module) => module.seniormodule, {
     cascade: true,
+    nullable: true,
   })
     submodule: Module[];
 

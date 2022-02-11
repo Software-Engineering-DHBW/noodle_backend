@@ -1,8 +1,7 @@
 import {
-  Entity, PrimaryGeneratedColumn, Column, ManyToOne, ManyToMany,
+  Entity, PrimaryGeneratedColumn, Column, ManyToOne,
 } from 'typeorm';
 import Course from './Course';
-import Module from './Module';
 
 @Entity()
 export default class User {
@@ -26,9 +25,6 @@ export default class User {
     default: false,
   })
     isAdministrator: boolean;
-
-  @ManyToMany(() => Module, (module: Module) => module.id)
-    teacherOfModule: Module[];
 
   @ManyToOne(() => Course, (course: Course) => course.id)
     course: Course;

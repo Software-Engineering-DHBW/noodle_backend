@@ -56,8 +56,27 @@ const createModule = (data: GeneralModule): Module => {
   const newModule = new Module();
   newModule.name = data.name;
   newModule.description = data.description;
-  newModule.assignedTeacher = data.assignedTeacher;
-  newModule.submodule = data.submodule;
+  const teacherList: User[] = [];
+  data.assignedTeacher.forEach(async (element) => {
+    const teacher: any = await getOneObject({ where: { id: element } }, User);
+    if (!teacher.isTeacher) {
+      console.log(`Assigned User ${teacher.fullName} is not a teacher`);
+    }
+    teacherList.push(teacher);
+  });
+  console.log(teacherList);
+  newModule.assignedTeacher = teacherList;
+  if (data.submodule != null) {
+    const moduleList: Module[] = [];
+    data.submodule.forEach(async (element) => {
+      const module: any = await getOneObject({ where: { id: element } }, Module);
+      moduleList.push(module);
+    });
+    newModule.submodule = moduleList;
+  } else {
+    newModule.submodule = null;
+  }
+  newModule.assignedCourse = data.assignedCourse;
   return newModule;
 };
 
@@ -78,6 +97,7 @@ const saveNewModule = async (newModule: Module, res: Response): Promise<void> =>
     await queryRunner.commitTransaction();
     res.sendStatus(200);
   } catch (_err) {
+    console.log(_err);
     await queryRunner.rollbackTransaction();
     res.sendStatus(403);
   }
