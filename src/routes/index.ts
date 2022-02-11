@@ -16,15 +16,21 @@ import {
   getTimeTableEntriesCourse, getTimeTableEntriesModule,
   getTimeTableEntriesPerson, insertTimetableEntry,
 } from './TimeTable';
+import { checkAdministrator, checkAdministratorOrOwnUsername, checkAdministratorOrOwnID } from './PermissionCheck';
 import { registerModuleItem, selectModuleItem } from './ModuleItem';
 
-interface JwtPayload {
+export interface JwtPayload {
   'id': number,
   'username': string,
   'fullName': string,
   'role': string,
   'exp': number
 }
+
+const administratorRole = 'administrator';
+const teacherRole = 'teacher';
+const studentRole = 'student';
+
 const router: express.Router = express.Router();
 
 router.use((req: express.Request, res: express.Response, next: express.Next) => {
@@ -41,7 +47,7 @@ router.use((req: express.Request, res: express.Response, next: express.Next) => 
 
 // API Calls for User
 router.post('/user/register', (req: express.Request, res: express.Response) => {
-  registerUser(req, res);
+  checkAdministrator(req, res, registerUser);
 });
 
 router.post('/user/login', (req: express.Request, res: express.Response) => {
@@ -49,15 +55,15 @@ router.post('/user/login', (req: express.Request, res: express.Response) => {
 });
 
 router.post('/user/delete', (req: express.Request, res: express.Response) => {
-  deleteUser(req, res);
+  checkAdministrator(req, res, deleteUser);
 });
 
 router.post('/user/changePassword', (req: express.Request, res: express.Response) => {
-  changeUserPassword(req, res);
+  checkAdministratorOrOwnUsername(req, res, changeUserPassword);
 });
 
 router.get('/user/getAll', (req: express.Request, res: express.Response) => {
-  getAllUsers(req, res);
+  checkAdministrator(req, res, getAllUsers);
 });
 
 // API Calls for Module
@@ -141,7 +147,8 @@ router.post('/course/:courseId/removeStudent', (req: express.Request, res: expre
 
 // API Calls for Grades
 router.get('/grades/:studentId', (req: express.Request, res: express.Response) => {
-  getGradesForStudent(req, res);
+  req.body.id = parseInt(req.params.studentId, 10);
+  checkAdministratorOrOwnID(req, res, getGradesForStudent);
 });
 
 router.post('/grades/insert', (req: express.Request, res: express.Response) => {
