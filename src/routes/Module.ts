@@ -358,12 +358,10 @@ export const changeName = async (req: Request, res: Response) => {
 export const selectModule = async (req: Request, res: Response) => {
   try {
     const { moduleId } = req.params;
-    const module = await getObjects({
-      select: ['name', 'description', 'assignedTeacher', 'assignedCourse', 'submodule'],
-      where: { id: moduleId },
-    }, Module);
+    const module: any = await getOneObject({ where: { id: moduleId }, relations: ['assignedTeacher', 'submodule'] }, Module);
     res.status(200).send(module);
   } catch (_err) {
+    console.log(_err);
     res.status(500).send('Could not find the module');
   }
 };
