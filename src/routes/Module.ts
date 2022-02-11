@@ -99,7 +99,6 @@ const saveNewModule = async (newModule: Module, res: Response): Promise<void> =>
     await queryRunner.commitTransaction();
     res.sendStatus(200);
   } catch (_err) {
-    console.log(_err);
     await queryRunner.rollbackTransaction();
     res.sendStatus(403);
   }
@@ -321,7 +320,6 @@ export const deleteSubmodule = async (req: Request, res: Response) => {
     await saveObject(module, Module);
     res.status(200).send('The Submodule have been removed');
   } catch (_err) {
-    console.log(_err);
     res.status(500).send('Submodule could not be removed');
   }
 };
@@ -361,7 +359,6 @@ export const selectModule = async (req: Request, res: Response) => {
     const module: any = await getOneObject({ where: { id: moduleId }, relations: ['assignedTeacher', 'submodule'] }, Module);
     res.status(200).send(module);
   } catch (_err) {
-    console.log(_err);
     res.status(500).send('Could not find the module');
   }
 };
