@@ -93,7 +93,7 @@ router.post('/module/:moduleId/addTeacher', (req: express.Request, res: express.
   addTeacher(req, res);
 });
 
-router.post('/module/:moduleId/addTeacher', (req: express.Request, res: express.Respone) => {
+router.post('/module/:moduleId/deleteTeacher', (req: express.Request, res: express.Respone) => {
   deleteTeacher(req, res);
 });
 

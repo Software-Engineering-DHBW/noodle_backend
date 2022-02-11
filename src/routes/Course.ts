@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getConnection } from 'typeorm';
+import { getConnection, Not } from 'typeorm';
 import {
   deleteObjects, getOneObject, saveObject, getObjects,
 } from './Manager';
@@ -89,36 +89,6 @@ export const registerCourse = async (req: Request, res: Response) => {
 /**
  * @exports
  * @async
- * Adds and removes students to a course with the data given by the HTTP-Request
- * @param {Request} req - Holds the data from the HTTP-Request
- * @param {Response} res - Used to form the response
- */
-/**
-export const changeStudents = async (req: Request, res: Response) => {
-  try {
-    const { courseId } = req.params;
-    const course: any = await getOneObject({ where: { id: courseId } }, Course);
-    const { students } = course;
-    const data: ChangeStudents = req.body;
-    data.students.forEach((element) => {
-      const index = students.indexOf(element);
-      if (index === -1) {
-        students.push(element);
-      } else if (index > -1) {
-        students.splice(index, 1);
-      }
-    });
-    course.students = students;
-    await saveObject(course, Course);
-    res.status(200).send('The Students have been changed');
-  } catch (_err) {
-    res.status(500).send('Students could not be changed');
-  }
-};
-*/
-/**
- * @exports
- * @async
  * Adds a new student to a course with the data given by the HTTP-Request
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
@@ -128,19 +98,20 @@ export const addStudent = async (req: Request, res: Response) => {
     const { courseId } = req.params;
     const course: any = await getOneObject({ where: { id: courseId } }, Course);
     const students: any = await getObjects({ where: { course: courseId } }, User);
+    const studentsOtherCourse: any = await getObjects({ where: { course: Not(courseId) } }, User);
     const studentsNull: any = await getObjects({ where: { course: null } }, User);
+    const studentsAll = studentsOtherCourse.concat(studentsNull);
     const data: ChangeStudents = req.body;
-    studentsNull.forEach((element, index) => {
+    studentsAll.forEach((element, index) => {
       const indexData = data.students.indexOf(element.id);
       if (indexData > -1) {
-        students.push(studentsNull[index]);
+        students.push(studentsAll[index]);
       }
     });
     course.students = students;
     await saveObject(course, Course);
     res.status(200).send('The Students have been added');
   } catch (_err) {
-    console.log(_err);
     res.status(500).send('Students could not be added');
   }
 };

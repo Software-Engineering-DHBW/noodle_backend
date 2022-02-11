@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getConnection } from 'typeorm';
+import { getConnection, Not } from 'typeorm';
 import {
   deleteObjects, getObjects, getOneObject, saveObject,
 } from './Manager';
@@ -154,6 +154,7 @@ export const addTeacher = async (req: Request, res: Response) => {
     await saveObject(module, Module);
     res.status(200).send('The Teachers have been added');
   } catch (_err) {
+    console.log(_err);
     res.status(500).send('Teachers could not be added');
   }
 };
@@ -184,6 +185,7 @@ export const deleteTeacher = async (req: Request, res: Response) => {
     await saveObject(module, Module);
     res.status(200).send('The Teachers have been removed');
   } catch (_err) {
+    console.log(_err);
     res.status(500).send('Teachers could not be removed');
   }
 };
@@ -265,12 +267,21 @@ export const addSubmodule = async (req: Request, res: Response) => {
       throw new Error();
     }
     const module: any = await getOneObject({ where: { id: moduleId } }, Module);
-    const { submodule } = module;
-    submodule.concat(data.submodule);
-    module.submodule = submodule;
+    const submodules: any = await getObjects({ where: { seniormodule: moduleId } }, Module);
+    const submodulesOtherModules: any = await getObjects({ where: { seniormodule: Not(moduleId) } }, Module);
+    const submodulesNull: any = await getObjects({ where: { seniormodule: null } }, Module);
+    const submodulesAll = submodulesOtherModules.concat(submodulesNull);
+    submodulesAll.forEach((element, index) => {
+      const indexData = data.submodule.indexOf(element.id);
+      if (indexData > -1) {
+        submodules.push(submodulesAll[index]);
+      }
+    });
+    module.submodule = submodules;
     await saveObject(module, Module);
     res.status(200).send('The Submodule have been added');
   } catch (_err) {
+    console.log(_err);
     res.status(500).send('Submodule could not be added');
   }
 };
@@ -290,17 +301,19 @@ export const deleteSubmodule = async (req: Request, res: Response) => {
       throw new Error();
     }
     const module: any = await getOneObject({ where: { id: moduleId } }, Module);
-    const { submodule } = module;
-    data.submodule.forEach((element) => {
-      const index = submodule.indexOf(element);
-      if (index > -1) {
-        submodule.splice(index, 1);
+    const submodules: any = await getObjects({ where: { seniormodule: moduleId } }, Module);
+    const submodulesList: Module[] = [];
+    submodules.forEach((element, index) => {
+      const indexData = data.submodule.indexOf(element.id);
+      if (indexData === -1) {
+        submodulesList.push(submodules[index]);
       }
     });
-    module.submodule = submodule;
+    module.submodule = submodulesList;
     await saveObject(module, Module);
     res.status(200).send('The Submodule have been removed');
   } catch (_err) {
+    console.log(_err);
     res.status(500).send('Submodule could not be removed');
   }
 };
