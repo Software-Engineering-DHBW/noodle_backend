@@ -148,7 +148,6 @@ router.post('/course/:courseId/removeStudent', (req: express.Request, res: expre
 // API Calls for Grades
 router.get('/grades/:studentId', (req: express.Request, res: express.Response) => {
   req.body.id = parseInt(req.params.studentId, 10);
-  console.log(typeof (req.body.id));
   checkAdministratorOrOwnID(req, res, getGradesForStudent);
 });
 
