@@ -17,7 +17,9 @@ export default class Module {
   })
     description: string;
 
-  @ManyToMany(() => User)
+  @ManyToMany(() => User, {
+    cascade: true,
+  })
   @JoinTable()
     assignedTeacher: User[];
 

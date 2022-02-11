@@ -1,5 +1,7 @@
 import { Request, Response } from 'express';
-import { getConnection, Not } from 'typeorm';
+import {
+  getConnection, getRepository, Not,
+} from 'typeorm';
 import {
   deleteObjects, getObjects, getOneObject, saveObject,
 } from './Manager';
@@ -173,15 +175,20 @@ export const deleteTeacher = async (req: Request, res: Response) => {
     if (data.teacher == null) {
       throw new Error();
     }
-    const module: any = await getOneObject({ where: { id: moduleId } }, Module);
-    const teacher: User[] = module.assignedTeacher;
-    data.teacher.forEach((element) => {
-      const index = teacher.indexOf(element);
-      if (index > -1) {
-        teacher.splice(index, 1);
+    const module: any = await getOneObject({ where: { id: moduleId }, relations: ['assignedTeacher'] }, Module);
+    const teacherList: User[] = [];
+    const teachers = module.assignedTeacher;
+    teachers.forEach((element, index) => {
+      console.log('neuer durchgang');
+      console.log(`element: ${element.id}`);
+      console.log(`index: ${index}`);
+      const indexData = data.teacher.indexOf(element.id);
+      console.log(`indexData: ${indexData}`);
+      if (indexData === -1) {
+        teacherList.push(teachers[index]);
       }
     });
-    module.assignedTeacher = teacher;
+    module.assignedTeacher = teacherList;
     await saveObject(module, Module);
     res.status(200).send('The Teachers have been removed');
   } catch (_err) {
