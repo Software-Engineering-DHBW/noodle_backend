@@ -98,14 +98,12 @@ export const addStudent = async (req: Request, res: Response) => {
     const { courseId } = req.params;
     const course: any = await getOneObject({ where: { id: courseId } }, Course);
     const students: any = await getObjects({ where: { course: courseId } }, User);
-    const studentsOtherCourse: any = await getObjects({ where: { course: Not(courseId) } }, User);
-    const studentsNull: any = await getObjects({ where: { course: null } }, User);
-    const studentsAll = studentsOtherCourse.concat(studentsNull);
+    const otherStudents: any = await getObjects({ where: [{ course: Not(courseId) }, { course: null }] }, User);
     const data: ChangeStudents = req.body;
-    studentsAll.forEach((element, index) => {
+    otherStudents.forEach((element, index) => {
       const indexData = data.students.indexOf(element.id);
       if (indexData > -1) {
-        students.push(studentsAll[index]);
+        students.push(otherStudents[index]);
       }
     });
     course.students = students;

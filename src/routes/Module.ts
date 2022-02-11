@@ -149,14 +149,20 @@ export const addTeacher = async (req: Request, res: Response) => {
     if (data.teacher == null) {
       throw new Error();
     }
-    const module: any = await getOneObject({ where: { id: moduleId } }, Module);
-    const teacher: User[] = module.assignedTeacher;
-    teacher.concat(data.teacher);
-    module.assignedTeacher = teacher;
+    const module: any = await getOneObject({ where: { id: moduleId }, relations: ['assignedTeacher'] }, Module);
+    const allTeachers: any = await getObjects({ where: { isTeacher: true } }, User);
+    const teachers = module.assignedTeacher;
+    allTeachers.forEach((element, index) => {
+      const indexData = data.teacher.indexOf(element.id);
+      const indexTeacher = teachers.indexOf(element.id);
+      if (indexData > -1 && indexTeacher === -1) {
+        teachers.push(allTeachers[index]);
+      }
+    });
+    module.assignedTeacher = teachers;
     await saveObject(module, Module);
     res.status(200).send('The Teachers have been added');
   } catch (_err) {
-    console.log(_err);
     res.status(500).send('Teachers could not be added');
   }
 };
@@ -179,11 +185,7 @@ export const deleteTeacher = async (req: Request, res: Response) => {
     const teacherList: User[] = [];
     const teachers = module.assignedTeacher;
     teachers.forEach((element, index) => {
-      console.log('neuer durchgang');
-      console.log(`element: ${element.id}`);
-      console.log(`index: ${index}`);
       const indexData = data.teacher.indexOf(element.id);
-      console.log(`indexData: ${indexData}`);
       if (indexData === -1) {
         teacherList.push(teachers[index]);
       }
@@ -192,7 +194,6 @@ export const deleteTeacher = async (req: Request, res: Response) => {
     await saveObject(module, Module);
     res.status(200).send('The Teachers have been removed');
   } catch (_err) {
-    console.log(_err);
     res.status(500).send('Teachers could not be removed');
   }
 };
