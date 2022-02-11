@@ -5,10 +5,10 @@ import {
 } from './User';
 import {
   addCourse, addSubmodule, deleteSubmodule, addTeacher, deleteTeacher, changeDescription, changeName,
-  deleteModule, registerModule, removeCourse, selectModule,
+  deleteModule, registerModule, deleteCourse as removeCourse, selectModule,
 } from './Module';
 import {
-  changeCourse, addStudent, removeStudent, deleteCourse, registerCourse, selectCourse,
+  changeCourse, addStudent, deleteStudent, deleteCourse, registerCourse, selectCourse,
 } from './Course';
 import { getGradesForStudent, insertGradeForStudent, deleteGradeForStudent } from './Grades';
 import {
@@ -87,7 +87,7 @@ router.post('/module/:moduleId/changeDescription', (req: express.Request, res: e
   changeDescription(req, res);
 });
 
-router.post('/module/:moduleId/removeCourse', (req: express.Request, res: express.Respone) => {
+router.post('/module/:moduleId/deleteCourse', (req: express.Request, res: express.Respone) => {
   removeCourse(req, res);
 });
 
@@ -141,8 +141,8 @@ router.post('/course/:courseId/addStudent', (req: express.Request, res: express.
   addStudent(req, res);
 });
 
-router.post('/course/:courseId/removeStudent', (req: express.Request, res: express.Response) => {
-  removeStudent(req, res);
+router.post('/course/:courseId/deleteStudent', (req: express.Request, res: express.Response) => {
+  deleteStudent(req, res);
 });
 
 // API Calls for Grades

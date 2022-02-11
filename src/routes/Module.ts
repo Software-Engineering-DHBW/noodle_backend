@@ -38,14 +38,14 @@ interface ChangeSubmodule {
  * Representation of the incoming data for changing the course of a module
  * @interface
  */
- interface ChangeCourse {
+interface ChangeCourse {
   course: Course;
 }
 /**
  * Representation of the incoming data for changing the teacher of a module
  * @interface
  */
- interface ChangeTeacher {
+interface ChangeTeacher {
   teacher: User[];
 }
 
@@ -191,9 +191,9 @@ export const deleteTeacher = async (req: Request, res: Response) => {
     });
     module.assignedTeacher = teacherList;
     await saveObject(module, Module);
-    res.status(200).send('The Teachers have been removed');
+    res.status(200).send('The Teachers have been deleted');
   } catch (_err) {
-    res.status(500).send('Teachers could not be removed');
+    res.status(500).send('Teachers could not be deleted');
   }
 };
 
@@ -227,7 +227,7 @@ export const addCourse = async (req: Request, res: Response) => {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res- Used to form the response
  */
-export const removeCourse = async (req: Request, res: Response) => {
+export const deleteCourse = async (req: Request, res: Response) => {
   try {
     const { moduleId } = req.params;
     const module: any = await getOneObject({ where: { id: moduleId } }, Module);
@@ -318,9 +318,9 @@ export const deleteSubmodule = async (req: Request, res: Response) => {
     });
     module.submodule = submodulesList;
     await saveObject(module, Module);
-    res.status(200).send('The Submodule have been removed');
+    res.status(200).send('The Submodule have been deleted');
   } catch (_err) {
-    res.status(500).send('Submodule could not be removed');
+    res.status(500).send('Submodule could not be deleted');
   }
 };
 
