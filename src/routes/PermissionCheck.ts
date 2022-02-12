@@ -87,6 +87,10 @@ export const checkAdministratorOrModuleTeacher = async (
   next: Function,
 ) => {
   const { session } = req;
+  if (checkAdministratorRole(session)) {
+    next(req, res);
+    return;
+  }
   const { moduleId } = req.params;
   try {
     const databaseData: object = await getOneObject({

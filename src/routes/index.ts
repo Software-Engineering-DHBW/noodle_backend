@@ -70,23 +70,23 @@ router.get('/user/getAll', (req: express.Request, res: express.Response) => {
 
 // API Calls for Module
 router.post('/module/register', (req: express.Request, res: express.Response) => {
-  registerModule(req, res);
+  Permission.checkAdministrator(req, res, registerModule);
 });
 
 router.post('/module/:moduleId/changeName', (req: express.Request, res: express.Respone) => {
-  changeName(req, res);
+  Permission.checkAdministrator(req, res, changeName);
 });
 
 router.post('/module/:moduleId/addSubmodule', (req: express.Request, res: express.Respone) => {
-  addSubmodule(req, res);
+  Permission.checkAdministrator(req, res, addSubmodule);
 });
 
 router.post('/module/:moduleId/deleteSubmodule', (req: express.Request, res: express.Respone) => {
-  deleteSubmodule(req, res);
+  Permission.checkAdministrator(req, res, deleteSubmodule);
 });
 
 router.post('/module/:moduleId/changeDescription', (req: express.Request, res: express.Respone) => {
-  changeDescription(req, res);
+  Permission.checkAdministrator(req, res, changeDescription);
 });
 
 router.post('/module/:moduleId/deleteCourse', (req: express.Request, res: express.Respone) => {
@@ -94,19 +94,19 @@ router.post('/module/:moduleId/deleteCourse', (req: express.Request, res: expres
 });
 
 router.post('/module/:moduleId/addCourse', (req: express.Request, res: express.Respone) => {
-  addCourse(req, res);
+  Permission.checkAdministrator(req, res, addCourse);
 });
 
 router.post('/module/:moduleId/addTeacher', (req: express.Request, res: express.Respone) => {
-  addTeacher(req, res);
+  Permission.checkAdministrator(req, res, addTeacher);
 });
 
 router.post('/module/:moduleId/deleteTeacher', (req: express.Request, res: express.Respone) => {
-  deleteTeacher(req, res);
+  Permission.checkAdministrator(req, res, deleteTeacher);
 });
 
 router.post('/module/:moduleId/deleteModule', (req: express.Request, res: express.Respone) => {
-  deleteModule(req, res);
+  Permission.checkAdministrator(req, res, deleteModule);
 });
 
 router.get('/module/:moduleId', (req: express.Request, res: express.Respone) => {
@@ -128,23 +128,23 @@ router.get('/course/:courseId', (req: express.Request, res: express.Response) =>
 });
 
 router.post('/course/:courseId/changeCourse', (req: express.Request, res: express.Response) => {
-  changeCourse(req, res);
+  Permission.checkAdministrator(req, res, changeCourse);
 });
 
 router.post('/course/register', (req: express.Request, res: express.Response) => {
-  registerCourse(req, res);
+  Permission.checkAdministrator(req, res, registerCourse);
 });
 
 router.post('/course/:courseId/delete', (req: express.Request, res: express.Response) => {
-  deleteCourse(req, res);
+  Permission.checkAdministrator(req, res, deleteCourse);
 });
 
 router.post('/course/:courseId/addStudent', (req: express.Request, res: express.Response) => {
-  addStudent(req, res);
+  Permission.checkAdministrator(req, res, addStudent);
 });
 
 router.post('/course/:courseId/deleteStudent', (req: express.Request, res: express.Response) => {
-  deleteStudent(req, res);
+  Permission.checkAdministrator(req, res, deleteStudent);
 });
 
 // API Calls for Grades
@@ -154,22 +154,20 @@ router.get('/grades/:studentId', (req: express.Request, res: express.Response) =
 });
 
 router.get('/grades/module/:moduleId', (req: express.Request, res: express.Response) => {
-  // req.body.id = parseInt(req.params.studentId, 10);
-  // checkAdministratorOrOwnID(req, res, getGradesForStudent);
   Permission.checkAdministratorOrModuleTeacher(req, res, getGradesForModule);
 });
 
 router.post('/grades/insert', (req: express.Request, res: express.Response) => {
-  insertGradeForStudent(req, res);
+  Permission.checkAdministratorOrModuleTeacher(req, res, insertGradeForStudent);
 });
 
 router.post('/grades/delete', (req: express.Request, res: express.Response) => {
-  deleteGradeForStudent(req, res);
+  Permission.checkAdministratorOrModuleTeacher(req, res, deleteGradeForStudent);
 });
 
 // API Calls for Timetable
 router.post('/timetable/insert', (req: express.Request, res: express.Response) => {
-  insertTimetableEntry(req, res);
+  Permission.checkAdministratorOrModuleTeacher(req, res, insertTimetableEntry);
 });
 
 router.get('/timetable/getPerson', (req: express.Request, res: express.Response) => {
@@ -185,7 +183,7 @@ router.get('/timetable/getCourse/:courseId', (req: express.Request, res: express
 });
 
 router.post('/timetable/delete', (req: express.Request, res: express.Response) => {
-  deleteTimeTableEntriesModule(req, res);
+  Permission.checkAdministratorOrModuleTeacher(req, res, deleteTimeTableEntriesModule);
 });
 
 export default router;
