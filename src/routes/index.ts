@@ -10,7 +10,9 @@ import {
 import {
   changeCourse, addStudent, deleteStudent, deleteCourse, registerCourse, selectCourse,
 } from './Course';
-import { getGradesForStudent, insertGradeForStudent, deleteGradeForStudent } from './Grades';
+import {
+  getGradesForStudent, insertGradeForStudent, deleteGradeForStudent, getGradesForModule,
+} from './Grades';
 import {
   deleteTimeTableEntriesModule,
   getTimeTableEntriesCourse, getTimeTableEntriesModule,
@@ -149,6 +151,12 @@ router.post('/course/:courseId/deleteStudent', (req: express.Request, res: expre
 router.get('/grades/:studentId', (req: express.Request, res: express.Response) => {
   req.body.id = parseInt(req.params.studentId, 10);
   checkAdministratorOrOwnID(req, res, getGradesForStudent);
+});
+
+router.get('/grades/module/:moduleId', (req: express.Request, res: express.Response) => {
+  // req.body.id = parseInt(req.params.studentId, 10);
+  // checkAdministratorOrOwnID(req, res, getGradesForStudent);
+  getGradesForModule(req, res);
 });
 
 router.post('/grades/insert', (req: express.Request, res: express.Response) => {
