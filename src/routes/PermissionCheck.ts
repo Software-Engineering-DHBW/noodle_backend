@@ -1,5 +1,8 @@
 import { Request, Response } from 'express';
+import { getManager } from 'typeorm';
 import { JwtPayload } from './index';
+import Module from '../entity/Module';
+import { getOneObject } from './Manager';
 
 const forbiddenRequest = (res: Response) => {
   res.sendStatus(403);
@@ -78,7 +81,27 @@ export const checkAdministratorOrOwnID = (req: Request, res: Response, next: Fun
  * @param {Response} res - Received response object
  * @param {Function} next - Callback function
  */
-export const checkAdministratorOrModuleTeacher = (req: Request, res: Response, next: Function) => {
+export const checkAdministratorOrModuleTeacher = async (
+  req: Request,
+  res: Response,
+  next: Function,
+) => {
   const { session } = req;
-  const { moduleId } = req.body;
+  const { moduleId } = req.params;
+  try {
+    const databaseData: object = await getOneObject({
+      where: {
+        id: moduleId,
+      },
+      relations: ['assignedTeacher'],
+    }, Module);
+    const module: Module = getManager().create(Module, databaseData);
+    if (module.assignedTeacher.some((e) => e.id === session.id)) {
+      next(req, res);
+    } else {
+      forbiddenRequest(res);
+    }
+  } catch (_err) {
+    forbiddenRequest(res);
+  }
 };
