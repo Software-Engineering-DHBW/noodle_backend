@@ -18,7 +18,7 @@ interface GeneralCourse {
  * Representation of the incoming data for changing the students of a course
  * @interface
  */
- interface ChangeStudents {
+interface ChangeStudents {
   students: User[];
 }
 /**
@@ -121,7 +121,7 @@ export const addStudent = async (req: Request, res: Response) => {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
-export const removeStudent = async (req: Request, res: Response) => {
+export const deleteStudent = async (req: Request, res: Response) => {
   try {
     const { courseId } = req.params;
     const course: any = await getOneObject({ where: { id: courseId } }, Course);
@@ -136,9 +136,9 @@ export const removeStudent = async (req: Request, res: Response) => {
     });
     course.students = studentList;
     await saveObject(course, Course);
-    res.status(200).send('The Students have been removed');
+    res.status(200).send('The Students have been deleted');
   } catch (_err) {
-    res.status(500).send('Students could not be removed');
+    res.status(500).send('Students could not be deleted');
   }
 };
 

@@ -80,7 +80,7 @@ const createFile = (data: RegisterModuleItem, newModuleItem: ModuleItem): File =
  * @param {Response} res - Response object for sending the response
  * @param {File} newFile - New File to store
  */
-const saveNewModuleItem = async (newModuleItem:ModuleItem, res: Response, newFile?: File) => {
+const saveNewModuleItem = async (newModuleItem: ModuleItem, res: Response, newFile?: File) => {
   const queryRunner = getConnection().createQueryRunner();
   await queryRunner.startTransaction();
   try {
@@ -114,12 +114,12 @@ export const changeModuleItem = (req: Request, res: Response) => {
   const { moduleId } = req.params;
 };
 // löschen komplett
-export const deleteModuleItem = (req:Request, res:Response) => {
+export const deleteModuleItem = (req: Request, res: Response) => {
   const { moduleItemId } = req.params;
   const { moduleId } = req.params;
 };
 // alles auflisten
-export const selectModuleItem = async (req:Request, res:Response) => {
+export const selectModuleItem = async (req: Request, res: Response) => {
   try {
     // const { moduleId } = req.params;
     const { moduleItemId } = req.params;
@@ -144,12 +144,12 @@ export const selectModuleItem = async (req:Request, res:Response) => {
   }
 };
 // downloadfile hinzufügen
-export const addDownloadFile = (req:Request, res:Response) => {
+export const addDownloadFile = (req: Request, res: Response) => {
   const data = req.body;
   const { moduleId } = req.params;
 };
 // downloadfile löschen
-export const removeDownloadFile = (req:Request, res:Response) => {
+export const deleteDownloadFile = (req: Request, res: Response) => {
   const data = req.body;
   const { moduleId } = req.params;
 };
