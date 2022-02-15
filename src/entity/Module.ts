@@ -2,6 +2,7 @@ import {
   Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn,
 } from 'typeorm';
 import Course from './Course';
+import ModuleItem from './ModuleItem';
 import User from './User';
 
 @Entity()
@@ -37,4 +38,10 @@ export default class Module {
 
   @ManyToOne(() => Module, (module: Module) => module.id)
     seniormodule: Module;
+
+  @OneToMany(() => ModuleItem, (moduleItem: ModuleItem) => moduleItem.moduleId, {
+    // cascade: true,
+    nullable: true,
+  })
+    moduleItem: ModuleItem[];
 }

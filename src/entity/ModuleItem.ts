@@ -1,5 +1,5 @@
 import {
-  Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn,
+  Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn,
 } from 'typeorm';
 import Module from './Module';
 import File from './File';
@@ -7,43 +7,43 @@ import File from './File';
 @Entity()
 export default class ModuleItem {
   @PrimaryGeneratedColumn()
-    id: number;
+  id: number;
 
-  @OneToOne(() => Module, {
+  @ManyToOne(() => Module, (module: Module) => module.id, {
     onDelete: 'CASCADE',
   })
   @JoinColumn()
-    moduleId: Module;
+  moduleId: Module;
 
   @Column({
     nullable: true,
   })
-    content: string;
+  content: string;
 
   @Column({
     nullable: true,
   })
-    webLink: string;
+  webLink: string;
 
   @OneToOne(() => File, {
     nullable: true,
   })
   @JoinColumn()
-    downloadableFile: File;
+  downloadableFile: File;
 
   @Column({
     default: false,
   })
-    hasFileUpload: boolean;
+  hasFileUpload: boolean;
 
   @OneToMany(() => File, (file: File) => file.uploadedAt, {
     nullable: true,
     cascade: true,
   })
-    uploadedFiles: File[];
+  uploadedFiles: File[];
 
   @Column({
     default: false,
   })
-    isVisible: boolean;
+  isVisible: boolean;
 }
