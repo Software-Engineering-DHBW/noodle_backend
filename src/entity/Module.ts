@@ -38,10 +38,4 @@ export default class Module {
 
   @ManyToOne(() => Module, (module: Module) => module.id)
     seniormodule: Module;
-
-  @OneToMany(() => ModuleItem, (moduleItem: ModuleItem) => moduleItem.moduleId, {
-    // cascade: true,
-    nullable: true,
-  })
-    moduleItem: ModuleItem[];
 }
