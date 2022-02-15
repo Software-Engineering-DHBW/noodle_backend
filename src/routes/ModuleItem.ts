@@ -4,7 +4,7 @@ import File from '../entity/File';
 import ModuleItem from '../entity/ModuleItem';
 import Module from '../entity/Module';
 import User from '../entity/User';
-import { getObjects, getOneObject } from './Manager';
+import { deleteObjects, getObjects, getOneObject } from './Manager';
 
 /**
  * Representation of the incoming data of a moduleItem
@@ -114,17 +114,35 @@ export const changeModuleItem = (req: Request, res: Response) => {
   const data: ChangeModuleItem = req.body;
   const { moduleId } = req.params;
 };
-// löschen komplett
-export const deleteModuleItem = (req: Request, res: Response) => {
-  const { moduleItemId } = req.params;
-  const { moduleId } = req.params;
+// löschen ein item
+export const deleteModuleItem = async (req: Request, res: Response) => {
+  try {
+    const { moduleItemId } = req.params;
+    const { moduleId } = req.params;
+    const moduleItem: any = await getOneObject({ where: { id: moduleItemId, moduleId } }, ModuleItem);
+    await deleteObjects(moduleItem, ModuleItem);
+    res.send(200).status('The ModuleItem has been deleted');
+  } catch (_err) {
+    res.send(500).status('ModuleItem could not be deleted');
+  }
+};
+// löschen alle items
+export const deleteAllModuleItems = async (req: Request, res: Response) => {
+  try {
+    const { moduleId } = req.params;
+    const moduleItem: any = await getObjects({ where: { moduleId } }, ModuleItem);
+    await deleteObjects(moduleItem, ModuleItem);
+    res.send(200).status('The ModuleItems have been deleted');
+  } catch (_err) {
+    res.send(500).status('ModuleItems could not be deleted');
+  }
 };
 // ein moduleitem auflisten
 export const selectModuleItem = async (req: Request, res: Response) => {
   try {
-    const moduleId = req.params.moduleId;
-    const moduleItemId = req.params.moduleItemId;
-    const moduleItem = await getOneObject({ where: { id: moduleItemId, moduleId: moduleId } }, ModuleItem);
+    const { moduleItemId } = req.params;
+    const { moduleId } = req.params;
+    const moduleItem: any = await getOneObject({ where: { id: moduleItemId, moduleId: moduleId } }, ModuleItem);
     res.status(200).send(moduleItem);
   } catch (_err) {
     res.status(500).send('ModuleItem could not be found');
@@ -133,8 +151,8 @@ export const selectModuleItem = async (req: Request, res: Response) => {
 // alle moduleItems auflisten
 export const selectAllModuleItems = async (req: Request, res: Response) => {
   try {
-    const moduleId = req.params.moduleId;
-    const moduleItems = await getObjects({ where: { moduleId: moduleId } }, ModuleItem);
+    const { moduleId } = req.params;
+    const moduleItems: any = await getObjects({ where: { moduleId: moduleId } }, ModuleItem);
     res.status(200).send(moduleItems);
   } catch (_err) {
     res.status(500).send('No ModuleItems found for Module');
