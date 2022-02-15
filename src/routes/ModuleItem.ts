@@ -119,7 +119,7 @@ export const deleteModuleItem = (req: Request, res: Response) => {
   const { moduleItemId } = req.params;
   const { moduleId } = req.params;
 };
-// alles auflisten
+// ein moduleitem auflisten
 export const selectModuleItem = async (req: Request, res: Response) => {
   try {
     const moduleId = req.params.moduleId;
@@ -128,6 +128,16 @@ export const selectModuleItem = async (req: Request, res: Response) => {
     res.status(200).send(moduleItem);
   } catch (_err) {
     res.status(500).send('ModuleItem could not be found');
+  }
+};
+// alle moduleItems auflisten
+export const selectAllModuleItems = async (req: Request, res: Response) => {
+  try {
+    const moduleId = req.params.moduleId;
+    const moduleItems = await getObjects({ where: { moduleId: moduleId } }, ModuleItem);
+    res.status(200).send(moduleItems);
+  } catch (_err) {
+    res.status(500).send('No ModuleItems found for Module');
   }
 };
 // downloadfile hinzufügen

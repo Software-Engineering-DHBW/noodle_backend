@@ -19,7 +19,7 @@ import {
   getTimeTableEntriesPerson, insertTimetableEntry,
 } from './TimeTable';
 import * as Permission from './PermissionCheck';
-import { registerModuleItem, selectModuleItem } from './ModuleItem';
+import { registerModuleItem, selectAllModuleItems, selectModuleItem } from './ModuleItem';
 
 export interface JwtPayload {
   'id': number,
@@ -120,6 +120,10 @@ router.post('/module/:moduleId/addMouduleItem', (req: express.Request, res: expr
 
 router.get('/module/:moduleId/:moduleItemId', (req: express.Request, res: express.Respone) => {
   selectModuleItem(req, res);
+});
+
+router.get('/module/:moduleId/selectModuleItems', (req: express.Request, res: express.Respone) => {
+  selectAllModuleItems(req, res);
 });
 
 // API Calls for Course
