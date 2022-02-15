@@ -4,7 +4,7 @@ import File from '../entity/File';
 import ModuleItem from '../entity/ModuleItem';
 import Module from '../entity/Module';
 import User from '../entity/User';
-import { getObjects } from './Manager';
+import { getObjects, getOneObject } from './Manager';
 
 /**
  * Representation of the incoming data of a moduleItem
@@ -92,6 +92,7 @@ const saveNewModuleItem = async (newModuleItem: ModuleItem, res: Response, newFi
     res.sendStatus(200);
   } catch (_err) {
     await queryRunner.rollbackTransaction();
+    console.log(_err);
     res.sendStatus(403);
   }
 };
@@ -121,26 +122,12 @@ export const deleteModuleItem = (req: Request, res: Response) => {
 // alles auflisten
 export const selectModuleItem = async (req: Request, res: Response) => {
   try {
-    // const { moduleId } = req.params;
-    const { moduleItemId } = req.params;
-    // const moduleItem = await getObjects({
-    //   select: ['module.name', 'content', 'webLink', 'downloadableFile.name', 'hasFileUpload', 'uploadedFiles.name', 'isVisible'],
-    //   where: { id: moduleItemId },
-    //   relations: ['moduleItem', 'moduleItem.moduleId', 'file'],
-    // }, ModuleItem);
-    const moduleItem: ModuleItem = await getRepository(ModuleItem)
-      .createQueryBuilder('')
-      .select([
-        'ModuleItem.content',
-        'ModuleItem.webLink',
-        'ModuleItem.hasFileUpload',
-        'ModuleItem.isVisible',
-      ])
-      .where('ModuleItem.id', moduleItemId)
-      .getOne();
+    const moduleId = req.params.moduleId;
+    const moduleItemId = req.params.moduleItemId;
+    const moduleItem = await getOneObject({ where: { id: moduleItemId, moduleId: moduleId } }, ModuleItem);
     res.status(200).send(moduleItem);
   } catch (_err) {
-    res.status(500).send('blöd');
+    res.status(500).send('ModuleItem could not be found');
   }
 };
 // downloadfile hinzufügen
