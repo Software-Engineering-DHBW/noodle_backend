@@ -4,7 +4,9 @@ import File from '../entity/File';
 import ModuleItem from '../entity/ModuleItem';
 import Module from '../entity/Module';
 import User from '../entity/User';
-import { deleteObjects, getObjects, getOneObject } from './Manager';
+import {
+  deleteObjects, getObjects, getOneObject, saveObject,
+} from './Manager';
 
 /**
  * Representation of the incoming data of a moduleItem
@@ -108,8 +110,13 @@ export const registerModuleItem = (req: Request, res: Response) => {
   }
 };
 
-// link, content, visibility, hasfileupload
-// can only edit a value not delete it
+/**
+ * @exports
+ * @async
+ * Updates a moduleItem with the data given by the HTTP-Request
+ * @param {Request} req - Holds the data from the HTTP-Request
+ * @param {Response} res - Used to form the response
+ */
 export const changeModuleItem = async (req: Request, res: Response) => {
   try {
     const data: ChangeModuleItem = req.body;
@@ -130,12 +137,19 @@ export const changeModuleItem = async (req: Request, res: Response) => {
     if (data.isVisible != null) {
       moduleItem.isVisible = data.isVisible;
     }
+    await saveObject(moduleItem, ModuleItem);
     res.status(200).send('ModuleItem has been changed');
   } catch (_err) {
     res.status(500).send('ModuleItem could not be changed');
   }
 };
-// löschen ein item
+/**
+ * @exports
+ * @async
+ * Deletes one moduleItem with the data given by the HTTP-Request
+ * @param {Request} req - Holds the data from the HTTP-Request
+ * @param {Response} res - Used to form the response
+ */
 export const deleteModuleItem = async (req: Request, res: Response) => {
   try {
     const { moduleItemId } = req.params;
@@ -149,7 +163,13 @@ export const deleteModuleItem = async (req: Request, res: Response) => {
     res.send(500).status('ModuleItem could not be deleted');
   }
 };
-// löschen alle items
+/**
+ * @exports
+ * @async
+ * Deletes all moduleItems of the module with the data given by the HTTP-Request
+ * @param {Request} req - Holds the data from the HTTP-Request
+ * @param {Response} res - Used to form the response
+ */
 export const deleteAllModuleItems = async (req: Request, res: Response) => {
   try {
     const { moduleId } = req.params;
@@ -160,7 +180,13 @@ export const deleteAllModuleItems = async (req: Request, res: Response) => {
     res.send(500).status('ModuleItems could not be deleted');
   }
 };
-// ein moduleitem auflisten
+/**
+ * @exports
+ * @async
+ * Returns a moduleItem with the data given by the HTTP-Request
+ * @param {Request} req - Holds the data from the HTTP-Request
+ * @param {Response} res - Used to form the response
+ */
 export const selectModuleItem = async (req: Request, res: Response) => {
   try {
     const { moduleItemId } = req.params;
@@ -173,7 +199,13 @@ export const selectModuleItem = async (req: Request, res: Response) => {
     res.status(500).send('ModuleItem could not be found');
   }
 };
-// alle moduleItems auflisten
+/**
+ * @exports
+ * @async
+ * Returns all moduleItems of the module with the data given by the HTTP-Request
+ * @param {Request} req - Holds the data from the HTTP-Request
+ * @param {Response} res - Used to form the response
+ */
 export const selectAllModuleItems = async (req: Request, res: Response) => {
   try {
     const { moduleId } = req.params;
@@ -183,12 +215,24 @@ export const selectAllModuleItems = async (req: Request, res: Response) => {
     res.status(500).send('No ModuleItems found for Module');
   }
 };
-// downloadfile hinzufügen
+/**
+ * @exports
+ * @async
+ * Adds a downloadable file to a moduleItem with the data given by the HTTP-Request
+ * @param {Request} req - Holds the data from the HTTP-Request
+ * @param {Response} res - Used to form the response
+ */
 export const addDownloadFile = (req: Request, res: Response) => {
   const data = req.body;
   const { moduleId } = req.params;
 };
-// downloadfile löschen
+/**
+ * @exports
+ * @async
+ * Deletes the downlaodable file of the moduleItem with the data given by the HTTP-Request
+ * @param {Request} req - Holds the data from the HTTP-Request
+ * @param {Response} res - Used to form the response
+ */
 export const deleteDownloadFile = (req: Request, res: Response) => {
   const data = req.body;
   const { moduleId } = req.params;
