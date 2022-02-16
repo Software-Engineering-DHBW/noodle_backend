@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getConnection, getRepository, Repository } from 'typeorm';
+import { getConnection } from 'typeorm';
 import File from '../entity/File';
 import ModuleItem from '../entity/ModuleItem';
 import Module from '../entity/Module';
@@ -92,7 +92,6 @@ const saveNewModuleItem = async (newModuleItem: ModuleItem, res: Response, newFi
     res.sendStatus(200);
   } catch (_err) {
     await queryRunner.rollbackTransaction();
-    console.log(_err);
     res.sendStatus(403);
   }
 };
@@ -110,16 +109,40 @@ export const registerModuleItem = (req: Request, res: Response) => {
 };
 
 // link, content, visibility, hasfileupload
-export const changeModuleItem = (req: Request, res: Response) => {
-  const data: ChangeModuleItem = req.body;
-  const { moduleId } = req.params;
+// can only edit a value not delete it
+export const changeModuleItem = async (req: Request, res: Response) => {
+  try {
+    const data: ChangeModuleItem = req.body;
+    const { moduleId } = req.params;
+    const { moduleItemId } = req.params;
+    const moduleItem: any = await getOneObject({
+      where: { id: moduleItemId, moduleId },
+    }, ModuleItem);
+    if (data.content != null) {
+      moduleItem.content = data.content;
+    }
+    if (data.webLink != null) {
+      moduleItem.webLink = data.webLink;
+    }
+    if (data.hasFileUpload != null) {
+      moduleItem.hasFileUpload = data.hasFileUpload;
+    }
+    if (data.isVisible != null) {
+      moduleItem.isVisible = data.isVisible;
+    }
+    res.status(200).send('ModuleItem has been changed');
+  } catch (_err) {
+    res.status(500).send('ModuleItem could not be changed');
+  }
 };
 // löschen ein item
 export const deleteModuleItem = async (req: Request, res: Response) => {
   try {
     const { moduleItemId } = req.params;
     const { moduleId } = req.params;
-    const moduleItem: any = await getOneObject({ where: { id: moduleItemId, moduleId } }, ModuleItem);
+    const moduleItem: any = await getOneObject({
+      where: { id: moduleItemId, moduleId },
+    }, ModuleItem);
     await deleteObjects(moduleItem, ModuleItem);
     res.send(200).status('The ModuleItem has been deleted');
   } catch (_err) {
@@ -142,7 +165,9 @@ export const selectModuleItem = async (req: Request, res: Response) => {
   try {
     const { moduleItemId } = req.params;
     const { moduleId } = req.params;
-    const moduleItem: any = await getOneObject({ where: { id: moduleItemId, moduleId: moduleId } }, ModuleItem);
+    const moduleItem: any = await getOneObject({
+      where: { id: moduleItemId, moduleId },
+    }, ModuleItem);
     res.status(200).send(moduleItem);
   } catch (_err) {
     res.status(500).send('ModuleItem could not be found');
@@ -152,7 +177,7 @@ export const selectModuleItem = async (req: Request, res: Response) => {
 export const selectAllModuleItems = async (req: Request, res: Response) => {
   try {
     const { moduleId } = req.params;
-    const moduleItems: any = await getObjects({ where: { moduleId: moduleId } }, ModuleItem);
+    const moduleItems: any = await getObjects({ where: { moduleId } }, ModuleItem);
     res.status(200).send(moduleItems);
   } catch (_err) {
     res.status(500).send('No ModuleItems found for Module');
