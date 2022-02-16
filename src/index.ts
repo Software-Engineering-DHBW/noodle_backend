@@ -19,7 +19,7 @@ const ormOptions: ConnectionOptions = {
   password: 'noodle',
   database: 'noodle',
   synchronize: true,
-  entities: ['./src/**/*.ts'],
+  entities: [`${__dirname}/entity/*{.js,.ts}`],
 };
 
 const initDatabase = async (ormOptions: ConnectionOptions) => {

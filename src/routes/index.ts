@@ -4,7 +4,8 @@ import {
   registerUser, loginUser, deleteUser, changeUserPassword, getAllUsers,
 } from './User';
 import {
-  addCourse, addSubmodule, deleteSubmodule, addTeacher, deleteTeacher, changeDescription, changeName,
+  addCourse, addSubmodule, deleteSubmodule, addTeacher,
+  deleteTeacher, changeDescription, changeName,
   deleteModule, registerModule, deleteCourse as removeCourse, selectModule,
 } from './Module';
 import {
@@ -90,7 +91,7 @@ router.post('/module/:moduleId/changeDescription', (req: express.Request, res: e
 });
 
 router.post('/module/:moduleId/deleteCourse', (req: express.Request, res: express.Respone) => {
-  removeCourse(req, res);
+  Permission.checkAdministrator(req, res, removeCourse);
 });
 
 router.post('/module/:moduleId/addCourse', (req: express.Request, res: express.Respone) => {
