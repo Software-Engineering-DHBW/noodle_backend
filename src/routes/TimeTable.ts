@@ -15,7 +15,7 @@ import User from '../entity/User';
 export const insertTimetableEntry = async (req: Request, res: Response) => {
   try {
     const data: Timetable = req.body;
-    saveObject(data, Timetable);
+    await saveObject(data, Timetable);
     res.status(200).send('The entry has been saved');
   } catch (_err) {
     res.status(500).send('The entry could not be saved');
@@ -119,7 +119,7 @@ export const getTimeTableEntriesModule = async (req: Request, res: Response) => 
 export const deleteTimeTableEntriesModule = async (req: Request, res: Response) => {
   try {
     const data: Timetable = req.body;
-    deleteObjects(data, Timetable);
+    await deleteObjects(data, Timetable);
     res.status(204).send('The entry has been deleted');
   } catch (_err) {
     res.status(500).send('The entry could not be deleted');

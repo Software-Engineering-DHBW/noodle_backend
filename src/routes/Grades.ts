@@ -18,7 +18,7 @@ interface ModuleGrade extends Grades {
 export const insertGradeForStudent = async (req: Request, res: Response) => {
   try {
     const data: Grades = req.body;
-    saveObject(data, Grades);
+    await saveObject(data, Grades);
     res.status(200).send('The grade has been saved');
   } catch (_err) {
     res.status(500).send('The grade has not been saved');
@@ -88,7 +88,7 @@ export const getGradesForModule = async (req: Request, res: Response) => {
 export const deleteGradeForStudent = async (req: Request, res: Response) => {
   try {
     const data: Grades = req.body;
-    deleteObjects(data, Grades);
+    await deleteObjects(data, Grades);
     res.status(200).send('The grade has been deleted');
   } catch (_err) {
     res.status(500).send('The grade could not be deleted');
