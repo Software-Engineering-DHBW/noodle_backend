@@ -6,17 +6,7 @@ import User from '../../src/entity/User';
 import UserDetail from '../../src/entity/UserDetail';
 import * as manager from '../../src/routes/Manager';
 import { changeUserPassword, deleteUser, loginUser } from '../../src/routes/User';
-
-const mockRequest = (body) => ({
-  body,
-});
-
-const mockResponse = () => {
-  const res = { status: () => {}, send: () => {} };
-  res.status = jest.fn().mockReturnValue(res);
-  res.send = jest.fn().mockReturnValue(res);
-  return res;
-};
+import { mockResponse, mockRequest } from '../helpers/HttpObjects';
 
 describe('Test for changing a password', () => {
   beforeEach(() => {
