@@ -15,10 +15,11 @@ interface RegisterModuleItem {
   moduleId?: Module;
   content?: string;
   webLink?: string;
-  hasDownloadableFile: boolean;
-  hasFileUpload: boolean;
+  hasDownloadableFile?: boolean;
+  hasFileUpload?: boolean;
   downloadableFile?: File;
-  isVisible: boolean;
+  isVisible?: boolean;
+  dueDate?: Date;
 }
 /**
  * Representation of the incoming data of a moduleItem
@@ -51,6 +52,7 @@ const createModuleItem = (data: RegisterModuleItem): ModuleItem => {
   newModuleItem.hasDownloadableFile = data.hasDownloadableFile;
   newModuleItem.hasFileUpload = data.hasFileUpload;
   newModuleItem.isVisible = data.isVisible;
+  newModuleItem.dueDate = data.dueDate;
   return newModuleItem;
 };
 /**

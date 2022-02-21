@@ -45,4 +45,9 @@ export default class ModuleItem {
     default: false,
   })
     isVisible: boolean;
+
+  @Column({
+    nullable: true,
+  })
+    dueDate: Date;
 }
