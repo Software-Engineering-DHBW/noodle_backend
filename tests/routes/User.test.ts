@@ -27,7 +27,6 @@ describe('Test for changing a password', () => {
     expect(argon2.hash).toHaveBeenCalledWith('test');
     expect(manager.saveObject).toHaveBeenCalledWith({ username: 'test', password: 'tset' }, User);
     expect(res.status).toHaveBeenCalledWith(200);
-    expect(res.send).toHaveBeenCalledWith('The password has been changed');
   });
 
   test('Fail on empty username', async () => {
