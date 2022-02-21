@@ -92,7 +92,6 @@ const saveNewModuleItem = async (newModuleItem: ModuleItem, res: Response, newFi
     await queryRunner.commitTransaction();
     res.sendStatus(200);
   } catch (_err) {
-    console.log(_err);
     await queryRunner.rollbackTransaction();
     res.sendStatus(403);
   }
@@ -101,17 +100,9 @@ const saveNewModuleItem = async (newModuleItem: ModuleItem, res: Response, newFi
 export const registerModuleItem = (req: Request, res: Response) => {
   const data: RegisterModuleItem = req.body;
   data.moduleId = req.params.moduleId;
-  console.log('data: ');
-  console.log(data);
   const newModuleItem: ModuleItem = createModuleItem(data);
-  console.log('moduleItem: ');
-  console.log(newModuleItem);
   if (data.downloadableFile != null) {
     const newFile: File = createFile(data, newModuleItem);
-    console.log('file: ');
-    console.log(newFile);
-    console.log('moduleItem: ');
-    console.log(newModuleItem);
     saveNewModuleItem(newModuleItem, res, newFile);
   } else {
     saveNewModuleItem(newModuleItem, res);
@@ -125,6 +116,7 @@ export const registerModuleItem = (req: Request, res: Response) => {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
+// TODO dueDate
 export const changeModuleItem = async (req: Request, res: Response) => {
   try {
     const data: ChangeModuleItem = req.body;
@@ -230,6 +222,7 @@ export const selectAllModuleItems = async (req: Request, res: Response) => {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
+// TODO Try catch
 export const addDownloadFile = async (req: Request, res: Response) => {
   const data = req.body;
   const { moduleId } = req.params;
@@ -250,6 +243,7 @@ export const addDownloadFile = async (req: Request, res: Response) => {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
+// TODO richtig machen
 export const deleteDownloadFile = async (req: Request, res: Response) => {
   const data = req.body;
   const { moduleId } = req.params;
