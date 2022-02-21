@@ -30,6 +30,7 @@ interface ChangeModuleItem {
   webLink?: string;
   hasFileUpload?: boolean;
   isVisible?: boolean;
+  dueDate?: Date;
 }
 
 /**
@@ -108,6 +109,9 @@ export const changeModuleItem = async (req: Request, res: Response) => {
     }
     if (data.isVisible != null) {
       moduleItem.isVisible = data.isVisible;
+    }
+    if (data.dueDate != null) {
+      moduleItem.dueDate = data.dueDate;
     }
     await saveObject(moduleItem, ModuleItem);
     res.status(200).send('ModuleItem has been changed');
@@ -219,12 +223,18 @@ export const addDownloadFile = async (req: Request, res: Response) => {
  */
 // TODO richtig machen
 export const deleteDownloadFile = async (req: Request, res: Response) => {
-  const { moduleId } = req.params;
-  const { moduleItemId } = req.params;
-  const file: any = await getOneObject({ where: { attachedAt: moduleItemId } }, File);
-  const moduleItem: any = await getOneObject({ where: { id: moduleItemId, moduleId } }, ModuleItem);
-  moduleItem.hasDownloadableFile = false;
-  await saveObject(moduleItem, ModuleItem);
-  await deleteObjects(file, File);
-  res.status(200).send('Deleted File');
+  try {
+    const { moduleId } = req.params;
+    const { moduleItemId } = req.params;
+    const file: any = await getOneObject({ where: { attachedAt: moduleItemId } }, File);
+    const moduleItem: any = await getOneObject({
+      where: { id: moduleItemId, moduleId },
+    }, ModuleItem);
+    moduleItem.hasDownloadableFile = false;
+    await saveObject(moduleItem, ModuleItem);
+    await deleteObjects(file, File);
+    res.status(200).send('Deleted File');
+  } catch (_err) {
+    res.status(500).send('Could not delete File');
+  }
 };
