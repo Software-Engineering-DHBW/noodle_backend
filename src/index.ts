@@ -38,7 +38,6 @@ if (E2E) {
 
 const initDatabase = async (ormOptions: ConnectionOptions) => {
   await createConnection(ormOptions).then(async (connection) => {
-    console.log(process.env.NODE_ENV);
     const user = new User();
     user.id = 1;
     user.username = 'administrator';

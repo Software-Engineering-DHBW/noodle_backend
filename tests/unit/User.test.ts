@@ -1,20 +1,8 @@
 import * as supertest from 'supertest';
-import { createConnection } from 'typeorm';
 import app from '../../src/app';
-import connectionOptions from '../../src/index';
-
-let conn = null;
-
-beforeAll(async () => {
-  conn = await createConnection(connectionOptions);
-});
-
-afterAll(async () => {
-  await conn.close();
-});
 
 describe('/user', () => {
-  describe('/user/login', () => {
+  describe('POST /user/login', () => {
     test('Get a jwt after a successfull login', async () => {
       const res = await supertest(await app)
         .post('/user/login')
@@ -45,4 +33,6 @@ describe('/user', () => {
       expect(res.statusCode).toEqual(403);
     });
   });
+
+  describe('POST /user/insert', () => {});
 });
