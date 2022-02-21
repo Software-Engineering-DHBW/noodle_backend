@@ -3,7 +3,6 @@ import { getConnection } from 'typeorm';
 import File from '../entity/File';
 import ModuleItem from '../entity/ModuleItem';
 import Module from '../entity/Module';
-import User from '../entity/User';
 import {
   deleteObjects, getObjects, getOneObject, saveObject,
 } from './Manager';
@@ -16,14 +15,10 @@ interface RegisterModuleItem {
   moduleId?: Module;
   content?: string;
   webLink?: string;
-  downloadableFile?: File;
+  hasDownloadableFile: boolean;
   hasFileUpload: boolean;
-  uploadedFiles?: File[];
+  downloadableFile?: File;
   isVisible: boolean;
-  fileOwner?: User;
-  fileName?: string;
-  filePath?: string;
-  fileUploadDate?: Date;
 }
 /**
  * Representation of the incoming data of a moduleItem
@@ -53,6 +48,7 @@ const createModuleItem = (data: RegisterModuleItem): ModuleItem => {
   newModuleItem.moduleId = data.moduleId;
   newModuleItem.content = data.content;
   newModuleItem.webLink = data.webLink;
+  newModuleItem.hasDownloadableFile = data.hasDownloadableFile;
   newModuleItem.hasFileUpload = data.hasFileUpload;
   newModuleItem.isVisible = data.isVisible;
   return newModuleItem;
@@ -64,11 +60,12 @@ const createModuleItem = (data: RegisterModuleItem): ModuleItem => {
  */
 const createFile = (data: RegisterModuleItem, newModuleItem: ModuleItem): File => {
   const newFile = new File();
-  newFile.owner = data.fileOwner;
-  newFile.name = data.fileName;
-  newFile.path = data.filePath;
-  newFile.uploadDate = data.fileUploadDate;
-  newFile.uploadedAt = newModuleItem;
+  newFile.owner = data.downloadableFile.owner;
+  newFile.name = data.downloadableFile.name;
+  newFile.path = data.downloadableFile.path;
+  const timeMilliseconds = Date.now();
+  newFile.uploadDate = new Date(timeMilliseconds);
+  newFile.attachedAt = newModuleItem;
   return newFile;
 };
 
@@ -93,6 +90,7 @@ const saveNewModuleItem = async (newModuleItem: ModuleItem, res: Response, newFi
     await queryRunner.commitTransaction();
     res.sendStatus(200);
   } catch (_err) {
+    console.log(_err);
     await queryRunner.rollbackTransaction();
     res.sendStatus(403);
   }
@@ -101,9 +99,17 @@ const saveNewModuleItem = async (newModuleItem: ModuleItem, res: Response, newFi
 export const registerModuleItem = (req: Request, res: Response) => {
   const data: RegisterModuleItem = req.body;
   data.moduleId = req.params.moduleId;
+  console.log('data: ');
+  console.log(data);
   const newModuleItem: ModuleItem = createModuleItem(data);
+  console.log('moduleItem: ');
+  console.log(newModuleItem);
   if (data.downloadableFile != null) {
     const newFile: File = createFile(data, newModuleItem);
+    console.log('file: ');
+    console.log(newFile);
+    console.log('moduleItem: ');
+    console.log(newModuleItem);
     saveNewModuleItem(newModuleItem, res, newFile);
   } else {
     saveNewModuleItem(newModuleItem, res);
@@ -222,9 +228,18 @@ export const selectAllModuleItems = async (req: Request, res: Response) => {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
-export const addDownloadFile = (req: Request, res: Response) => {
+export const addDownloadFile = async (req: Request, res: Response) => {
   const data = req.body;
   const { moduleId } = req.params;
+  const { moduleItemId } = req.params;
+  const moduleItem: any = await getOneObject({
+    where: { id: moduleItemId, moduleId },
+  }, ModuleItem);
+  const newFile: File = createFile(data, moduleItem);
+  await saveObject(newFile, File);
+  moduleItem.downloadableFile = newFile;
+  await saveObject(moduleItem, ModuleItem);
+  res.status(200).send('Added new File to ModuleItem');
 };
 /**
  * @exports
@@ -233,7 +248,10 @@ export const addDownloadFile = (req: Request, res: Response) => {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
-export const deleteDownloadFile = (req: Request, res: Response) => {
+export const deleteDownloadFile = async (req: Request, res: Response) => {
   const data = req.body;
   const { moduleId } = req.params;
+  const { moduleItemId } = req.params;
+  const moduleItem = await getOneObject({ where: { id: moduleItemId, moduleId }, relations: ['attachedFiles'] }, ModuleItem);
+  console.log(moduleItem);
 };

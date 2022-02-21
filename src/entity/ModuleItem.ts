@@ -7,43 +7,42 @@ import File from './File';
 @Entity()
 export default class ModuleItem {
   @PrimaryGeneratedColumn()
-  id: number;
+    id: number;
 
   @ManyToOne(() => Module, (module: Module) => module.id, {
     onDelete: 'CASCADE',
   })
   @JoinColumn()
-  moduleId: Module;
+    moduleId: Module;
 
   @Column({
     nullable: true,
   })
-  content: string;
+    content: string;
 
   @Column({
     nullable: true,
   })
-  webLink: string;
-
-  @OneToOne(() => File, {
-    nullable: true,
-  })
-  @JoinColumn()
-  downloadableFile: File;
+    webLink: string;
 
   @Column({
     default: false,
   })
-  hasFileUpload: boolean;
+    hasDownloadableFile: boolean;
 
-  @OneToMany(() => File, (file: File) => file.uploadedAt, {
+  @Column({
+    default: false,
+  })
+    hasFileUpload: boolean;
+
+  @OneToMany(() => File, (file: File) => file.attachedAt, {
     nullable: true,
     cascade: true,
   })
-  uploadedFiles: File[];
+    attachedFiles: File[];
 
   @Column({
     default: false,
   })
-  isVisible: boolean;
+    isVisible: boolean;
 }

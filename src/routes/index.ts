@@ -113,6 +113,10 @@ router.get('/module/:moduleId/selectModuleItems', (req: express.Request, res: ex
   moduleItem.selectAllModuleItems(req, res);
 });
 
+router.post('/module/:moduleId/:moduleItemId/deleteFile', (req: express.Request, res: express.Respone) => {
+  moduleItem.deleteDownloadFile(req, res);
+});
+
 // API Calls for Course
 router.get('/course/:courseId', (req: express.Request, res: express.Response) => {
   course.selectCourse(req, res);
