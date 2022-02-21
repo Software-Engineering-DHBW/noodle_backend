@@ -11,7 +11,7 @@ import router from './routes/index';
 import User from './entity/User';
 import UserDetail from './entity/UserDetail';
 
-const ormOptions: ConnectionOptions = {
+let ormOptions: ConnectionOptions = {
   type: 'postgres',
   host: 'localhost',
   port: 5432,
@@ -21,6 +21,20 @@ const ormOptions: ConnectionOptions = {
   synchronize: true,
   entities: [`${__dirname}/entity/*{.js,.ts}`],
 };
+if (process.env.NODE_ENV === 'e2e') {
+  ormOptions = {
+    type: 'postgres',
+    host: 'localhost',
+    port: 5432,
+    username: 'noodle',
+    password: 'noodle',
+    database: 'noodle',
+    schema: 'e2e',
+    entities: [`${__dirname}/entity/*{.js,.ts}`],
+    synchronize: true,
+    dropSchema: true,
+  };
+}
 
 const initDatabase = async (ormOptions: ConnectionOptions) => {
   await createConnection(ormOptions).then(async () => {
