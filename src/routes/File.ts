@@ -7,11 +7,11 @@ import User from '../entity/User';
  * Representation of the incoming data of a new file
  * @interface
  */
-interface RegisterFile {
-    owner: User
-    name: string;
-    path: string;
-    uploadDate: Date;
+export interface RegisterFile {
+  owner: User
+  name: string;
+  path: string;
+  uploadDate: Date;
 }
 
 /**
