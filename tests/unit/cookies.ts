@@ -1,10 +1,10 @@
 import * as supertest from 'supertest';
 import { createConnection, getConnection } from 'typeorm';
 import app from '../../src/app';
-import connectionOptions from '../../src/index';
+import { ormOptions } from './helper';
 
 beforeAll(async () => {
-  await createConnection(connectionOptions).then(async () => {
+  await createConnection(ormOptions).then(async () => {
     let res = await supertest(app)
       .post('/user/login')
       .send({

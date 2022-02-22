@@ -3,16 +3,12 @@ import 'reflect-metadata';
 import {
   ConnectionOptions, createConnection, getManager, EntityManager,
 } from 'typeorm';
-import * as crypto from 'crypto';
 import * as argon2 from 'argon2';
 import app from './app';
 import User from './entity/User';
 import UserDetail from './entity/UserDetail';
 
-const E2E: boolean = process.env.NODE_ENV === 'e2e';
-const PROD: boolean = process.env.NODE_ENV === 'production';
-
-let ormOptions: ConnectionOptions = {
+const ormOptions: ConnectionOptions = {
   type: 'postgres',
   host: 'localhost',
   port: 5432,
@@ -22,19 +18,6 @@ let ormOptions: ConnectionOptions = {
   synchronize: true,
   entities: [`${__dirname}/entity/*{.js,.ts}`],
 };
-if (E2E) {
-  ormOptions = {
-    type: 'postgres',
-    host: 'localhost',
-    port: 5432,
-    username: 'noodle',
-    password: 'noodle',
-    database: 'noodle',
-    schema: 'e2e',
-    entities: [`${__dirname}/entity/*{.js,.ts}`],
-    synchronize: true,
-  };
-}
 
 const initDatabase = async (ormOptions: ConnectionOptions) => {
   await createConnection(ormOptions).then(async (connection) => {
@@ -61,18 +44,9 @@ const args = process.argv.slice(2);
 if (args[0] === 'init') {
   initDatabase(ormOptions);
 } else {
-  createConnection(ormOptions).then(async (connection) => {
-    if (PROD) {
-      process.env.jwtSignatureKey = crypto.randomBytes(64).toString('base64url');
-    } else {
-      process.env.jwtSignatureKey = 'Development';
-    }
-
-    if (!E2E) {
-      app.listen(3000);
-      console.log('Tables initialized and express application up and running on port 3000');
-    }
-    connection.close();
+  createConnection(ormOptions).then(async () => {
+    app.listen(3000);
+    console.log('Tables initialized and express application up and running on port 3000');
   }).catch((error) => console.log(error));
 }
 
