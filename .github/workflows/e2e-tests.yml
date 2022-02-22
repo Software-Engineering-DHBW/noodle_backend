@@ -1,7 +1,9 @@
 name: "Nodejs e2e Tests"
 on:
   push:
-    branches: [ tests_grades ]
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
 
 jobs:
   testing:
