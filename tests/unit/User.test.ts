@@ -6,6 +6,7 @@ const loginPath = `${generalPath}/login`;
 const changePath = `${generalPath}/changePassword`;
 const registerPath = `${generalPath}/register`;
 const deletePath = `${generalPath}/delete`;
+const getAllPath = `${generalPath}/getAll`;
 
 describe('/user', () => {
   describe('POST /user/login', () => {
@@ -157,6 +158,18 @@ describe('/user', () => {
         const loginRes = await helper.postNoAuth(loginPath, newTestUser);
         expect(loginRes.statusCode).toEqual(403);
       }
+    });
+  });
+
+  describe('GET /user/getAll', () => {
+    test.each([
+      ['Successfully delete a user', 'administratorCookie', 200],
+      ['403 teacher tries to delete', 'teacherCookie', 403],
+      ['403 student tries to delete', 'studentCookie', 403],
+    ])('%s', async (msg, cookie, expected) => {
+      const testCookie = global[cookie];
+      const res = await helper.getAuth(getAllPath, testCookie);
+      expect(res.statusCode).toEqual(expected);
     });
   });
 });
