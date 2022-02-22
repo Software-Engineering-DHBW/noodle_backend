@@ -137,4 +137,26 @@ describe('/user', () => {
       }
     });
   });
+
+  describe('POST /user/delete', () => {
+    test.each([
+      ['Successfully delete a user', 'newAdministrator', 'administratorCookie', true, 200],
+      ['403 teacher tries to delete', 'newAdministrator', 'teacherCookie', false, 403],
+      ['403 student tries to delete', 'newAdministrator', 'studentCookie', false, 403],
+      ['500 empty username', null, 'administratorCookie', false, 500],
+    ])('%s', async (msg, username, cookie, checkLogin, expected) => {
+      const testCookie = global[cookie];
+      const testUser = { username };
+      const res = await helper.postAuth(deletePath, testUser, testCookie);
+      expect(res.statusCode).toEqual(expected);
+      if (checkLogin) {
+        const newTestUser = {
+          username,
+          password: 'password',
+        };
+        const loginRes = await helper.postNoAuth(loginPath, newTestUser);
+        expect(loginRes.statusCode).toEqual(403);
+      }
+    });
+  });
 });
