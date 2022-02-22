@@ -1,0 +1,35 @@
+name: "Nodejs e2e Tests"
+on:
+  push:
+    branches: [ tests_grades ]
+
+jobs:
+  testing:
+    name: E2E-Testing
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_DB: noodle
+          POSTGRES_PASSWORD: noodle
+          POSTGRES_USER: noodle
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          sudo apt update
+          sudo apt install --yes postgresql-client
+      - run: npm ci 
+      - name: Run tests 
+        run: npm run test:e2e
+        env:
+          PGPASSWORD: noodle
+
