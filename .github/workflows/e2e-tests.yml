@@ -1,0 +1,45 @@
+name: "Nodejs e2e Tests"
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  testing:
+    name: E2E-Testing
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres
+        env:
+          POSTGRES_DB: noodle
+          POSTGRES_PASSWORD: noodle
+          POSTGRES_USER: noodle
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - uses: actions/checkout@v2
+      - run: |
+          sudo apt update
+          sudo apt install --yes postgresql-client
+      - run: npm ci 
+      - name: Run tests 
+        run: npm run test:e2e
+        env:
+          PGPASSWORD: noodle
+
+      - name: Test Report
+        uses: dorny/test-reporter@v1
+        if: success() || failure()    # run this step even if previous step failed
+        with:
+          name: JEST Tests            # Name of the check run which will be created
+          path: ./junit.xml    # Path to test results
+          reporter: jest-junit
+
