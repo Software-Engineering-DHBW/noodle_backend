@@ -95,7 +95,7 @@ const saveNewUser = async (
     res.sendStatus(200);
   } catch (_err) {
     await queryRunner.rollbackTransaction();
-    res.sendStatus(403);
+    res.sendStatus(500);
   }
 };
 
@@ -107,10 +107,14 @@ const saveNewUser = async (
  * @param {Response} res - Used to form the response
  */
 export const registerUser = async (req: Request, res: Response) => {
-  const data: RegisterUser = req.body;
-  const newUser: User = await createUser(data);
-  const newUserDetail: UserDetail = createUserDetail(data, newUser);
-  saveNewUser(newUser, newUserDetail, res);
+  try {
+    const data: RegisterUser = req.body;
+    const newUser: User = await createUser(data);
+    const newUserDetail: UserDetail = createUserDetail(data, newUser);
+    saveNewUser(newUser, newUserDetail, res);
+  } catch (_err) {
+    res.sendStatus(500);
+  }
 };
 
 /**
