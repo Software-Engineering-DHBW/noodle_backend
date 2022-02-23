@@ -77,7 +77,7 @@ router.post('/module/:moduleId/changeDescription', (req: express.Request, res: e
 });
 
 router.post('/module/:moduleId/deleteCourse', (req: express.Request, res: express.Respone) => {
-  module.deleteCourse(req, res);
+  Permission.checkAdministrator(req, res, removeCourse);
 });
 
 router.post('/module/:moduleId/addCourse', (req: express.Request, res: express.Respone) => {

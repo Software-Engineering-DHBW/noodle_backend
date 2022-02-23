@@ -8,9 +8,10 @@ import { getManager, EntityManager } from 'typeorm';
  * @param {Function} objectType - Repository where the object should be saved
  */
 export const saveObject = async (obj: object, objectType: Function) => {
-  const manager: EntityManager = getManager();
-  const classObject = manager.create(objectType, obj);
-  await manager.save(classObject);
+  await getManager().transaction(async (transactionManager) => {
+    const classObject = transactionManager.create(objectType, obj);
+    await transactionManager.save(classObject);
+  });
 };
 
 /**
@@ -61,6 +62,7 @@ export const deleteObjects = async (
   findOptions: object,
   objectType: Function,
 ) => {
-  const manager: EntityManager = getManager();
-  manager.delete(objectType, findOptions);
+  await getManager().transaction(async (transactionManager) => {
+    await transactionManager.delete(objectType, findOptions);
+  });
 };

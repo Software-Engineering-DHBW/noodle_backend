@@ -95,7 +95,7 @@ const saveNewUser = async (
     res.sendStatus(200);
   } catch (_err) {
     await queryRunner.rollbackTransaction();
-    res.sendStatus(403);
+    res.sendStatus(500);
   }
 };
 
@@ -107,10 +107,14 @@ const saveNewUser = async (
  * @param {Response} res - Used to form the response
  */
 export const registerUser = async (req: Request, res: Response) => {
-  const data: RegisterUser = req.body;
-  const newUser: User = await createUser(data);
-  const newUserDetail: UserDetail = createUserDetail(data, newUser);
-  saveNewUser(newUser, newUserDetail, res);
+  try {
+    const data: RegisterUser = req.body;
+    const newUser: User = await createUser(data);
+    const newUserDetail: UserDetail = createUserDetail(data, newUser);
+    saveNewUser(newUser, newUserDetail, res);
+  } catch (_err) {
+    res.sendStatus(500);
+  }
 };
 
 /**
@@ -169,8 +173,8 @@ export const deleteUser = async (req: Request, res: Response) => {
   try {
     const data: DeleteUser = req.body;
     const user: any = await getOneObject({ where: { username: data.username } }, User);
-    deleteObjects({ userId: user }, UserDetail);
-    deleteObjects(user, User);
+    await deleteObjects({ userId: user }, UserDetail);
+    await deleteObjects(user, User);
     res.status(200).send('The user has been deleted');
   } catch (_err) {
     res.status(500).send('The user could not be deleted');
@@ -189,7 +193,7 @@ export const changeUserPassword = async (req: Request, res: Response) => {
     const data: LoginUser = req.body;
     const user: any = await getOneObject({ where: { username: data.username } }, User);
     user.password = await hash(data.password);
-    saveObject(user, User);
+    await saveObject(user, User);
     res.status(200).send('The password has been changed');
   } catch (_err) {
     res.status(500).send('Password could not be changed');
