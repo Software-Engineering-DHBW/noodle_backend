@@ -33,6 +33,10 @@ interface ChangeModuleItem {
   dueDate?: string;
 }
 
+interface DeleteUploadedFile {
+  fileId: number;
+}
+
 /**
  * Creates a new ModuleItem with the given data
  * @param {GeneralModule} data - Data of the new module
@@ -262,5 +266,48 @@ export const uploadFile = async (req: Request, res: Response) => {
     }
   } catch (_err) {
     res.status(500).send('Could not upload file');
+  }
+};
+
+export const deleteUploadedFile = async (req: Request, res: Response) => {
+  try {
+    const { moduleId } = req.params;
+    const { moduleItemId } = req.params;
+    const data: DeleteUploadedFile = req.body;
+    const moduleItem: any = await getOneObject({
+      where: { id: moduleItemId, moduleId },
+    }, ModuleItem);
+    if (moduleItem.hasFileUpload) {
+      const file: any = await getOneObject({
+        where: { id: data.fileId, attachedAt: moduleItemId },
+      }, File);
+      await deleteObjects(file, File);
+      res.status(200).send('File has been deleted');
+    } else {
+      res.status(500).send('Internal Error: ModuleItem has no file upload');
+    }
+  } catch (_err) {
+    res.status(500).send('Could not delete file');
+  }
+};
+
+export const deleteAllUploadedFile = async (req: Request, res: Response) => {
+  try {
+    const { moduleId } = req.params;
+    const { moduleItemId } = req.params;
+    const moduleItem: any = await getOneObject({
+      where: { id: moduleItemId, moduleId },
+    }, ModuleItem);
+    if (moduleItem.hasFileUpload) {
+      const file: any = await getObjects({
+        where: { attachedAt: moduleItemId },
+      }, File);
+      await deleteObjects(file, File);
+      res.status(200).send('File has been deleted');
+    } else {
+      res.status(500).send('Internal Error: ModuleItem has no file upload');
+    }
+  } catch (_err) {
+    res.status(500).send('Could not delete file');
   }
 };
