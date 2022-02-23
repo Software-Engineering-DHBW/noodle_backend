@@ -108,21 +108,7 @@ export const changeModuleItem = async (req: Request, res: Response) => {
     const moduleItem: any = await getOneObject({
       where: { id: moduleItemId, moduleId },
     }, ModuleItem);
-    if (data.content != null) {
-      moduleItem.content = data.content;
-    }
-    if (data.webLink != null) {
-      moduleItem.webLink = data.webLink;
-    }
-    if (data.hasFileUpload != null) {
-      moduleItem.hasFileUpload = data.hasFileUpload;
-    }
-    if (data.isVisible != null) {
-      moduleItem.isVisible = data.isVisible;
-    }
-    if (data.dueDate != null) {
-      moduleItem.dueDate = new Date(data.dueDate);
-    }
+    Object.assign(moduleItem, data);
     await saveObject(moduleItem, ModuleItem);
     res.status(200).send('ModuleItem has been changed');
   } catch (_err) {
