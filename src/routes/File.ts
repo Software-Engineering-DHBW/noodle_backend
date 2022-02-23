@@ -1,17 +1,17 @@
-import { Request, Response } from 'express';
 import { getConnection } from 'typeorm';
 import File from '../entity/File';
+import ModuleItem from '../entity/ModuleItem';
 import User from '../entity/User';
 
 /**
  * Representation of the incoming data of a new file
  * @interface
  */
-interface RegisterFile {
-    owner: User
-    name: string;
-    path: string;
-    uploadDate: Date;
+export interface RegisterFile {
+  owner: User
+  name: string;
+  path: string;
+  attachedAt: ModuleItem;
 }
 
 /**
@@ -24,7 +24,9 @@ const createFile = (data: RegisterFile): File => {
   newFile.owner = data.owner;
   newFile.name = data.name;
   newFile.path = data.path;
-  newFile.uploadDate = data.uploadDate;
+  const time = Date.now();
+  newFile.uploadDate = new Date(time);
+  newFile.attachedAt = data.attachedAt;
   return newFile;
 };
 
@@ -37,16 +39,16 @@ const createFile = (data: RegisterFile): File => {
  * @param {File} newFile - New File to store
  * @param {Response} res - Response object for sending the response
  */
-const saveNewFile = async (newFile: File, res: Response): Promise<void> => {
+const saveNewFile = async (newFile: File): Promise<number> => {
   const queryRunner = getConnection().createQueryRunner();
   await queryRunner.startTransaction();
   try {
     await queryRunner.manager.save(newFile);
     await queryRunner.commitTransaction();
-    res.sendStatus(200);
+    return 200;
   } catch (_err) {
     await queryRunner.rollbackTransaction();
-    res.sendStatus(403);
+    return 403;
   }
 };
 
@@ -57,12 +59,7 @@ const saveNewFile = async (newFile: File, res: Response): Promise<void> => {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
-export const registerFile = async (req: Request, res: Response) => {
-  const data: RegisterFile = req.body;
+export const registerFile = async (data: RegisterFile): Promise<number> => {
   const newFile: File = createFile(data);
-  await saveNewFile(newFile, res);
-};
-
-export const usless = () => {
-
+  return saveNewFile(newFile);
 };

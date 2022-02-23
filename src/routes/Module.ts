@@ -1,7 +1,5 @@
 import { Request, Response } from 'express';
-import {
-  getConnection, getRepository, Not,
-} from 'typeorm';
+import { getConnection, Not } from 'typeorm';
 import {
   deleteObjects, getObjects, getOneObject, saveObject,
 } from './Manager';
@@ -62,11 +60,10 @@ const createModule = (data: GeneralModule): Module => {
   data.assignedTeacher.forEach(async (element) => {
     const teacher: any = await getOneObject({ where: { id: element } }, User);
     if (!teacher.isTeacher) {
-      console.log(`Assigned User ${teacher.fullName} is not a teacher`);
+      // console.log(`Assigned User ${teacher.fullName} is not a teacher`);
     }
     teacherList.push(teacher);
   });
-  console.log(teacherList);
   newModule.assignedTeacher = teacherList;
   if (data.submodule != null) {
     const moduleList: Module[] = [];
@@ -275,7 +272,9 @@ export const addSubmodule = async (req: Request, res: Response) => {
     }
     const module: any = await getOneObject({ where: { id: moduleId } }, Module);
     const submodules: any = await getObjects({ where: { seniormodule: moduleId } }, Module);
-    const submodulesOtherModules: any = await getObjects({ where: { seniormodule: Not(moduleId) } }, Module);
+    const submodulesOtherModules: any = await getObjects({
+      where: { seniormodule: Not(moduleId) },
+    }, Module);
     const submodulesNull: any = await getObjects({ where: { seniormodule: null } }, Module);
     const submodulesAll = submodulesOtherModules.concat(submodulesNull);
     submodulesAll.forEach((element, index) => {
@@ -288,7 +287,6 @@ export const addSubmodule = async (req: Request, res: Response) => {
     await saveObject(module, Module);
     res.status(200).send('The Submodule have been added');
   } catch (_err) {
-    console.log(_err);
     res.status(500).send('Submodule could not be added');
   }
 };

@@ -1,5 +1,5 @@
 import {
-  Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn,
+  Column, Entity, JoinColumn, ManyToOne, PrimaryGeneratedColumn,
 } from 'typeorm';
 import ModuleItem from './ModuleItem';
 import User from './User';
@@ -9,7 +9,7 @@ export default class File {
   @PrimaryGeneratedColumn()
     id: number;
 
-  @OneToOne(() => User)
+  @ManyToOne(() => User)
   @JoinColumn()
     owner: User;
 
@@ -24,6 +24,7 @@ export default class File {
 
   @ManyToOne(() => ModuleItem, (moduleItem: ModuleItem) => moduleItem.id, {
     onDelete: 'CASCADE',
+    cascade: true,
   })
-    uploadedAt: ModuleItem;
+    attachedAt: ModuleItem;
 }

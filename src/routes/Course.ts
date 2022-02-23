@@ -43,10 +43,9 @@ const createCourse = async (data: GeneralCourse): Promise<Course> => {
   const studentList: User[] = [];
   data.students.forEach(async (element) => {
     const student: any = await getOneObject({ where: { id: element } }, User);
-    if (student.isAdministrator || student.isTeacher) {
-      console.log(`assigned student ${student.fullName} is teacher or admin`);
+    if (student.isAdministrator === false && student.isTeacher === false) {
+      studentList.push(student);
     }
-    studentList.push(student);
   });
   newCourse.students = studentList;
   return newCourse;
@@ -98,7 +97,9 @@ export const addStudent = async (req: Request, res: Response) => {
     const { courseId } = req.params;
     const course: any = await getOneObject({ where: { id: courseId } }, Course);
     const students: any = await getObjects({ where: { course: courseId } }, User);
-    const otherStudents: any = await getObjects({ where: [{ course: Not(courseId) }, { course: null }] }, User);
+    const otherStudents: any = await getObjects({
+      where: [{ course: Not(courseId) }, { course: null }],
+    }, User);
     const data: ChangeStudents = req.body;
     otherStudents.forEach((element, index) => {
       const indexData = data.students.indexOf(element.id);
