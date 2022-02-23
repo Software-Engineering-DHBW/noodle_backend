@@ -291,7 +291,7 @@ export const deleteUploadedFile = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteAllUploadedFile = async (req: Request, res: Response) => {
+export const deleteAllUploadedFiles = async (req: Request, res: Response) => {
   try {
     const { moduleId } = req.params;
     const { moduleItemId } = req.params;

@@ -137,6 +137,14 @@ router.post('/module/:moduleId/:moduleItemId/uploadFile', (req: express.Request,
   moduleItem.uploadFile(req, res);
 });
 
+router.post('/module/:moduleId/:moduleItemId/deleteUploadedFile', (req: express.Request, res: express.Respone) => {
+  moduleItem.deleteUploadedFile(req, res);
+});
+
+router.post('/module/:moduleId/:moduleItemId/deleteAllUploadedFiles', (req: express.Request, res: express.Respone) => {
+  moduleItem.deleteAllUploadedFiles(req, res);
+});
+
 // API Calls for Course
 router.get('/course/:courseId', (req: express.Request, res: express.Response) => {
   course.selectCourse(req, res);
