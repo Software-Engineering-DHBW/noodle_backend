@@ -37,7 +37,6 @@ export default class ModuleItem {
 
   @OneToMany(() => File, (file: File) => file.attachedAt, {
     nullable: true,
-    cascade: true,
   })
     attachedFiles: File[];
 

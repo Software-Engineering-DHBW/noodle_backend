@@ -24,6 +24,7 @@ export default class File {
 
   @ManyToOne(() => ModuleItem, (moduleItem: ModuleItem) => moduleItem.id, {
     onDelete: 'CASCADE',
+    cascade: true,
   })
     attachedAt: ModuleItem;
 }

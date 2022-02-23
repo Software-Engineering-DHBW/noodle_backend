@@ -113,8 +113,28 @@ router.get('/module/:moduleId/selectModuleItems', (req: express.Request, res: ex
   moduleItem.selectAllModuleItems(req, res);
 });
 
+router.post('/module/:moduleId/:moduleItemId/changeModuleItem', (req: express.Request, res: express.Respone) => {
+  moduleItem.changeModuleItem(req, res);
+});
+
+router.post('/module/:moduleId/:moduleItemId/deleteModuleItem', (req: express.Request, res: express.Respone) => {
+  moduleItem.deleteModuleItem(req, res);
+});
+
+router.post('/module/:moduleId/deleteAllModuleItems', (req: express.Request, res: express.Respone) => {
+  moduleItem.deleteAllModuleItems(req, res);
+});
+
+router.post('/module/:moduleId/:moduleItemId/addDownloadFile', (req: express.Request, res: express.Respone) => {
+  moduleItem.addDownloadFile(req, res);
+});
+
 router.post('/module/:moduleId/:moduleItemId/deleteFile', (req: express.Request, res: express.Respone) => {
   moduleItem.deleteDownloadFile(req, res);
+});
+
+router.post('/module/:moduleId/:moduleItemId/uploadFile', (req: express.Request, res: express.Respone) => {
+  moduleItem.uploadFile(req, res);
 });
 
 // API Calls for Course

@@ -19,7 +19,7 @@ interface RegisterModuleItem {
   hasFileUpload?: boolean;
   downloadableFile?: File;
   isVisible?: boolean;
-  dueDate?: Date;
+  dueDate?: string;
 }
 /**
  * Representation of the incoming data of a moduleItem
@@ -30,7 +30,7 @@ interface ChangeModuleItem {
   webLink?: string;
   hasFileUpload?: boolean;
   isVisible?: boolean;
-  dueDate?: Date;
+  dueDate?: string;
 }
 
 /**
@@ -45,7 +45,7 @@ const createModuleItem = (data: RegisterModuleItem): ModuleItem => {
   newModuleItem.webLink = data.webLink;
   newModuleItem.hasFileUpload = data.hasFileUpload;
   newModuleItem.isVisible = data.isVisible;
-  newModuleItem.dueDate = data.dueDate;
+  newModuleItem.dueDate = new Date(data.dueDate);
   return newModuleItem;
 };
 /**
@@ -71,15 +71,22 @@ const saveNewModuleItem = async (newModuleItem: ModuleItem, res: Response) => {
   }
 };
 
-export const registerModuleItem = (req: Request, res: Response) => {
+export const registerModuleItem = async (req: Request, res: Response) => {
   const data: RegisterModuleItem = req.body;
   data.moduleId = req.params.moduleId;
   const newModuleItem: ModuleItem = createModuleItem(data);
+  let code = 200;
   if (data.downloadableFile != null) {
+    const file: RegisterFile = data.downloadableFile;
+    file.attachedAt = newModuleItem;
     newModuleItem.hasDownloadableFile = true;
-    registerFile(data, newModuleItem);
+    code = await registerFile(file);
   }
-  saveNewModuleItem(newModuleItem, res);
+  if (code === 200) {
+    await saveNewModuleItem(newModuleItem, res);
+  } else {
+    res.sendStatus(403);
+  }
 };
 
 /**
@@ -89,7 +96,6 @@ export const registerModuleItem = (req: Request, res: Response) => {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
-// TODO dueDate
 export const changeModuleItem = async (req: Request, res: Response) => {
   try {
     const data: ChangeModuleItem = req.body;
@@ -111,7 +117,7 @@ export const changeModuleItem = async (req: Request, res: Response) => {
       moduleItem.isVisible = data.isVisible;
     }
     if (data.dueDate != null) {
-      moduleItem.dueDate = data.dueDate;
+      moduleItem.dueDate = new Date(data.dueDate);
     }
     await saveObject(moduleItem, ModuleItem);
     res.status(200).send('ModuleItem has been changed');
@@ -149,8 +155,8 @@ export const deleteModuleItem = async (req: Request, res: Response) => {
 export const deleteAllModuleItems = async (req: Request, res: Response) => {
   try {
     const { moduleId } = req.params;
-    const moduleItem: any = await getObjects({ where: { moduleId } }, ModuleItem);
-    await deleteObjects(moduleItem, ModuleItem);
+    const moduleItems: any = await getObjects({ where: { moduleId } }, ModuleItem);
+    await deleteObjects(moduleItems, ModuleItem);
     res.send(200).status('The ModuleItems have been deleted');
   } catch (_err) {
     res.send(500).status('ModuleItems could not be deleted');
@@ -207,7 +213,8 @@ export const addDownloadFile = async (req: Request, res: Response) => {
       where: { id: moduleItemId, moduleId },
     }, ModuleItem);
     moduleItem.hasDownloadableFile = true;
-    registerFile(data, moduleItem);
+    data.attachedAt = moduleItem;
+    registerFile(data);
     saveObject(moduleItem, ModuleItem);
     res.status(200).send('Added new File to ModuleItem');
   } catch (_err) {
@@ -221,7 +228,6 @@ export const addDownloadFile = async (req: Request, res: Response) => {
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
-// TODO richtig machen
 export const deleteDownloadFile = async (req: Request, res: Response) => {
   try {
     const { moduleId } = req.params;
@@ -236,5 +242,25 @@ export const deleteDownloadFile = async (req: Request, res: Response) => {
     res.status(200).send('Deleted File');
   } catch (_err) {
     res.status(500).send('Could not delete File');
+  }
+};
+
+export const uploadFile = async (req: Request, res: Response) => {
+  try {
+    const { moduleId } = req.params;
+    const { moduleItemId } = req.params;
+    const data: RegisterFile = req.body;
+    const moduleItem: any = await getOneObject({
+      where: { id: moduleItemId, moduleId },
+    }, ModuleItem);
+    if (moduleItem.hasFileUpload) {
+      data.attachedAt = moduleItem;
+      await registerFile(data);
+      res.status(200).send('File has been uploaded');
+    } else {
+      res.status(500).send('Internal Error: ModuleItem has no file upload');
+    }
+  } catch (_err) {
+    res.status(500).send('Could not upload file');
   }
 };
