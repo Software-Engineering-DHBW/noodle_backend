@@ -88,6 +88,9 @@ export const getGradesForModule = async (req: Request, res: Response) => {
 export const deleteGradeForStudent = async (req: Request, res: Response) => {
   try {
     const data: Grades = req.body;
+    if (Object.values(data).some((x) => x === null || x === '')) {
+      throw new Error('Null-Value detected');
+    }
     await deleteObjects(data, Grades);
     res.status(200).send('The grade has been deleted');
   } catch (_err) {

@@ -1,6 +1,5 @@
 import * as express from 'express';
-import * as jwt from 'jsonwebtoken';
-import * as user from './User';
+import * as jwt from 'jsonwebtoken'; import * as user from './User';
 import * as module from './Module';
 import * as course from './Course';
 import * as grades from './Grades';
@@ -181,10 +180,12 @@ router.get('/grades/module/:moduleId', (req: express.Request, res: express.Respo
 });
 
 router.post('/grades/insert', (req: express.Request, res: express.Response) => {
+  req.params.moduleId = req.body.moduleId;
   Permission.checkAdministratorOrModuleTeacher(req, res, grades.insertGradeForStudent);
 });
 
 router.post('/grades/delete', (req: express.Request, res: express.Response) => {
+  req.params.moduleId = req.body.moduleId;
   Permission.checkAdministratorOrModuleTeacher(req, res, grades.deleteGradeForStudent);
 });
 

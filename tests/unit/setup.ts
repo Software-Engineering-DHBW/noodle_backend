@@ -100,7 +100,7 @@ const init = async () => {
     await createGrade(2, secondStudent, secondModule, 2, manager);
     await createTimetable(1, module, '1', manager);
     await createTimetable(2, secondModule, '2', manager);
-    connection.close();
+    await connection.close();
   });
 };
 
