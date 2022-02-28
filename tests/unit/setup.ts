@@ -1,4 +1,6 @@
-import { createConnection, getManager, EntityManager } from 'typeorm';
+import {
+  createConnection, getManager, EntityManager, getConnection,
+} from 'typeorm';
 import * as argon2 from 'argon2';
 import { ormOptions } from './helper';
 import User from '../../src/entity/User';
@@ -76,30 +78,35 @@ const createTimetable = async (id, module, room, manager): Promise<Timetable> =>
   return timetable;
 };
 
+const setupDatabase = async () => {
+  const manager: EntityManager = getManager();
+  const administrator: User = await createUser(1, 'administrator', true, false, manager);
+  await createUserDetail(administrator, manager);
+  const teacher = await createUser(2, 'teacher', false, true, manager);
+  await createUserDetail(teacher, manager);
+  const secondTeacher = await createUser(3, 'secondTeacher', false, true, manager);
+  await createUserDetail(secondTeacher, manager);
+  const student = await createUser(4, 'student', false, false, manager);
+  await createUserDetail(student, manager);
+  const secondStudent = await createUser(5, 'secondStudent', false, false, manager);
+  await createUserDetail(secondStudent, manager);
+  const course: Course = await createCourse(1, 'course', [student], manager);
+  const secondCourse: Course = await createCourse(2, 'secondCourse', [secondStudent], manager);
+  const module: Module = await createModule(1, 'module', [teacher], course, manager);
+  const secondModule: Module = await createModule(2, 'secondModule', [secondTeacher], secondCourse, manager);
+  await createGrade(1, student, module, 1, manager);
+  await createGrade(2, secondStudent, secondModule, 2, manager);
+  await createTimetable(1, module, '1', manager);
+  await createTimetable(2, secondModule, '2', manager);
+};
+export default setupDatabase;
+
 /**
  *Shared, valid objects, which will be used for the initialization of the database and by the tests
  */
 const init = async () => {
   await createConnection(ormOptions).then(async (connection) => {
-    const manager: EntityManager = getManager();
-    const administrator: User = await createUser(1, 'administrator', true, false, manager);
-    await createUserDetail(administrator, manager);
-    const teacher = await createUser(2, 'teacher', false, true, manager);
-    await createUserDetail(teacher, manager);
-    const secondTeacher = await createUser(3, 'secondTeacher', false, true, manager);
-    await createUserDetail(secondTeacher, manager);
-    const student = await createUser(4, 'student', false, false, manager);
-    await createUserDetail(student, manager);
-    const secondStudent = await createUser(5, 'secondStudent', false, false, manager);
-    await createUserDetail(secondStudent, manager);
-    const course: Course = await createCourse(1, 'course', [student], manager);
-    const secondCourse: Course = await createCourse(2, 'secondCourse', [secondStudent], manager);
-    const module: Module = await createModule(1, 'module', [teacher], course, manager);
-    const secondModule: Module = await createModule(2, 'secondModule', [secondTeacher], secondCourse, manager);
-    await createGrade(1, student, module, 1, manager);
-    await createGrade(2, secondStudent, secondModule, 2, manager);
-    await createTimetable(1, module, '1', manager);
-    await createTimetable(2, secondModule, '2', manager);
+    await setupDatabase();
     await connection.close();
   });
 };
