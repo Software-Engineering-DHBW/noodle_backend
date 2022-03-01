@@ -44,7 +44,7 @@
     "start": "ts-node src/index.ts",
     "typeorm": "node --require ts-node/register ./node_modules/typeorm/cli.js",
     "watch": "nodemon src/index.ts",
-    "test": "jest --coverage",
+    "test": "jest --coverage --reporters=default --reporters=jest-junit",
     "test:e2e": "psql -h localhost -U noodle -d noodle -c \"DROP SCHEMA IF EXISTS e2e CASCADE; CREATE SCHEMA e2e; GRANT ALL ON SCHEMA e2e TO noodle;\" && ts-node ./tests/integration/setup.ts && jest --coverage -c jest.e2e.js --reporters=default --reporters=jest-junit",
     "build": "tsc"
   }
