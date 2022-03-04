@@ -100,7 +100,6 @@ const saveNewUser = async (
 };
 
 /**
- * @exports
  * @async
  * Registers a new User with the data given by the HTTP-Request
  * @param {Request} req - Holds the data from the HTTP-Request
@@ -140,7 +139,6 @@ const createLoginJwt = async (user: User, userDetails: UserDetail): Promise<stri
   }, process.env.jwtSignatureKey);
 };
 /**
- * @exports
  * @async
  * Tries to login a user with the given credentials
  * @param {Request} req - Received request object
@@ -163,7 +161,6 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
 };
 
 /**
- * @exports
  * @async
  * Deletes the user with the given username and id
  * @param {Request} req - Received request object
@@ -182,7 +179,6 @@ export const deleteUser = async (req: Request, res: Response) => {
 };
 
 /**
- * @exports
  * @async
  * Changes the password of a user
  * @param {Request} req - Received request object
@@ -201,7 +197,6 @@ export const changeUserPassword = async (req: Request, res: Response) => {
 };
 
 /**
- * @exports
  * @async
  * Get all users from the repository
  * @param {Request} req - Received request object

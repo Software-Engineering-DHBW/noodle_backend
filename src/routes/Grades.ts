@@ -9,7 +9,6 @@ interface ModuleGrade extends Grades {
   studentDetails?: any
 }
 /**
- * @exports
  * @async
  * Insert or update a grade
  * @param {Request} req - Received request object
@@ -26,7 +25,6 @@ export const insertGradeForStudent = async (req: Request, res: Response) => {
 };
 
 /**
- * @exports
  * @async
  * Gets the grades for a specific student from the repository 'Grades'
  * @param {Request} req - Received request object
@@ -47,7 +45,6 @@ export const getGradesForStudent = async (req: Request, res: Response) => {
 };
 
 /**
- * @exports
  * @async
  * Gets the grades for a specific module from the repository 'Grades'
  * @param {Request} req - Received request object
@@ -79,7 +76,6 @@ export const getGradesForModule = async (req: Request, res: Response) => {
 };
 
 /**
- * @exports
  * @async
  * Deletes a specific grade from the repsitory 'Grades'
  * @param {Request} req - Received request object

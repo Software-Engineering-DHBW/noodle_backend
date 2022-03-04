@@ -73,7 +73,6 @@ const saveNewCourse = async (newCourse: Course, res: Response): Promise<void> =>
 };
 
 /**
- * @exports
  * @async
  * Registers a new Course with the data given by the HTTP-Request
  * @param {Request} req - Holds the data from the HTTP-Request
@@ -86,7 +85,6 @@ export const registerCourse = async (req: Request, res: Response) => {
 };
 
 /**
- * @exports
  * @async
  * Adds a new student to a course with the data given by the HTTP-Request
  * @param {Request} req - Holds the data from the HTTP-Request
@@ -116,7 +114,6 @@ export const addStudent = async (req: Request, res: Response) => {
 };
 
 /**
- * @exports
  * @async
  * Reomves a student to a course with the data given by the HTTP-Request
  * @param {Request} req - Holds the data from the HTTP-Request
@@ -144,7 +141,6 @@ export const deleteStudent = async (req: Request, res: Response) => {
 };
 
 /**
- * @exports
  * @async
  * Returns the informations to a course with the data given by the HTTP-Request
  * @param {Request} req - Holds the data from the HTTP-Request
@@ -164,7 +160,6 @@ export const selectCourse = async (req: Request, res: Response) => {
 };
 
 /**
- * @exports
  * @async
  * Updates a course with the data given by the HTTP-Request
  * @param {Request} req - Holds the data from the HTTP-Request
@@ -184,7 +179,6 @@ export const changeCourse = async (req: Request, res: Response) => {
 };
 
 /**
- * @exports
  * @async
  * Updates a course with the data given by the HTTP-Request
  * @param {Request} req - Holds the data from the HTTP-Request

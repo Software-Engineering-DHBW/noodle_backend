@@ -53,7 +53,6 @@ const saveNewFile = async (newFile: File): Promise<number> => {
 };
 
 /**
- * @exports
  * @async
  * Registers a new File with the data given by the HTTP-Request
  * @param {Request} req - Holds the data from the HTTP-Request

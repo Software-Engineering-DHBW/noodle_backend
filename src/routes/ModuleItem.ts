@@ -94,7 +94,6 @@ export const registerModuleItem = async (req: Request, res: Response) => {
 };
 
 /**
- * @exports
  * @async
  * Updates a moduleItem with the data given by the HTTP-Request
  * @param {Request} req - Holds the data from the HTTP-Request
@@ -116,7 +115,6 @@ export const changeModuleItem = async (req: Request, res: Response) => {
   }
 };
 /**
- * @exports
  * @async
  * Deletes one moduleItem with the data given by the HTTP-Request
  * @param {Request} req - Holds the data from the HTTP-Request
@@ -136,7 +134,6 @@ export const deleteModuleItem = async (req: Request, res: Response) => {
   }
 };
 /**
- * @exports
  * @async
  * Deletes all moduleItems of the module with the data given by the HTTP-Request
  * @param {Request} req - Holds the data from the HTTP-Request
@@ -153,7 +150,6 @@ export const deleteAllModuleItems = async (req: Request, res: Response) => {
   }
 };
 /**
- * @exports
  * @async
  * Returns a moduleItem with the data given by the HTTP-Request
  * @param {Request} req - Holds the data from the HTTP-Request
@@ -172,7 +168,6 @@ export const selectModuleItem = async (req: Request, res: Response) => {
   }
 };
 /**
- * @exports
  * @async
  * Returns all moduleItems of the module with the data given by the HTTP-Request
  * @param {Request} req - Holds the data from the HTTP-Request
@@ -188,7 +183,6 @@ export const selectAllModuleItems = async (req: Request, res: Response) => {
   }
 };
 /**
- * @exports
  * @async
  * Adds a downloadable file to a moduleItem with the data given by the HTTP-Request
  * @param {Request} req - Holds the data from the HTTP-Request
@@ -212,7 +206,6 @@ export const addDownloadFile = async (req: Request, res: Response) => {
   }
 };
 /**
- * @exports
  * @async
  * Deletes the downlaodable file of the moduleItem with the data given by the HTTP-Request
  * @param {Request} req - Holds the data from the HTTP-Request
