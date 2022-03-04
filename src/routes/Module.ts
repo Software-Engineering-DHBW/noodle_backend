@@ -102,7 +102,6 @@ const saveNewModule = async (newModule: Module, res: Response): Promise<void> =>
 };
 
 /**
- * @exports
  * Registers a new Module with the data given in the HTTP-Request
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res- Used to form the response
@@ -114,7 +113,6 @@ export const registerModule = (req: Request, res: Response) => {
 };
 
 /**
- * @exports
  * @async
  * Deletes a Module with the data given in the HTTP-Request
  * @param {Request} req - Holds the data from the HTTP-Request
@@ -132,7 +130,6 @@ export const deleteModule = async (req: Request, res: Response) => {
 };
 
 /**
- * @exports
  * @async
  * Adds a Teacher to a Module with the data given in the HTTP-Request
  * @param {Request} req - Holds the data from the HTTP-Request
@@ -164,7 +161,6 @@ export const addTeacher = async (req: Request, res: Response) => {
 };
 
 /**
- * @exports
  * @async
  * Deletes a Teacher from a Module with the data given in the HTTP-Request
  * @param {Request} req - Holds the data from the HTTP-Request
@@ -195,7 +191,6 @@ export const deleteTeacher = async (req: Request, res: Response) => {
 };
 
 /**
- * @exports
  * @async
  * Adds a Course to a Module with the data given in the HTTP-Request
  * @param {Request} req - Holds the data from the HTTP-Request
@@ -218,7 +213,6 @@ export const addCourse = async (req: Request, res: Response) => {
 };
 
 /**
- * @exports
  * @async
  * Deletes a Course from a Module with the data given in the HTTP-Request
  * @param {Request} req - Holds the data from the HTTP-Request
@@ -237,7 +231,6 @@ export const deleteCourse = async (req: Request, res: Response) => {
 };
 
 /**
- * @exports
  * @async
  * Changes the description of a Module with the data given in the HTTP-Request
  * @param {Request} req - Holds the data from the HTTP-Request
@@ -257,7 +250,6 @@ export const changeDescription = async (req: Request, res: Response) => {
 };
 
 /**
- * @exports
  * @async
  * Adds a Submodule to a Module with the data given in the HTTP-Request
  * @param {Request} req - Holds the data from the HTTP-Request
@@ -292,7 +284,6 @@ export const addSubmodule = async (req: Request, res: Response) => {
 };
 
 /**
- * @exports
  * @async
  * Deletes a Submodule from a Module with the data given in the HTTP-Request
  * @param {Request} req - Holds the data from the HTTP-Request
@@ -323,7 +314,6 @@ export const deleteSubmodule = async (req: Request, res: Response) => {
 };
 
 /**
- * @exports
  * @async
  * Changes the name of a Module with the data given in the HTTP-Request
  * @param {Request} req - Holds the data from the HTTP-Request
@@ -345,7 +335,6 @@ export const changeName = async (req: Request, res: Response) => {
   }
 };
 /**
- * @exports
  * @async
  * Returns the informations of a module
  * @param {Request} req - Holds the data from the HTTP-Request

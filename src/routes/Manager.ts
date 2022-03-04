@@ -1,7 +1,6 @@
 import { getManager, EntityManager } from 'typeorm';
 
 /**
- * @exports
  * @async
  * Saves or overwrites an object in the Repository
  * @param {object} object - The object to be saved
@@ -15,7 +14,6 @@ export const saveObject = async (obj: object, objectType: Function) => {
 };
 
 /**
- * @exports
  * @async
  * Returns one object that meets the conditions
  * @param {object} findOptions - Repository with the object
@@ -36,7 +34,6 @@ export const getOneObject = async (
 };
 
 /**
- * @exports
  * @async
  * Returns any object that meets the conditions
  * @param {object} findOptions - Repository with the objects
@@ -52,7 +49,6 @@ export const getObjects = async (
 };
 
 /**
- * @exports
  * @async
  * Deletes objects in the given Repository
  * @param {object} findOptions - Repository with the objects to be deleted

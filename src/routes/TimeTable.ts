@@ -6,7 +6,6 @@ import {
 import User from '../entity/User';
 
 /**
- * @exports
  * @async
  * Insert a new entry into the repository `Timetable`
  * @param {Request} req - Received request object
@@ -23,7 +22,6 @@ export const insertTimetableEntry = async (req: Request, res: Response) => {
 };
 
 /**
- * @exports
  * @async
  * Selects the timetable entries for a student or a teacher
  * @param {Request} req - Received request object
@@ -64,7 +62,6 @@ export const getTimeTableEntriesPerson = async (req: Request, res: Response) => 
 };
 
 /**
- * @exports
  * @async
  * Selects the timetable entries for a student
  * @param {Request} req - Received request object
@@ -87,7 +84,6 @@ export const getTimeTableEntriesCourse = async (req: Request, res: Response) => 
 };
 
 /**
- * @exports
  * @async
  * Selects the timetable entries for a module
  * @param {Request} req - Received request object
@@ -110,7 +106,6 @@ export const getTimeTableEntriesModule = async (req: Request, res: Response) => 
 };
 
 /**
- * @exports
  * @async
  * Deletes the specified timetable entries
  * @param {Request} req - Received request object
