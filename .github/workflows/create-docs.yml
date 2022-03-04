@@ -16,19 +16,12 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: '16'
-      - run: npm install
 
-      - run: tail -n +2 src/index.ts > src/index.ts
+      - name: Install needed packages
+        run: npm install
 
-      - name: Build
-        uses: andstor/jsdoc-action@v1
-        with:
-          source_dir: ./src
-          output_dir: ./docs
-          recurse: true
-          config_file: jsdoc.conf.json
-          template: minami
-          front_page: README.md
+      - name: Generate the documentation
+        run: npx typedoc --entryPointStrategy expand ./src
 
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
