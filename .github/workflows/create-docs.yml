@@ -18,6 +18,8 @@ jobs:
           node-version: '16'
       - run: npm install
 
+      - run: tail -n +2 src/index.ts > src/index.ts
+
       - name: Build
         uses: andstor/jsdoc-action@v1
         with:
