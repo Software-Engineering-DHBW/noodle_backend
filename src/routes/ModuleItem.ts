@@ -6,7 +6,7 @@ import Module from '../entity/Module';
 import {
   deleteObjects, getObjects, getOneObject, saveObject,
 } from './Manager';
-import { registerFile, RegisterFile } from './File';
+import User from '../entity/User';
 
 /**
  * Representation of the incoming data of a moduleItem
@@ -38,6 +38,33 @@ interface DeleteUploadedFile {
 }
 
 /**
+ * Representation of the incoming data of a new file
+ * @interface
+ */
+interface RegisterFile {
+  owner: User
+  name: string;
+  path: string;
+  attachedAt: ModuleItem;
+}
+
+/**
+ * Creates a new File with the given data
+ * @param {RegisterFile} data - Data of the new file
+ * @returns {File}
+ */
+const createFile = (data: RegisterFile): File => {
+  const newFile = new File();
+  newFile.owner = data.owner;
+  newFile.name = data.name;
+  newFile.path = data.path;
+  const time = Date.now();
+  newFile.uploadDate = new Date(time);
+  newFile.attachedAt = data.attachedAt;
+  return newFile;
+};
+
+/**
  * Creates a new ModuleItem with the given data
  * @param {GeneralModule} data - Data of the new module
  * @returns {Module}
@@ -49,9 +76,31 @@ const createModuleItem = (data: RegisterModuleItem): ModuleItem => {
   newModuleItem.webLink = data.webLink;
   newModuleItem.hasFileUpload = data.hasFileUpload;
   newModuleItem.isVisible = data.isVisible;
-  newModuleItem.dueDate = new Date(data.dueDate);
+  newModuleItem.dueDate = data.dueDate == null ? undefined : new Date(data.dueDate);
   return newModuleItem;
 };
+
+/**
+ * @async
+ * Saves the create File-Object inside the database.
+ * No data is stored, if the object could not be stored,
+ * in this case a response with HTTP-Status 403 will be formed.
+ * Forms a response with HTTP-Code 200 if the object could be stored.
+ * @param {File} newFile - New File to store
+ */
+const saveNewFile = async (newFile: File): Promise<boolean> => {
+  const queryRunner = getConnection().createQueryRunner();
+  await queryRunner.startTransaction();
+  try {
+    await queryRunner.manager.save(newFile);
+    await queryRunner.commitTransaction();
+    return true;
+  } catch (_err) {
+    await queryRunner.rollbackTransaction();
+    return false;
+  }
+};
+
 /**
  * @async
  * Saves the create ModuleItem- and File-Object inside the database.
@@ -60,7 +109,6 @@ const createModuleItem = (data: RegisterModuleItem): ModuleItem => {
  * Forms a response with HTTP-Code 200 if the objects could be stored.
  * @param {ModuleItem} newModuleItem - New ModuleItem to store
  * @param {Response} res - Response object for sending the response
- * @param {File} newFile - New File to store
  */
 const saveNewModuleItem = async (newModuleItem: ModuleItem, res: Response) => {
   const queryRunner = getConnection().createQueryRunner();
@@ -79,14 +127,15 @@ export const registerModuleItem = async (req: Request, res: Response) => {
   const data: RegisterModuleItem = req.body;
   data.moduleId = req.params.moduleId;
   const newModuleItem: ModuleItem = createModuleItem(data);
-  let code = 200;
+  let code: boolean = true;
   if (data.downloadableFile != null) {
     const file: RegisterFile = data.downloadableFile;
     file.attachedAt = newModuleItem;
     newModuleItem.hasDownloadableFile = true;
-    code = await registerFile(file);
+    const newFile: File = createFile(file);
+    code = await saveNewFile(newFile);
   }
-  if (code === 200) {
+  if (code === true) {
     await saveNewModuleItem(newModuleItem, res);
   } else {
     res.sendStatus(403);
@@ -198,8 +247,9 @@ export const addDownloadFile = async (req: Request, res: Response) => {
     }, ModuleItem);
     moduleItem.hasDownloadableFile = true;
     data.attachedAt = moduleItem;
-    registerFile(data);
-    saveObject(moduleItem, ModuleItem);
+    const newFile: File = createFile(data);
+    await saveObject(newFile, File);
+    await saveObject(moduleItem, ModuleItem);
     res.status(200).send('Added new File to ModuleItem');
   } catch (_err) {
     res.status(500).send('Could not add File to ModuleItem');
@@ -238,7 +288,8 @@ export const uploadFile = async (req: Request, res: Response) => {
     }, ModuleItem);
     if (moduleItem.hasFileUpload) {
       data.attachedAt = moduleItem;
-      await registerFile(data);
+      const newFile: File = createFile(data);
+      await saveObject(newFile, File);
       res.status(200).send('File has been uploaded');
     } else {
       res.status(500).send('Internal Error: ModuleItem has no file upload');

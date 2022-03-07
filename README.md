@@ -33,3 +33,6 @@ Steps to run this project:
 1. Run `npm i` command
 2. Setup database settings inside `ormconfig.json` file
 3. Run `npm start` command
+
+# Documentation
+For the API Documentation look [here](https://software-engineering-dhbw.github.io/noodle_backend/index.html)
