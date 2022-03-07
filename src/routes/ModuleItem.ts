@@ -338,21 +338,13 @@ export const uploadFile = async (req: Request, res: Response) => {
  */
 export const deleteUploadedFile = async (req: Request, res: Response) => {
   try {
-    const { moduleId } = req.params;
     const { moduleItemId } = req.params;
     const data: DeleteUploadedFile = req.body;
-    const moduleItem: any = await getOneObject({
-      where: { id: moduleItemId, moduleId },
-    }, ModuleItem);
-    if (moduleItem.hasFileUpload) {
-      const file: any = await getOneObject({
-        where: { id: data.fileId, attachedAt: moduleItemId },
-      }, File);
-      await deleteObjects(file, File);
-      res.status(200).send('File has been deleted');
-    } else {
-      res.status(500).send('Internal Error: ModuleItem has no file upload');
-    }
+    const file: any = await getOneObject({
+      where: { id: data.fileId, attachedAt: moduleItemId },
+    }, File);
+    await deleteObjects(file, File);
+    res.status(200).send('File has been deleted');
   } catch (_err) {
     res.status(500).send('Could not delete file');
   }
@@ -367,20 +359,12 @@ export const deleteUploadedFile = async (req: Request, res: Response) => {
  */
 export const deleteAllUploadedFiles = async (req: Request, res: Response) => {
   try {
-    const { moduleId } = req.params;
     const { moduleItemId } = req.params;
-    const moduleItem: any = await getOneObject({
-      where: { id: moduleItemId, moduleId },
-    }, ModuleItem);
-    if (moduleItem.hasFileUpload) {
-      const file: any = await getObjects({
-        where: { attachedAt: moduleItemId },
-      }, File);
-      await deleteObjects(file, File);
-      res.status(200).send('File has been deleted');
-    } else {
-      res.status(500).send('Internal Error: ModuleItem has no file upload');
-    }
+    const file: any = await getObjects({
+      where: { attachedAt: moduleItemId },
+    }, File);
+    await deleteObjects(file, File);
+    res.status(200).send('File has been deleted');
   } catch (_err) {
     res.status(500).send('Could not delete file');
   }

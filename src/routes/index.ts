@@ -126,7 +126,7 @@ router.post('/module/:moduleId/deleteAllModuleItems', (req: express.Request, res
 });
 
 router.post('/module/:moduleId/:moduleItemId/addDownloadFile', (req: express.Request, res: express.Respone) => {
-  moduleItem.addDownloadFile(req, res);
+  Permission.checkAdministratorOrModuleTeacher(req, res, moduleItem.addDownloadFile);
 });
 
 router.post('/module/:moduleId/:moduleItemId/deleteFile', (req: express.Request, res: express.Respone) => {
