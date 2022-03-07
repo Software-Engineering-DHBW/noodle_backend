@@ -132,7 +132,7 @@ const saveNewModuleItem = async (newModuleItem: ModuleItem, res: Response) => {
 /**
  * @async
  * Registers a new ModuleItem with the data given by the HTTP-Request<br>
- * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-module:moduleidaddmoduleitem | POST /module/:moduleId/addMouduleItem}
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-modulemoduleidaddmoduleitem | POST /module/:moduleId/addMouduleItem}
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
@@ -158,7 +158,7 @@ export const registerModuleItem = async (req: Request, res: Response) => {
 /**
  * @async
  * Updates a moduleItem with the data given by the HTTP-Request<br>
- * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-module:moduleid:moduleitemidchangemoduleitem | POST /module/:moduleId/:moduleItemId/changeModuleItem}
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-modulemoduleidmoduleitemidchangemoduleitem | POST /module/:moduleId/:moduleItemId/changeModuleItem}
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
@@ -181,7 +181,7 @@ export const changeModuleItem = async (req: Request, res: Response) => {
 /**
  * @async
  * Deletes a moduleItem with the data given by the HTTP-Request<br>
- * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-module:moduleid:moduleitemiddeletemoduleitem | POST /module/:moduleId/:moduleItemId/deleteModuleItem}
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-modulemoduleidmoduleitemiddeletemoduleitem | POST /module/:moduleId/:moduleItemId/deleteModuleItem}
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
@@ -202,7 +202,7 @@ export const deleteModuleItem = async (req: Request, res: Response) => {
 /**
  * @async
  * Deletes all moduleItems with the data given by the HTTP-Request<br>
- * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-module:moduleiddeleteallmoduleitems | POST /module/:moduleId/deleteAllModuleItem}
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-modulemoduleiddeleteallmoduleitems | POST /module/:moduleId/deleteAllModuleItem}
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
@@ -220,7 +220,7 @@ export const deleteAllModuleItems = async (req: Request, res: Response) => {
 /**
  * @async
  * Returns the informations to a moduleItem with the data given by the HTTP-Request<br>
- * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#get-module:moduleid:moduleitemid | GET /module/:moduleId/:moduleItemId}
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#get-modulemoduleidmoduleitemid | GET /module/:moduleId/:moduleItemId}
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
@@ -239,7 +239,7 @@ export const selectModuleItem = async (req: Request, res: Response) => {
 /**
  * @async
  * Returns the informations of all moduleItems of the module with the data given by the HTTP-Request<br>
- * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#get-module:moduleidselectmoduleitems | GET /module/:moduleId/selectAllModuleItems}
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#get-modulemoduleidselectmoduleitems | GET /module/:moduleId/selectAllModuleItems}
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
@@ -255,7 +255,7 @@ export const selectAllModuleItems = async (req: Request, res: Response) => {
 /**
  * @async
  * Adds a downloadable file to a moduleItem with the data given by the HTTP-Request<br>
- * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-module:moduleid:moduleitemidadddownloadfile | POST /module/:moduleId/:moduleItemId/addDownloadFile}
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-modulemoduleidmoduleitemidadddownloadfile | POST /module/:moduleId/:moduleItemId/addDownloadFile}
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
@@ -280,7 +280,7 @@ export const addDownloadFile = async (req: Request, res: Response) => {
 /**
  * @async
  * Deletes the downlaodable file of the moduleItem with the data given by the HTTP-Request<br>
- * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-module:moduleid:moduleitemiddeletefile | POST /module/:moduleId/:moduleItemId/deleteFile}
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-modulemoduleidmoduleitemiddeletefile | POST /module/:moduleId/:moduleItemId/deleteFile}
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
@@ -304,7 +304,7 @@ export const deleteDownloadFile = async (req: Request, res: Response) => {
 /**
  * @async
  * Adds a uploaded File to the moduleItem if fileupload is allowed with the data given by the HTTP-Request<br>
- * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-module:moduleid:moduleitemiduploadfile | POST /module/:moduleId/:moduleItemId/uploadFile}
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-modulemoduleidmoduleitemiduploadfile | POST /module/:moduleId/:moduleItemId/uploadFile}
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
@@ -332,7 +332,7 @@ export const uploadFile = async (req: Request, res: Response) => {
 /**
  * @async
  * Deletes a uploaded file of the moduleItem with the data given by the HTTP-Request<br>
- * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-module:moduleid:moduleitemiddeleteuploadedfile | POST /module/:moduleId/:moduleItemId/deleteUploadedFile}
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-modulemoduleidmoduleitemiddeleteuploadedfile | POST /module/:moduleId/:moduleItemId/deleteUploadedFile}
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
@@ -353,7 +353,7 @@ export const deleteUploadedFile = async (req: Request, res: Response) => {
 /**
  * @async
  * Deletes all uploaded file of the moduleItem with the data given by the HTTP-Request<br>
- * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-module:moduleid:moduleitemiddeletealluploadedfiles | POST /module/:moduleId/:moduleItemId/deleteAllUploadedFiles}
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-modulemoduleidmoduleitemiddeletealluploadedfiles | POST /module/:moduleId/:moduleItemId/deleteAllUploadedFiles}
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
@@ -364,8 +364,8 @@ export const deleteAllUploadedFiles = async (req: Request, res: Response) => {
       where: { attachedAt: moduleItemId },
     }, File);
     await deleteObjects(file, File);
-    res.status(200).send('File has been deleted');
+    res.status(200).send('Files have been deleted');
   } catch (_err) {
-    res.status(500).send('Could not delete file');
+    res.status(500).send('Could not delete files');
   }
 };
