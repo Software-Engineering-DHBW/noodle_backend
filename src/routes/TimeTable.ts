@@ -7,7 +7,8 @@ import User from '../entity/User';
 
 /**
  * @async
- * Insert a new entry into the repository `Timetable`
+ * Insert a new entry into the repository `Timetable` <br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-timetableinsert | POST /timetable/insert}
  * @param {Request} req - Received request object
  * @param {Response} res - Received response object
  */
@@ -23,7 +24,8 @@ export const insertTimetableEntry = async (req: Request, res: Response) => {
 
 /**
  * @async
- * Selects the timetable entries for a student or a teacher
+ * Selects the timetable entries for a student or a teacher <br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#get-timetablegetperson | GET /timetable/getPerson}
  * @param {Request} req - Received request object
  * @param {Response} res - Received response object
  */
@@ -63,7 +65,8 @@ export const getTimeTableEntriesPerson = async (req: Request, res: Response) => 
 
 /**
  * @async
- * Selects the timetable entries for a student
+ * Selects the timetable entries for a student <br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#get-timetablegetcoursecourseid | GET /timetable/getCourse/:courseId}
  * @param {Request} req - Received request object
  * @param {Response} res - Received response object
  */
@@ -85,7 +88,8 @@ export const getTimeTableEntriesCourse = async (req: Request, res: Response) => 
 
 /**
  * @async
- * Selects the timetable entries for a module
+ * Selects the timetable entries for a module <br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#get-timetablegetmodulemoduleid | GET /timetable/getModule/:moduleId}
  * @param {Request} req - Received request object
  * @param {Response} res - Received response object
  */
@@ -107,7 +111,8 @@ export const getTimeTableEntriesModule = async (req: Request, res: Response) => 
 
 /**
  * @async
- * Deletes the specified timetable entries
+ * Deletes the specified timetable entries <br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-timetabledelete | POST /timetable/delete}
  * @param {Request} req - Received request object
  * @param {Response} res - Received response object
  */
