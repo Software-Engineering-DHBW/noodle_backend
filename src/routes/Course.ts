@@ -74,9 +74,11 @@ const saveNewCourse = async (newCourse: Course, res: Response): Promise<void> =>
 
 /**
  * @async
- * Registers a new Course with the data given by the HTTP-Request
+ * Registers a new Course with the data given by the HTTP-Request<br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-courseregister | POST /course/register}
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
+ * @link Look
  */
 export const registerCourse = async (req: Request, res: Response) => {
   const data: GeneralCourse = req.body;
@@ -86,7 +88,8 @@ export const registerCourse = async (req: Request, res: Response) => {
 
 /**
  * @async
- * Adds a new student to a course with the data given by the HTTP-Request
+ * Adds a new student to a course with the data given by the HTTP-Request<br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-coursecourseidaddstudent | POST /course/:courseId/addStudent}
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
@@ -115,7 +118,8 @@ export const addStudent = async (req: Request, res: Response) => {
 
 /**
  * @async
- * Reomves a student to a course with the data given by the HTTP-Request
+ * Reomves a student to a course with the data given by the HTTP-Request<br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-coursecourseiddeletecourse | POST /course/:courseId/deleteStudent}
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
@@ -142,7 +146,8 @@ export const deleteStudent = async (req: Request, res: Response) => {
 
 /**
  * @async
- * Returns the informations to a course with the data given by the HTTP-Request
+ * Returns the informations to a course with the data given by the HTTP-Request<br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#get-coursecourseid | GET /course/:courseId}
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
@@ -161,7 +166,8 @@ export const selectCourse = async (req: Request, res: Response) => {
 
 /**
  * @async
- * Updates a course with the data given by the HTTP-Request
+ * Updates a course with the data given by the HTTP-Request<br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-coursecourseidchangecourse | POST /course/:courseId/changeCourse}
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
@@ -180,7 +186,8 @@ export const changeCourse = async (req: Request, res: Response) => {
 
 /**
  * @async
- * Updates a course with the data given by the HTTP-Request
+ * Updates a course with the data given by the HTTP-Request<br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-coursecourseiddeletecourse | POST /course/:courseId/deleteCourse}
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */

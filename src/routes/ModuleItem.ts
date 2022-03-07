@@ -21,6 +21,7 @@ interface RegisterModuleItem {
   isVisible?: boolean;
   dueDate?: string;
 }
+
 /**
  * Representation of the incoming data of a moduleItem
  * @interface
@@ -33,6 +34,9 @@ interface ChangeModuleItem {
   dueDate?: string;
 }
 
+/**
+ * Representation of the incoming data for deleting an uploaded file
+ */
 interface DeleteUploadedFile {
   fileId: number;
 }
@@ -144,6 +148,7 @@ export const registerModuleItem = async (req: Request, res: Response) => {
 
 /**
  * @async
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-moduleregister | API}<br>
  * Updates a moduleItem with the data given by the HTTP-Request
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
