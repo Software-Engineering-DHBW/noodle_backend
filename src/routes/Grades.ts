@@ -10,7 +10,8 @@ interface ModuleGrade extends Grades {
 }
 /**
  * @async
- * Insert or update a grade
+ * Insert or update a grade <br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-gradesinsert | POST /grades/insert}
  * @param {Request} req - Received request object
  * @param {Response} res - Received response object
  */
@@ -26,7 +27,8 @@ export const insertGradeForStudent = async (req: Request, res: Response) => {
 
 /**
  * @async
- * Gets the grades for a specific student from the repository 'Grades'
+ * Gets the grades for a specific student from the repository 'Grades' <br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#get-gradesstudentid | GET /grades/:studentId}
  * @param {Request} req - Received request object
  * @param {Response} res - Received response object
  */
@@ -47,6 +49,7 @@ export const getGradesForStudent = async (req: Request, res: Response) => {
 /**
  * @async
  * Gets the grades for a specific module from the repository 'Grades'
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#get-gradesmodulemoduleid | GET /grades/module/:moduleId}
  * @param {Request} req - Received request object
  * @param {Response} res - Received response object
  */
@@ -78,6 +81,7 @@ export const getGradesForModule = async (req: Request, res: Response) => {
 /**
  * @async
  * Deletes a specific grade from the repsitory 'Grades'
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-gradesdelete | POST /grades/delete}
  * @param {Request} req - Received request object
  * @param {Response} res - Received response object
  */
