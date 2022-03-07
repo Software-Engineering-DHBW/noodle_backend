@@ -21,8 +21,9 @@ const checkId = (
 const checkAdministratorRole = (session: JwtPayload): boolean => session.role === 'administrator';
 
 /**
- * Check, if the user has a administrator session
- * @param {Request} req - Received reqeust object
+ * Check, if the user has a administrator session <br>
+ * Session-Content: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#payload-of-the-jwt | Payload JWT}
+ * @param {Request} req - Received request object
  * @param {Response} res - Received response object
  * @param {Function} next - Callback function
  */
@@ -37,8 +38,9 @@ export const checkAdministrator = (req: Request, res: Response, next: Function) 
 
 /**
  * Check, if the user has a administrator session or
- * if the username equals the username in the request body.
- * @param {Request} req - Received reqeust object
+ * if the username equals the username in the request body. <br>
+ * Session-Content: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#payload-of-the-jwt | Payload JWT}
+ * @param {Request} req - Received request object
  * @param {Response} res - Received response object
  * @param {Function} next - Callback function
  */
@@ -54,7 +56,8 @@ export const checkAdministratorOrOwnUsername = (req: Request, res: Response, nex
 
 /**
  * Check, if the user has a administrator session or
- * if the session id equals the iid in the request body.
+ * if the session id equals the iid in the request body. <br>
+ * Session-Content: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#payload-of-the-jwt | Payload JWT}
  * @param {Request} req - Received reqeust object
  * @param {Response} res - Received response object
  * @param {Function} next - Callback function
@@ -72,7 +75,8 @@ export const checkAdministratorOrOwnID = (req: Request, res: Response, next: Fun
 /**
  * Check, if the user has a administrator sessior or
  * if the session id has the moduel it tries to access
- * and is a teacher of the module
+ * and is a teacher of the module <br>
+ * Session-Content: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#payload-of-the-jwt | Payload JWT}
  * @param {Request} req - Received reqeust object
  * @param {Response} res - Received response object
  * @param {Function} next - Callback function

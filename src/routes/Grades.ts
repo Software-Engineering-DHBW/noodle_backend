@@ -48,7 +48,7 @@ export const getGradesForStudent = async (req: Request, res: Response) => {
 
 /**
  * @async
- * Gets the grades for a specific module from the repository 'Grades'
+ * Gets the grades for a specific module from the repository 'Grades' <br>
  * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#get-gradesmodulemoduleid | GET /grades/module/:moduleId}
  * @param {Request} req - Received request object
  * @param {Response} res - Received response object
@@ -80,7 +80,7 @@ export const getGradesForModule = async (req: Request, res: Response) => {
 
 /**
  * @async
- * Deletes a specific grade from the repsitory 'Grades'
+ * Deletes a specific grade from the repsitory 'Grades' <br>
  * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-gradesdelete | POST /grades/delete}
  * @param {Request} req - Received request object
  * @param {Response} res - Received response object
