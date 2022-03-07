@@ -101,7 +101,8 @@ const saveNewUser = async (
 
 /**
  * @async
- * Registers a new User with the data given by the HTTP-Request
+ * Registers a new User with the data given by the HTTP-Request <br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-userregister | POST /user/register}
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
@@ -140,7 +141,8 @@ const createLoginJwt = async (user: User, userDetails: UserDetail): Promise<stri
 };
 /**
  * @async
- * Tries to login a user with the given credentials
+ * Tries to login a user with the given credentials <br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-userlogin | POST /user/login}
  * @param {Request} req - Received request object
  * @param {Response} res - Received response object
  * @returns HTTP-Status 200 and JWT
@@ -162,7 +164,8 @@ export const loginUser = async (req: Request, res: Response): Promise<void> => {
 
 /**
  * @async
- * Deletes the user with the given username and id
+ * Deletes the user with the given username and id <br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-userdelete | POST /user/delete}
  * @param {Request} req - Received request object
  * @param {Response} res - Received response object
  */
@@ -180,7 +183,8 @@ export const deleteUser = async (req: Request, res: Response) => {
 
 /**
  * @async
- * Changes the password of a user
+ * Changes the password of a user <br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-userchangepassword | POST /user/changePassword}
  * @param {Request} req - Received request object
  * @param {Response} res - Received response object
  */
@@ -198,7 +202,8 @@ export const changeUserPassword = async (req: Request, res: Response) => {
 
 /**
  * @async
- * Get all users from the repository
+ * Get all users from the repository <br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#get-usergetall | POST /user/getAll}
  * @param {Request} req - Received request object
  * @param {Response} res - Received response object
  */
