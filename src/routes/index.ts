@@ -102,7 +102,7 @@ router.get('/module/:moduleId', (req: express.Request, res: express.Respone) => 
 
 // API Calls for ModuleItem
 router.post('/module/:moduleId/addMouduleItem', (req: express.Request, res: express.Respone) => {
-  moduleItem.registerModuleItem(req, res);
+  Permission.checkAdministratorOrModuleTeacher(req, res, moduleItem.registerModuleItem);
 });
 
 router.get('/module/:moduleId/:moduleItemId', (req: express.Request, res: express.Respone) => {
