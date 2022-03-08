@@ -102,7 +102,7 @@ router.get('/module/:moduleId', (req: express.Request, res: express.Respone) => 
 
 // API Calls for ModuleItem
 router.post('/module/:moduleId/addMouduleItem', (req: express.Request, res: express.Respone) => {
-  moduleItem.registerModuleItem(req, res);
+  Permission.checkAdministratorOrModuleTeacher(req, res, moduleItem.registerModuleItem);
 });
 
 router.get('/module/:moduleId/:moduleItemId', (req: express.Request, res: express.Respone) => {
@@ -114,23 +114,23 @@ router.get('/module/:moduleId/selectModuleItems', (req: express.Request, res: ex
 });
 
 router.post('/module/:moduleId/:moduleItemId/changeModuleItem', (req: express.Request, res: express.Respone) => {
-  moduleItem.changeModuleItem(req, res);
+  Permission.checkAdministratorOrModuleTeacher(req, res, moduleItem.changeModuleItem);
 });
 
 router.post('/module/:moduleId/:moduleItemId/deleteModuleItem', (req: express.Request, res: express.Respone) => {
-  moduleItem.deleteModuleItem(req, res);
+  Permission.checkAdministratorOrModuleTeacher(req, res, moduleItem.deleteModuleItem);
 });
 
 router.post('/module/:moduleId/deleteAllModuleItems', (req: express.Request, res: express.Respone) => {
-  moduleItem.deleteAllModuleItems(req, res);
+  Permission.checkAdministratorOrModuleTeacher(req, res, moduleItem.deleteAllModuleItems);
 });
 
 router.post('/module/:moduleId/:moduleItemId/addDownloadFile', (req: express.Request, res: express.Respone) => {
-  moduleItem.addDownloadFile(req, res);
+  Permission.checkAdministratorOrModuleTeacher(req, res, moduleItem.addDownloadFile);
 });
 
 router.post('/module/:moduleId/:moduleItemId/deleteFile', (req: express.Request, res: express.Respone) => {
-  moduleItem.deleteDownloadFile(req, res);
+  Permission.checkAdministratorOrModuleTeacher(req, res, moduleItem.deleteDownloadFile);
 });
 
 router.post('/module/:moduleId/:moduleItemId/uploadFile', (req: express.Request, res: express.Respone) => {
@@ -138,11 +138,11 @@ router.post('/module/:moduleId/:moduleItemId/uploadFile', (req: express.Request,
 });
 
 router.post('/module/:moduleId/:moduleItemId/deleteUploadedFile', (req: express.Request, res: express.Respone) => {
-  moduleItem.deleteUploadedFile(req, res);
+  Permission.checkAdministratorOrOwnID(req, res, moduleItem.deleteUploadedFile);
 });
 
 router.post('/module/:moduleId/:moduleItemId/deleteAllUploadedFiles', (req: express.Request, res: express.Respone) => {
-  moduleItem.deleteAllUploadedFiles(req, res);
+  Permission.checkAdministratorOrModuleTeacher(req, res, moduleItem.deleteAllUploadedFiles);
 });
 
 // API Calls for Course

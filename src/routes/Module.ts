@@ -102,9 +102,10 @@ const saveNewModule = async (newModule: Module, res: Response): Promise<void> =>
 };
 
 /**
- * Registers a new Module with the data given in the HTTP-Request
+ * Registers a new Module with the data given in the HTTP-Request<br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-moduleregister | POST /module/register}
  * @param {Request} req - Holds the data from the HTTP-Request
- * @param {Response} res- Used to form the response
+ * @param {Response} res - Used to form the response
  */
 export const registerModule = (req: Request, res: Response) => {
   const data: GeneralModule = req.body;
@@ -114,9 +115,10 @@ export const registerModule = (req: Request, res: Response) => {
 
 /**
  * @async
- * Deletes a Module with the data given in the HTTP-Request
+ * Deletes a Module with the data given in the HTTP-Request<br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-modulemoduleiddeleteModule | POST /module/:moduleId/deleteModule}
  * @param {Request} req - Holds the data from the HTTP-Request
- * @param {Response} res- Used to form the response
+ * @param {Response} res - Used to form the response
  */
 export const deleteModule = async (req: Request, res: Response) => {
   try {
@@ -131,9 +133,10 @@ export const deleteModule = async (req: Request, res: Response) => {
 
 /**
  * @async
- * Adds a Teacher to a Module with the data given in the HTTP-Request
+ * Adds a Teacher to a Module with the data given in the HTTP-Request<br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-modulemoduleidaddteacher | POST /module/:moduleId/addTeacher}
  * @param {Request} req - Holds the data from the HTTP-Request
- * @param {Response} res- Used to form the response
+ * @param {Response} res - Used to form the response
  */
 export const addTeacher = async (req: Request, res: Response) => {
   try {
@@ -162,9 +165,10 @@ export const addTeacher = async (req: Request, res: Response) => {
 
 /**
  * @async
- * Deletes a Teacher from a Module with the data given in the HTTP-Request
+ * Deletes a Teacher from a Module with the data given in the HTTP-Request<br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-modulemoduleiddeleteteacher | POST /module/:moduleId/deleteTeacher}
  * @param {Request} req - Holds the data from the HTTP-Request
- * @param {Response} res- Used to form the response
+ * @param {Response} res - Used to form the response
  */
 export const deleteTeacher = async (req: Request, res: Response) => {
   try {
@@ -192,9 +196,10 @@ export const deleteTeacher = async (req: Request, res: Response) => {
 
 /**
  * @async
- * Adds a Course to a Module with the data given in the HTTP-Request
+ * Adds a Course to a Module with the data given in the HTTP-Request<br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-modulemoduleidaddcourse | POST /module/:moduleId/addCourse}
  * @param {Request} req - Holds the data from the HTTP-Request
- * @param {Response} res- Used to form the response
+ * @param {Response} res - Used to form the response
  */
 export const addCourse = async (req: Request, res: Response) => {
   try {
@@ -214,9 +219,10 @@ export const addCourse = async (req: Request, res: Response) => {
 
 /**
  * @async
- * Deletes a Course from a Module with the data given in the HTTP-Request
+ * Deletes a Course from a Module with the data given in the HTTP-Request<br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-modulemoduleiddeletecourse | POST /module/:moduleId/deleteCourse}
  * @param {Request} req - Holds the data from the HTTP-Request
- * @param {Response} res- Used to form the response
+ * @param {Response} res - Used to form the response
  */
 export const deleteCourse = async (req: Request, res: Response) => {
   try {
@@ -232,9 +238,10 @@ export const deleteCourse = async (req: Request, res: Response) => {
 
 /**
  * @async
- * Changes the description of a Module with the data given in the HTTP-Request
+ * Changes the description of a Module with the data given in the HTTP-Request<br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-modulemoduleidchangedescription |POST /module/:moduleId/changeDescription}
  * @param {Request} req - Holds the data from the HTTP-Request
- * @param {Response} res- Used to form the response
+ * @param {Response} res - Used to form the response
  */
 export const changeDescription = async (req: Request, res: Response) => {
   try {
@@ -251,9 +258,10 @@ export const changeDescription = async (req: Request, res: Response) => {
 
 /**
  * @async
- * Adds a Submodule to a Module with the data given in the HTTP-Request
+ * Adds a Submodule to a Module with the data given in the HTTP-Request<br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-modulemoduleidaddsubmodule | Post /module/:moduleId/addSubmodule}
  * @param {Request} req - Holds the data from the HTTP-Request
- * @param {Response} res- Used to form the response
+ * @param {Response} res - Used to form the response
  */
 export const addSubmodule = async (req: Request, res: Response) => {
   try {
@@ -285,9 +293,10 @@ export const addSubmodule = async (req: Request, res: Response) => {
 
 /**
  * @async
- * Deletes a Submodule from a Module with the data given in the HTTP-Request
+ * Deletes a Submodule from a Module with the data given in the HTTP-Request<br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-modulemoduleiddeletesubmodule | POST module/:moduleId/deleteSubmodule}
  * @param {Request} req - Holds the data from the HTTP-Request
- * @param {Response} res- Used to form the response
+ * @param {Response} res - Used to form the response
  */
 export const deleteSubmodule = async (req: Request, res: Response) => {
   try {
@@ -315,9 +324,10 @@ export const deleteSubmodule = async (req: Request, res: Response) => {
 
 /**
  * @async
- * Changes the name of a Module with the data given in the HTTP-Request
+ * Changes the name of a Module with the data given in the HTTP-Request<br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-modulemoduleidchangename | POST /module/:moduleId/changeName}
  * @param {Request} req - Holds the data from the HTTP-Request
- * @param {Response} res- Used to form the response
+ * @param {Response} res - Used to form the response
  */
 export const changeName = async (req: Request, res: Response) => {
   try {
@@ -336,7 +346,8 @@ export const changeName = async (req: Request, res: Response) => {
 };
 /**
  * @async
- * Returns the informations of a module
+ * Returns the informations of a module<br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#get-modulemoduleid | GET /module/:moduleId}
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} req - Used to form the response
  */

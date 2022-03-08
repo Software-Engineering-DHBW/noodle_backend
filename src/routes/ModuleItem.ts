@@ -6,7 +6,7 @@ import Module from '../entity/Module';
 import {
   deleteObjects, getObjects, getOneObject, saveObject,
 } from './Manager';
-import { registerFile, RegisterFile } from './File';
+import User from '../entity/User';
 
 /**
  * Representation of the incoming data of a moduleItem
@@ -21,6 +21,7 @@ interface RegisterModuleItem {
   isVisible?: boolean;
   dueDate?: string;
 }
+
 /**
  * Representation of the incoming data of a moduleItem
  * @interface
@@ -33,9 +34,40 @@ interface ChangeModuleItem {
   dueDate?: string;
 }
 
+/**
+ * Representation of the incoming data for deleting an uploaded file
+ * @interface
+ */
 interface DeleteUploadedFile {
   fileId: number;
 }
+
+/**
+ * Representation of the incoming data of a new file
+ * @interface
+ */
+interface RegisterFile {
+  owner: User
+  name: string;
+  path: string;
+  attachedAt: ModuleItem;
+}
+
+/**
+ * Creates a new File with the given data
+ * @param {RegisterFile} data - Data of the new file
+ * @returns {File}
+ */
+const createFile = (data: RegisterFile): File => {
+  const newFile = new File();
+  newFile.owner = data.owner;
+  newFile.name = data.name;
+  newFile.path = data.path;
+  const time = Date.now();
+  newFile.uploadDate = new Date(time);
+  newFile.attachedAt = data.attachedAt;
+  return newFile;
+};
 
 /**
  * Creates a new ModuleItem with the given data
@@ -49,9 +81,32 @@ const createModuleItem = (data: RegisterModuleItem): ModuleItem => {
   newModuleItem.webLink = data.webLink;
   newModuleItem.hasFileUpload = data.hasFileUpload;
   newModuleItem.isVisible = data.isVisible;
-  newModuleItem.dueDate = new Date(data.dueDate);
+  newModuleItem.dueDate = data.dueDate == null ? undefined : new Date(data.dueDate);
   return newModuleItem;
 };
+
+/**
+ * @async
+ * Saves the create File-Object inside the database.
+ * No data is stored, if the object could not be stored,
+ * in this case a false will be returned.
+ * Returns a true if the object could be stored
+ * @param {File} newFile - New File to store
+ * @returns {boolean}
+ */
+const saveNewFile = async (newFile: File): Promise<boolean> => {
+  const queryRunner = getConnection().createQueryRunner();
+  await queryRunner.startTransaction();
+  try {
+    await queryRunner.manager.save(newFile);
+    await queryRunner.commitTransaction();
+    return true;
+  } catch (_err) {
+    await queryRunner.rollbackTransaction();
+    return false;
+  }
+};
+
 /**
  * @async
  * Saves the create ModuleItem- and File-Object inside the database.
@@ -60,7 +115,6 @@ const createModuleItem = (data: RegisterModuleItem): ModuleItem => {
  * Forms a response with HTTP-Code 200 if the objects could be stored.
  * @param {ModuleItem} newModuleItem - New ModuleItem to store
  * @param {Response} res - Response object for sending the response
- * @param {File} newFile - New File to store
  */
 const saveNewModuleItem = async (newModuleItem: ModuleItem, res: Response) => {
   const queryRunner = getConnection().createQueryRunner();
@@ -75,18 +129,26 @@ const saveNewModuleItem = async (newModuleItem: ModuleItem, res: Response) => {
   }
 };
 
+/**
+ * @async
+ * Registers a new ModuleItem with the data given by the HTTP-Request<br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-modulemoduleidaddmoduleitem | POST /module/:moduleId/addMouduleItem}
+ * @param {Request} req - Holds the data from the HTTP-Request
+ * @param {Response} res - Used to form the response
+ */
 export const registerModuleItem = async (req: Request, res: Response) => {
   const data: RegisterModuleItem = req.body;
   data.moduleId = req.params.moduleId;
   const newModuleItem: ModuleItem = createModuleItem(data);
-  let code = 200;
+  let code: boolean = true;
   if (data.downloadableFile != null) {
     const file: RegisterFile = data.downloadableFile;
     file.attachedAt = newModuleItem;
     newModuleItem.hasDownloadableFile = true;
-    code = await registerFile(file);
+    const newFile: File = createFile(file);
+    code = await saveNewFile(newFile);
   }
-  if (code === 200) {
+  if (code === true) {
     await saveNewModuleItem(newModuleItem, res);
   } else {
     res.sendStatus(403);
@@ -95,7 +157,8 @@ export const registerModuleItem = async (req: Request, res: Response) => {
 
 /**
  * @async
- * Updates a moduleItem with the data given by the HTTP-Request
+ * Updates a moduleItem with the data given by the HTTP-Request<br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-modulemoduleidmoduleitemidchangemoduleitem | POST /module/:moduleId/:moduleItemId/changeModuleItem}
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
@@ -114,9 +177,11 @@ export const changeModuleItem = async (req: Request, res: Response) => {
     res.status(500).send('ModuleItem could not be changed');
   }
 };
+
 /**
  * @async
- * Deletes one moduleItem with the data given by the HTTP-Request
+ * Deletes a moduleItem with the data given by the HTTP-Request<br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-modulemoduleidmoduleitemiddeletemoduleitem | POST /module/:moduleId/:moduleItemId/deleteModuleItem}
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
@@ -133,9 +198,11 @@ export const deleteModuleItem = async (req: Request, res: Response) => {
     res.send(500).status('ModuleItem could not be deleted');
   }
 };
+
 /**
  * @async
- * Deletes all moduleItems of the module with the data given by the HTTP-Request
+ * Deletes all moduleItems with the data given by the HTTP-Request<br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-modulemoduleiddeleteallmoduleitems | POST /module/:moduleId/deleteAllModuleItem}
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
@@ -149,9 +216,11 @@ export const deleteAllModuleItems = async (req: Request, res: Response) => {
     res.send(500).status('ModuleItems could not be deleted');
   }
 };
+
 /**
  * @async
- * Returns a moduleItem with the data given by the HTTP-Request
+ * Returns the informations to a moduleItem with the data given by the HTTP-Request<br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#get-modulemoduleidmoduleitemid | GET /module/:moduleId/:moduleItemId}
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
@@ -169,7 +238,8 @@ export const selectModuleItem = async (req: Request, res: Response) => {
 };
 /**
  * @async
- * Returns all moduleItems of the module with the data given by the HTTP-Request
+ * Returns the informations of all moduleItems of the module with the data given by the HTTP-Request<br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#get-modulemoduleidselectmoduleitems | GET /module/:moduleId/selectAllModuleItems}
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
@@ -184,7 +254,8 @@ export const selectAllModuleItems = async (req: Request, res: Response) => {
 };
 /**
  * @async
- * Adds a downloadable file to a moduleItem with the data given by the HTTP-Request
+ * Adds a downloadable file to a moduleItem with the data given by the HTTP-Request<br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-modulemoduleidmoduleitemidadddownloadfile | POST /module/:moduleId/:moduleItemId/addDownloadFile}
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
@@ -198,8 +269,9 @@ export const addDownloadFile = async (req: Request, res: Response) => {
     }, ModuleItem);
     moduleItem.hasDownloadableFile = true;
     data.attachedAt = moduleItem;
-    registerFile(data);
-    saveObject(moduleItem, ModuleItem);
+    const newFile: File = createFile(data);
+    await saveObject(newFile, File);
+    await saveObject(moduleItem, ModuleItem);
     res.status(200).send('Added new File to ModuleItem');
   } catch (_err) {
     res.status(500).send('Could not add File to ModuleItem');
@@ -207,7 +279,8 @@ export const addDownloadFile = async (req: Request, res: Response) => {
 };
 /**
  * @async
- * Deletes the downlaodable file of the moduleItem with the data given by the HTTP-Request
+ * Deletes the downlaodable file of the moduleItem with the data given by the HTTP-Request<br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-modulemoduleidmoduleitemiddeletefile | POST /module/:moduleId/:moduleItemId/deleteFile}
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
@@ -228,6 +301,13 @@ export const deleteDownloadFile = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * @async
+ * Adds a uploaded File to the moduleItem if fileupload is allowed with the data given by the HTTP-Request<br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-modulemoduleidmoduleitemiduploadfile | POST /module/:moduleId/:moduleItemId/uploadFile}
+ * @param {Request} req - Holds the data from the HTTP-Request
+ * @param {Response} res - Used to form the response
+ */
 export const uploadFile = async (req: Request, res: Response) => {
   try {
     const { moduleId } = req.params;
@@ -238,7 +318,8 @@ export const uploadFile = async (req: Request, res: Response) => {
     }, ModuleItem);
     if (moduleItem.hasFileUpload) {
       data.attachedAt = moduleItem;
-      await registerFile(data);
+      const newFile: File = createFile(data);
+      await saveObject(newFile, File);
       res.status(200).send('File has been uploaded');
     } else {
       res.status(500).send('Internal Error: ModuleItem has no file upload');
@@ -248,45 +329,43 @@ export const uploadFile = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * @async
+ * Deletes a uploaded file of the moduleItem with the data given by the HTTP-Request<br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-modulemoduleidmoduleitemiddeleteuploadedfile | POST /module/:moduleId/:moduleItemId/deleteUploadedFile}
+ * @param {Request} req - Holds the data from the HTTP-Request
+ * @param {Response} res - Used to form the response
+ */
 export const deleteUploadedFile = async (req: Request, res: Response) => {
   try {
-    const { moduleId } = req.params;
     const { moduleItemId } = req.params;
     const data: DeleteUploadedFile = req.body;
-    const moduleItem: any = await getOneObject({
-      where: { id: moduleItemId, moduleId },
-    }, ModuleItem);
-    if (moduleItem.hasFileUpload) {
-      const file: any = await getOneObject({
-        where: { id: data.fileId, attachedAt: moduleItemId },
-      }, File);
-      await deleteObjects(file, File);
-      res.status(200).send('File has been deleted');
-    } else {
-      res.status(500).send('Internal Error: ModuleItem has no file upload');
-    }
+    const file: any = await getOneObject({
+      where: { id: data.fileId, attachedAt: moduleItemId },
+    }, File);
+    await deleteObjects(file, File);
+    res.status(200).send('File has been deleted');
   } catch (_err) {
     res.status(500).send('Could not delete file');
   }
 };
 
+/**
+ * @async
+ * Deletes all uploaded file of the moduleItem with the data given by the HTTP-Request<br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-modulemoduleidmoduleitemiddeletealluploadedfiles | POST /module/:moduleId/:moduleItemId/deleteAllUploadedFiles}
+ * @param {Request} req - Holds the data from the HTTP-Request
+ * @param {Response} res - Used to form the response
+ */
 export const deleteAllUploadedFiles = async (req: Request, res: Response) => {
   try {
-    const { moduleId } = req.params;
     const { moduleItemId } = req.params;
-    const moduleItem: any = await getOneObject({
-      where: { id: moduleItemId, moduleId },
-    }, ModuleItem);
-    if (moduleItem.hasFileUpload) {
-      const file: any = await getObjects({
-        where: { attachedAt: moduleItemId },
-      }, File);
-      await deleteObjects(file, File);
-      res.status(200).send('File has been deleted');
-    } else {
-      res.status(500).send('Internal Error: ModuleItem has no file upload');
-    }
+    const file: any = await getObjects({
+      where: { attachedAt: moduleItemId },
+    }, File);
+    await deleteObjects(file, File);
+    res.status(200).send('Files have been deleted');
   } catch (_err) {
-    res.status(500).send('Could not delete file');
+    res.status(500).send('Could not delete files');
   }
 };
