@@ -13,12 +13,15 @@ export default class Grades {
   @PrimaryGeneratedColumn()
     id: number;
 
-  @ManyToOne(() => Module)
+  @ManyToOne(() => Module, {
+    nullable: false,
+  })
   @JoinColumn()
     moduleId: Module;
 
   @ManyToOne(() => User, {
     onDelete: 'CASCADE',
+    nullable: false,
   })
   @JoinColumn()
     studentId: User;

@@ -163,7 +163,7 @@ describe('/user', () => {
 
   describe('GET /user/getAll', () => {
     test.each([
-      ['Successfully delete a user', 'administratorCookie', 200],
+      ['Successfully get all user', 'administratorCookie', 200],
       ['403 teacher tries to delete', 'teacherCookie', 403],
       ['403 student tries to delete', 'studentCookie', 403],
     ])('%s', async (msg, cookie, expected) => {
