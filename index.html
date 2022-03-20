@@ -27,7 +27,7 @@
 <li>Create a database named <code>noodle</code><pre><code><span class="hl-0">createdb</span><span class="hl-1"> </span><span class="hl-0">noodle</span>
 </code></pre>
 </li>
-<li>Add a user with the name <code>noodle</code><pre><code><span class="hl-0">createuser</span><span class="hl-1"> </span><span class="hl-0">noodle</span><br/><span class="hl-0">psql</span><span class="hl-1"> -</span><span class="hl-0">d</span><span class="hl-1"> </span><span class="hl-0">noodle</span><span class="hl-1"> -</span><span class="hl-0">c</span><span class="hl-1"> </span><span class="hl-4">&quot;CREATE USER noodle WITH PASSWORD &#39;noodle&#39;; GRANT ALL ON ALL TABLE IN SCHEMA public TO noodle;&quot;</span>
+<li>Add a user with the name <code>noodle</code><pre><code><span class="hl-0">createuser</span><span class="hl-1"> </span><span class="hl-0">noodle</span><br/><span class="hl-0">psql</span><span class="hl-1"> -</span><span class="hl-0">d</span><span class="hl-1"> </span><span class="hl-0">noodle</span><span class="hl-1"> -</span><span class="hl-0">c</span><span class="hl-1"> </span><span class="hl-4">&quot;CREATE USER noodle WITH PASSWORD &#39;noodle&#39;; GRANT ALL ON ALL TABLES IN SCHEMA public TO noodle;&quot;</span>
 </code></pre>
 </li>
 </ol>
