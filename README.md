@@ -22,7 +22,7 @@ createdb noodle
 5. Add a user with the name `noodle`
 ```
 createuser noodle
-psql -d noodle -c "CREATE USER noodle WITH PASSWORD 'noodle'; GRANT ALL ON ALL TABLE IN SCHEMA public TO noodle;"
+psql -d noodle -c "CREATE USER noodle WITH PASSWORD 'noodle'; GRANT ALL ON ALL TABLES IN SCHEMA public TO noodle;"
 ```
 
 For more information see the the Section [Server Setup and Operation](https://www.postgresql.org/docs/14/runtime.html) in the PostgreSQL-Documentation or the [PostgreSQL-Entry](https://wiki.archlinux.org/title/PostgreSQL) in the Arch Linux-Wiki.
