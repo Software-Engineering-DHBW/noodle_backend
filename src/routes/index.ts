@@ -99,6 +99,10 @@ router.get('/module/:moduleId', (req: express.Request, res: express.Respone) => 
   module.selectModule(req, res);
 });
 
+router.get('/module/:moduleId/students', (req: express.Request, res: express.Respone) => {
+  module.getAllStudents(req, res);
+});
+
 // API Calls for ModuleItem
 router.post('/module/:moduleId/addMouduleItem', (req: express.Request, res: express.Respone) => {
   Permission.checkAdministratorOrModuleTeacher(req, res, moduleItem.registerModuleItem);

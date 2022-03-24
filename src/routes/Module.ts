@@ -349,7 +349,7 @@ export const changeName = async (req: Request, res: Response) => {
  * Returns the informations of a module<br>
  * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#get-modulemoduleid | GET /module/:moduleId}
  * @param {Request} req - Holds the data from the HTTP-Request
- * @param {Response} req - Used to form the response
+ * @param {Response} res - Used to form the response
  */
 export const selectModule = async (req: Request, res: Response) => {
   try {
@@ -358,5 +358,24 @@ export const selectModule = async (req: Request, res: Response) => {
     res.status(200).send(module);
   } catch (_err) {
     res.status(500).send('Could not find the module');
+  }
+};
+/**
+ * @async
+ * Returns all students of a module<br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#get-modulemoduleidstudents | GET /module/:moduleId/students}
+ * @param {Request} req - Holds the data from the HTTP-Request
+ * @param {Response} res - Used to form the response
+ */
+export const getAllStudents = async (req: Request, res: Response) => {
+  try {
+    const { moduleId } = req.params;
+    const module: any = await getOneObject({ where: { id: moduleId }, relations: ['assignedCourse'] }, Module);
+    console.log(module);
+    const students: any = await getObjects({ where: { course: module.assignedCourse } }, User);
+    res.status(200).send(students);
+  } catch (_err) {
+    console.log(_err);
+    res.status(500).send('Could not find any students');
   }
 };

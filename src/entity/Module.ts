@@ -2,7 +2,6 @@ import {
   Column, Entity, JoinColumn, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn,
 } from 'typeorm';
 import Course from './Course';
-import ModuleItem from './ModuleItem';
 import User from './User';
 
 @Entity()
