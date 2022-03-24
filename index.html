@@ -1,6 +1,6 @@
 <!DOCTYPE html><html class="default"><head><meta charSet="utf-8"/><meta http-equiv="x-ua-compatible" content="IE=edge"/><title>@software-engineering-dhbw/noodle_backend</title><meta name="description" content="Documentation for @software-engineering-dhbw/noodle_backend"/><meta name="viewport" content="width=device-width, initial-scale=1"/><link rel="stylesheet" href="assets/style.css"/><link rel="stylesheet" href="assets/highlight.css"/><script async src="assets/search.js" id="search-script"></script></head><body><script>document.body.classList.add(localStorage.getItem("tsd-theme") || "os")</script><header><div class="tsd-page-toolbar"><div class="container"><div class="table-wrap"><div class="table-cell" id="tsd-search" data-base="."><div class="field"><label for="tsd-search-field" class="tsd-widget search no-caption">Search</label><input type="text" id="tsd-search-field"/></div><ul class="results"><li class="state loading">Preparing search index...</li><li class="state failure">The search index is not available</li></ul><a href="index.html" class="title">@software-engineering-dhbw/noodle_backend</a></div><div class="table-cell" id="tsd-widgets"><div id="tsd-filter"><a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a><div class="tsd-filter-group"><div class="tsd-select" id="tsd-filter-visibility"><span class="tsd-select-label">All</span><ul class="tsd-select-list"><li data-value="public">Public</li><li data-value="protected">Public/Protected</li><li data-value="private" class="selected">All</li></ul></div> <input type="checkbox" id="tsd-filter-inherited" checked/><label class="tsd-widget" for="tsd-filter-inherited">Inherited</label><input type="checkbox" id="tsd-filter-externals" checked/><label class="tsd-widget" for="tsd-filter-externals">Externals</label></div></div><a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a></div></div></div></div><div class="tsd-page-title"><div class="container"><h1> @software-engineering-dhbw/noodle_backend</h1></div></div></header><div class="container container-main"><div class="row"><div class="col-8 col-content"><div class="tsd-panel tsd-typography">
-<a href="#awesome-project-build-with-typeorm" id="awesome-project-build-with-typeorm" style="color: inherit; text-decoration: none;">
-  <h1>Awesome Project Build with TypeORM</h1>
+<a href="#backend-for-the-noodle-project" id="backend-for-the-noodle-project" style="color: inherit; text-decoration: none;">
+  <h1>Backend for the Noodle-Project</h1>
 </a>
 
 <a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
@@ -33,18 +33,93 @@
 </ol>
 <p>For more information see the the Section <a href="https://www.postgresql.org/docs/14/runtime.html">Server Setup and Operation</a> in the PostgreSQL-Documentation or the <a href="https://wiki.archlinux.org/title/PostgreSQL">PostgreSQL-Entry</a> in the Arch Linux-Wiki.</p>
 
-<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
-  <h1>Usage</h1>
+<a href="#application-initialization" id="application-initialization" style="color: inherit; text-decoration: none;">
+  <h3>Application-Initialization</h3>
 </a>
-<p>Steps to run this project:</p>
 <ol>
-<li>Run <code>npm i</code> command</li>
-<li>Setup database settings inside <code>ormconfig.json</code> file</li>
-<li>Run <code>npm start</code> command</li>
+<li>Clone this repository</li>
+<li>Run <code>npm i</code></li>
+<li>Set up the database settings in <code>src/index.ts</code> and <code>tests/integration/helper.ts</code> (Only needed if using a different database than describe above)</li>
+<li>Run <code>npm start init</code></li>
 </ol>
+<ul>
+<li>This will create a administrator with the the username <code>administrator</code> and the password <code>administrator</code></li>
+</ul>
+
+<a href="#usage" id="usage" style="color: inherit; text-decoration: none;">
+  <h2>Usage</h2>
+</a>
+
+<a href="#development" id="development" style="color: inherit; text-decoration: none;">
+  <h3>Development</h3>
+</a>
+
+<a href="#start-the-server-and-not-restart-on-file-change" id="start-the-server-and-not-restart-on-file-change" style="color: inherit; text-decoration: none;">
+  <h4>Start the server and NOT restart on file change</h4>
+</a>
+<pre><code><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-0">start</span>
+</code></pre>
+
+<a href="#start-the-server-and-restart-on-file-changes" id="start-the-server-and-restart-on-file-changes" style="color: inherit; text-decoration: none;">
+  <h4>Start the server and restart on file changes</h4>
+</a>
+<pre><code><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-0">run</span><span class="hl-1"> </span><span class="hl-0">watch</span>
+</code></pre>
+
+<a href="#unit-tests" id="unit-tests" style="color: inherit; text-decoration: none;">
+  <h4>Unit-Tests</h4>
+</a>
+<pre><code><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-0">run</span><span class="hl-1"> </span><span class="hl-0">test</span>
+</code></pre>
+
+<a href="#integration-test" id="integration-test" style="color: inherit; text-decoration: none;">
+  <h4>Integration-Test</h4>
+</a>
+<pre><code><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-0">run</span><span class="hl-1"> </span><span class="hl-5">test</span><span class="hl-1">:</span><span class="hl-0">e2e</span>
+</code></pre>
+
+<a href="#build-the-project" id="build-the-project" style="color: inherit; text-decoration: none;">
+  <h4>Build the project</h4>
+</a>
+<pre><code><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-0">run</span><span class="hl-1"> </span><span class="hl-0">build</span>
+</code></pre>
+<p>The output of the build process will be inside <code>build/</code></p>
+
+<a href="#production" id="production" style="color: inherit; text-decoration: none;">
+  <h3>Production</h3>
+</a>
+<p>The application can be run by using the package (recommend) or cloning and running/building this repository.</p>
+<p>For more information about accquiring the package see the <a href="https://github.com/orgs/Software-Engineering-DHBW/packages?repo_name=noodle_backend">Package Repository</a></p>
+<p>If using the application in production <code>NODE_ENV=development</code> <strong>MUST NOT BE SET</strong>.<br>Not doing so will sign with the JWT with a hardcoded value and produce a huge security risk.</p>
+
+<a href="#running-from-package" id="running-from-package" style="color: inherit; text-decoration: none;">
+  <h4>Running from package</h4>
+</a>
+
+<a href="#globally-installed" id="globally-installed" style="color: inherit; text-decoration: none;">
+  <h5>Globally installed</h5>
+</a>
+<p>If the packages has been installed globally, use the following command </p>
+<pre><code><span class="hl-0">noodleBackend</span>
+</code></pre>
+
+<a href="#local-installation" id="local-installation" style="color: inherit; text-decoration: none;">
+  <h5>Local installation</h5>
+</a>
+<p>If the packages has been installed in a local project, use the application with the following command</p>
+<pre><code><span class="hl-0">npx</span><span class="hl-1"> </span><span class="hl-0">noodleBackend</span>
+</code></pre>
+
+<a href="#running-from-the-cloned-repository" id="running-from-the-cloned-repository" style="color: inherit; text-decoration: none;">
+  <h4>Running from the cloned repository</h4>
+</a>
+<p>This will compile the project and the execute it with <code>node</code>, to improve performance</p>
+<pre><code><span class="hl-0">npm</span><span class="hl-1"> </span><span class="hl-0">run</span><span class="hl-1"> </span><span class="hl-5">start</span><span class="hl-1">:</span><span class="hl-0">prod</span>
+</code></pre>
 
 <a href="#documentation" id="documentation" style="color: inherit; text-decoration: none;">
-  <h1>Documentation</h1>
+  <h2>Documentation</h2>
 </a>
-<p>For the API Documentation look <a href="https://software-engineering-dhbw.github.io/noodle_backend/index.html">here</a></p>
+<p>The API-Documentation can be found in the <a href="https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API">Wiki</a>
+For the Module Documentation look <a href="https://software-engineering-dhbw.github.io/noodle_backend/index.html">here</a></p>
 </div></div><div class="col-4 col-menu menu-sticky-wrap menu-highlight"><nav class="tsd-navigation primary"><ul><li class="current"><a href="modules.html">Modules</a></li><li class=" tsd-kind-module"><a href="modules/app.html">app</a></li><li class=" tsd-kind-module"><a href="modules/entity_Course.html">entity/<wbr/>Course</a></li><li class=" tsd-kind-module"><a href="modules/entity_File.html">entity/<wbr/>File</a></li><li class=" tsd-kind-module"><a href="modules/entity_Grades.html">entity/<wbr/>Grades</a></li><li class=" tsd-kind-module"><a href="modules/entity_Module.html">entity/<wbr/>Module</a></li><li class=" tsd-kind-module"><a href="modules/entity_ModuleItem.html">entity/<wbr/>Module<wbr/>Item</a></li><li class=" tsd-kind-module"><a href="modules/entity_Timetable.html">entity/<wbr/>Timetable</a></li><li class=" tsd-kind-module"><a href="modules/entity_User.html">entity/<wbr/>User</a></li><li class=" tsd-kind-module"><a href="modules/entity_UserDetail.html">entity/<wbr/>User<wbr/>Detail</a></li><li class=" tsd-kind-module"><a href="modules/index.html">index</a></li><li class=" tsd-kind-module"><a href="modules/routes.html">routes</a></li><li class=" tsd-kind-module"><a href="modules/routes_Course.html">routes/<wbr/>Course</a></li><li class=" tsd-kind-module"><a href="modules/routes_Grades.html">routes/<wbr/>Grades</a></li><li class=" tsd-kind-module"><a href="modules/routes_Manager.html">routes/<wbr/>Manager</a></li><li class=" tsd-kind-module"><a href="modules/routes_Module.html">routes/<wbr/>Module</a></li><li class=" tsd-kind-module"><a href="modules/routes_ModuleItem.html">routes/<wbr/>Module<wbr/>Item</a></li><li class=" tsd-kind-module"><a href="modules/routes_PermissionCheck.html">routes/<wbr/>Permission<wbr/>Check</a></li><li class=" tsd-kind-module"><a href="modules/routes_TimeTable.html">routes/<wbr/>Time<wbr/>Table</a></li><li class=" tsd-kind-module"><a href="modules/routes_User.html">routes/<wbr/>User</a></li></ul></nav></div></div></div><footer class="with-border-bottom"><div class="container"><h2>Legend</h2><div class="tsd-legend-group"><ul class="tsd-legend"><li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li><li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li></ul><ul class="tsd-legend"><li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li></ul><ul class="tsd-legend"><li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li></ul></div><h2>Settings</h2><p>Theme <select id="theme"><option value="os">OS</option><option value="light">Light</option><option value="dark">Dark</option></select></p></div></footer><div class="container tsd-generator"><p>Generated using <a href="https://typedoc.org/" target="_blank">TypeDoc</a></p></div><div class="overlay"></div><script src="assets/main.js"></script></body></html>
