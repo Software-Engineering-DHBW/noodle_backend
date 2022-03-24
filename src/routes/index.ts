@@ -99,8 +99,8 @@ router.get('/module/:moduleId', (req: express.Request, res: express.Respone) => 
   module.selectModule(req, res);
 });
 
-router.get('/module/:moduleId/students', (req: express.Request, res: express.Respone) => {
-  module.getAllStudents(req, res);
+router.get('/module/:moduleId/getStudents', (req: express.Request, res: express.Respone) => {
+  module.getStudents(req, res);
 });
 
 // API Calls for ModuleItem

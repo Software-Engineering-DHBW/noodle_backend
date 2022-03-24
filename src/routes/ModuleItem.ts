@@ -17,7 +17,7 @@ interface RegisterModuleItem {
   content?: string;
   webLink?: string;
   hasFileUpload?: boolean;
-  downloadableFile?: File;
+  downloadableFile?: RegisterFile;
   isVisible?: boolean;
   dueDate?: string;
 }
@@ -51,6 +51,7 @@ interface RegisterFile {
   name: string;
   path: string;
   attachedAt: ModuleItem;
+  category?: string;
 }
 
 /**
@@ -66,6 +67,16 @@ const createFile = (data: RegisterFile): File => {
   const time = Date.now();
   newFile.uploadDate = new Date(time);
   newFile.attachedAt = data.attachedAt;
+  switch (data.category) {
+    case 'lecturematerial':
+      newFile.isLectureMaterial = true;
+      break;
+    case 'exercise':
+      newFile.isExercise = true;
+      break;
+    default:
+      break;
+  }
   return newFile;
 };
 
@@ -125,7 +136,7 @@ const saveNewModuleItem = async (newModuleItem: ModuleItem, res: Response) => {
     res.sendStatus(200);
   } catch (_err) {
     await queryRunner.rollbackTransaction();
-    res.sendStatus(403);
+    res.sendStatus(500);
   }
 };
 
@@ -137,21 +148,25 @@ const saveNewModuleItem = async (newModuleItem: ModuleItem, res: Response) => {
  * @param {Response} res - Used to form the response
  */
 export const registerModuleItem = async (req: Request, res: Response) => {
-  const data: RegisterModuleItem = req.body;
-  data.moduleId = req.params.moduleId;
-  const newModuleItem: ModuleItem = createModuleItem(data);
-  let code: boolean = true;
-  if (data.downloadableFile != null) {
-    const file: RegisterFile = data.downloadableFile;
-    file.attachedAt = newModuleItem;
-    newModuleItem.hasDownloadableFile = true;
-    const newFile: File = createFile(file);
-    code = await saveNewFile(newFile);
-  }
-  if (code === true) {
-    await saveNewModuleItem(newModuleItem, res);
-  } else {
-    res.sendStatus(403);
+  try {
+    const data: RegisterModuleItem = req.body;
+    data.moduleId = req.params.moduleId;
+    const newModuleItem: ModuleItem = createModuleItem(data);
+    let code: boolean = true;
+    if (data.downloadableFile != null) {
+      const file: RegisterFile = data.downloadableFile;
+      file.attachedAt = newModuleItem;
+      newModuleItem.hasDownloadableFile = true;
+      const newFile: File = createFile(file);
+      code = await saveNewFile(newFile);
+    }
+    if (code === true) {
+      await saveNewModuleItem(newModuleItem, res);
+    } else {
+      res.sendStatus(500);
+    }
+  } catch (_err) {
+    res.sendStatus(500);
   }
 };
 
