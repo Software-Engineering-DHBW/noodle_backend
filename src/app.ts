@@ -3,7 +3,7 @@ import rateLimit from 'express-rate-limit';
 import * as crypto from 'crypto';
 import router from './routes/index';
 
-const PROD = process.env.NODE_ENV === 'production';
+const DEV = process.env.NODE_ENV === 'development';
 
 const app = express();
 app.use(express.json());
@@ -17,10 +17,10 @@ const loginLimiter = rateLimit({
 app.use('/user/login', loginLimiter);
 app.use(router);
 
-if (PROD) {
-  process.env.jwtSignatureKey = crypto.randomBytes(64).toString('base64url');
-} else {
+if (DEV) {
   process.env.jwtSignatureKey = 'Development';
+} else {
+  process.env.jwtSignatureKey = crypto.randomBytes(64).toString('base64url');
 }
 
 export default app;

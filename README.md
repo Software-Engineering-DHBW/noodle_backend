@@ -78,7 +78,7 @@ npx noodleBackend
 #### Running from the cloned repository
 This will compile the project and the execute it with `node`, to improve performance
 ```
-npm start:prod
+npm run start:prod
 ```
 ## Documentation
 The API-Documentation can be found in the [Wiki](https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API)
