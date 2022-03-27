@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { getConnection, getRepository, Not } from 'typeorm';
-import Module = require('module');
+import Module from '../entity/Module'
 import {
   deleteObjects, getOneObject, saveObject, getObjects,
 } from './Manager';
