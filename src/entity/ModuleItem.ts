@@ -41,7 +41,7 @@ export default class ModuleItem {
     attachedFiles: File[];
 
   @Column({
-    default: false,
+    default: true,
   })
     isVisible: boolean;
 

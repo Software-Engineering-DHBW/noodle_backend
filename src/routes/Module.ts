@@ -18,7 +18,7 @@ interface GeneralModule {
   submodule: Module[];
 }
 /**
- * Representation of the incoming data for changing the name or description of a module
+ * Representation of the incoming data for changing the name or description of a module or category
  * @interface
  */
 interface ChangeString {
@@ -60,7 +60,7 @@ const createModule = (data: GeneralModule): Module => {
   data.assignedTeacher.forEach(async (element) => {
     const teacher: any = await getOneObject({ where: { id: element } }, User);
     if (!teacher.isTeacher) {
-      // console.log(`Assigned User ${teacher.fullName} is not a teacher`);
+      // Error Handling missing
     }
     teacherList.push(teacher);
   });
@@ -108,9 +108,13 @@ const saveNewModule = async (newModule: Module, res: Response): Promise<void> =>
  * @param {Response} res - Used to form the response
  */
 export const registerModule = (req: Request, res: Response) => {
-  const data: GeneralModule = req.body;
-  const newModule: Module = createModule(data);
-  saveNewModule(newModule, res);
+  try {
+    const data: GeneralModule = req.body;
+    const newModule: Module = createModule(data);
+    saveNewModule(newModule, res);
+  } catch {
+    res.sendStatus(500);
+  }
 };
 
 /**
@@ -349,7 +353,7 @@ export const changeName = async (req: Request, res: Response) => {
  * Returns the informations of a module<br>
  * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#get-modulemoduleid | GET /module/:moduleId}
  * @param {Request} req - Holds the data from the HTTP-Request
- * @param {Response} req - Used to form the response
+ * @param {Response} res - Used to form the response
  */
 export const selectModule = async (req: Request, res: Response) => {
   try {
@@ -358,5 +362,22 @@ export const selectModule = async (req: Request, res: Response) => {
     res.status(200).send(module);
   } catch (_err) {
     res.status(500).send('Could not find the module');
+  }
+};
+/**
+ * @async
+ * Returns all students of a module<br>
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#get-modulemoduleidgetstudents | GET /module/:moduleId/getStudents}
+ * @param {Request} req - Holds the data from the HTTP-Request
+ * @param {Response} res - Used to form the response
+ */
+export const getStudents = async (req: Request, res: Response) => {
+  try {
+    const { moduleId } = req.params;
+    const module: any = await getOneObject({ where: { id: moduleId }, relations: ['assignedCourse'] }, Module);
+    const students: any = await getObjects({ where: { course: module.assignedCourse } }, User);
+    res.status(200).send(students);
+  } catch (_err) {
+    res.status(500).send('Could not find any students');
   }
 };

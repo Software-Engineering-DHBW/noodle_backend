@@ -27,4 +27,14 @@ export default class File {
     cascade: true,
   })
     attachedAt: ModuleItem;
+
+  @Column({
+    default: false,
+  })
+    isLectureMaterial: boolean;
+
+  @Column({
+    default: false,
+  })
+    isExercise: boolean;
 }
