@@ -222,8 +222,12 @@ export const getAllUsers = async (req: Request, res: Response) => {
         'User.username',
         'User.isTeacher',
         'User.isAdministrator',
+        'User.course',
+        'Course.id',
+        'Course.name',
       ])
       .leftJoin('UserDetail.userId', 'User')
+      .leftJoin('User.course', 'Course')
       .getMany();
     res.status(200).send(users);
   } catch (_err) {
