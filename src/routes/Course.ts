@@ -232,7 +232,6 @@ export const getAllCourses = async (req: Request, res: Response) => {
       .getMany();
     res.status(200).send(courses);
   } catch (_err) {
-    console.log(_err);
     res.status(500).send('The users could not be retrieved');
   }
 };
