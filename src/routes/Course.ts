@@ -191,7 +191,7 @@ export const changeCourse = async (req: Request, res: Response) => {
 /**
  * @async
  * Updates a course with the data given by the HTTP-Request<br>
- * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-coursecourseiddeletecourse | POST /course/:courseId/deleteCourse}
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#post-coursecourseiddelete | POST /course/:courseId/deleteCourse}
  * @param {Request} req - Holds the data from the HTTP-Request
  * @param {Response} res - Used to form the response
  */
