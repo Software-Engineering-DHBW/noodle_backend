@@ -358,7 +358,7 @@ export const changeName = async (req: Request, res: Response) => {
 export const selectModule = async (req: Request, res: Response) => {
   try {
     const { moduleId } = req.params;
-    const module: any = await getOneObject({ where: { id: moduleId }, relations: ['assignedTeacher', 'submodule', 'assignedCourse'] }, Module);
+    const module: any = await getOneObject({ where: { id: moduleId }, relations: ['submodule', 'assignedCourse'] }, Module);
     res.status(200).send(module);
   } catch (_err) {
     res.status(500).send('Could not find the module');
