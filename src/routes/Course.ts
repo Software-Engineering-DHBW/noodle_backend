@@ -199,6 +199,18 @@ export const deleteCourse = async (req: Request, res: Response) => {
   try {
     const { courseId } = req.params;
     const course: any = await getOneObject({ where: { id: courseId } }, Course);
+    const modules: any = await getObjects({ where: { assignedCourse: courseId } }, Module);
+    modules.forEach(async (element) => {
+      const module = element;
+      module.assignedCourse = null;
+      await saveObject(module, Module);
+    });
+    const students: any = await getObjects({ where: { course: courseId } }, User);
+    students.forEach(async (element) => {
+      const student = element;
+      student.course = null;
+      await saveObject(student, User);
+    });
     await deleteObjects(course, Course);
     res.status(200).send('The Course has been deleted');
   } catch (_err) {
