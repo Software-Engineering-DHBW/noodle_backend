@@ -43,9 +43,13 @@ const createCourse = async (data: GeneralCourse): Promise<Course> => {
   newCourse.name = data.name;
   const studentList: User[] = [];
   data.students.forEach(async (element) => {
-    const student: any = await getOneObject({ where: { id: element } }, User);
-    if (student.isAdministrator === false && student.isTeacher === false) {
-      studentList.push(student);
+    // get a list of students to prevent crash if not exited id was submitted
+    const students: any = await getObjects({ where: { id: element } }, User);
+    if (students.length > 0) {
+      const student = students[0];
+      if (student.isAdministrator === false && student.isTeacher === false) {
+        studentList.push(student);
+      }
     }
   });
   newCourse.students = studentList;
