@@ -8,7 +8,7 @@ export default class UserDetail {
   @PrimaryGeneratedColumn()
     id: number;
 
-  @OneToOne(() => User)
+  @OneToOne(() => User, (userId) => userId.userDetail)
   @JoinColumn()
     userId: User;
 
