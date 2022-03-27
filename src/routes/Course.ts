@@ -1,5 +1,6 @@
 import { Request, Response } from 'express';
-import { getConnection, Not } from 'typeorm';
+import { getConnection, getRepository, Not } from 'typeorm';
+import Module = require('module');
 import {
   deleteObjects, getOneObject, saveObject, getObjects,
 } from './Manager';
@@ -198,5 +199,36 @@ export const deleteCourse = async (req: Request, res: Response) => {
     res.status(200).send('The Course has been deleted');
   } catch (_err) {
     res.status(500).send('Course could not be deleted');
+  }
+};
+
+/**
+ * @async
+ * Get all courses<br>
+ * Corresponding API-Call : {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#get-coursegetall | GET /course/getAll}
+ * @param {Request} req - Holds the data from the HTTP-Request
+ * @param {Response} res - Used to form the response
+ */
+
+export const getAllCourses = async (req: Request, res: Response) => {
+  try {
+    const courses: Course[] = await getRepository(Course)
+      .createQueryBuilder('')
+      .select([
+        'Course.id',
+        'Course.name',
+        'User.id',
+        'UserDetail.fullname',
+        'Module.id',
+        'Module.name',
+      ])
+      .leftJoin('Course.students', 'User')
+      .leftJoin('User.userDetail', 'UserDetail')
+      .leftJoin('Course.assignedModules', 'Module')
+      .getMany();
+    res.status(200).send(courses);
+  } catch (_err) {
+    console.log(_err);
+    res.status(500).send('The users could not be retrieved');
   }
 };

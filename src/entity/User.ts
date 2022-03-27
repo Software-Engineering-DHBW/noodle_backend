@@ -1,12 +1,17 @@
 import {
-  Entity, PrimaryGeneratedColumn, Column, ManyToOne,
+  Entity, PrimaryGeneratedColumn, Column, ManyToOne, OneToOne, JoinColumn,
 } from 'typeorm';
 import Course from './Course';
+import UserDetail from './UserDetail';
 
 @Entity()
 export default class User {
   @PrimaryGeneratedColumn()
     id: number;
+
+  @OneToOne(() => UserDetail, (userDetail) => userDetail.userId)
+  @JoinColumn()
+    userDetail: UserDetail;
 
   @Column({
     unique: true,

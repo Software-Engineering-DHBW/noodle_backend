@@ -145,6 +145,10 @@ router.post('/module/:moduleId/:moduleItemId/deleteAllUploadedFiles', (req: expr
 });
 
 // API Calls for Course
+router.get('/course/getAll', (req: express.Request, res: express.Response) => {
+  Permission.checkAdministrator(req, res, course.getAllCourses);
+});
+
 router.get('/course/:courseId', (req: express.Request, res: express.Response) => {
   course.selectCourse(req, res);
 });
