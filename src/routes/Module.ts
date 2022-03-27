@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { getConnection, Not } from 'typeorm';
+import { getConnection, getRepository, Not } from 'typeorm';
 import {
   deleteObjects, getObjects, getOneObject, saveObject,
 } from './Manager';
@@ -379,5 +379,44 @@ export const getStudents = async (req: Request, res: Response) => {
     res.status(200).send(students);
   } catch (_err) {
     res.status(500).send('Could not find any students');
+  }
+};
+
+/**
+ * @async
+ * Returns modules for a student or a teacher
+ * Corresponding API-Call: {@link https://github.com/Software-Engineering-DHBW/noodle_backend/wiki/API#get-modulemoduleidgetstudents | GET /module/:moduleId/getStudents}
+ * @param {Request} req - Holds the data from the HTTP-Request
+ * @param {Response} res - Used to form the response
+ */
+export const getModules = async (req: Request, res: Response) => {
+  try {
+    let modules: Module[] = [];
+    if (req.session.role === 'teacher') {
+      modules = await getRepository(Module)
+        .createQueryBuilder('')
+        .select([
+          'Module.id',
+          'Module.name',
+          'Module.description',
+        ])
+        .leftJoin('Module.assignedTeacher', 'User')
+        .where('User.id = :id ', { id: req.session.id })
+        .getMany();
+    } else if (req.session.role === 'student') {
+      modules = await getRepository(Module)
+        .createQueryBuilder('')
+        .select([
+          'Module.id',
+          'Module.name',
+          'Module.description',
+        ])
+        .leftJoin('Module.assignedCourse', 'Course')
+        .where('Course.id = :id ', { id: req.session.course.id })
+        .getMany();
+    }
+    res.status(200).send(modules);
+  } catch (_err) {
+    res.status(500).send('Could not retrieve the modules');
   }
 };

@@ -95,6 +95,10 @@ router.post('/module/:moduleId/deleteModule', (req: express.Request, res: expres
   Permission.checkAdministrator(req, res, module.deleteModule);
 });
 
+router.get('/module/getModules', (req: express.Request, res: express.Response) => {
+  module.getModules(req, res);
+});
+
 router.get('/module/:moduleId', (req: express.Request, res: express.Respone) => {
   module.selectModule(req, res);
 });
