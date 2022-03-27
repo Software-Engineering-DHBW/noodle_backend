@@ -358,7 +358,7 @@ export const changeName = async (req: Request, res: Response) => {
 export const selectModule = async (req: Request, res: Response) => {
   try {
     const { moduleId } = req.params;
-    const module: any = await getOneObject({ where: { id: moduleId }, relations: ['assignedTeacher', 'submodule'] }, Module);
+    const module: any = await getOneObject({ where: { id: moduleId }, relations: ['assignedTeacher', 'submodule', 'assignedCourse'] }, Module);
     res.status(200).send(module);
   } catch (_err) {
     res.status(500).send('Could not find the module');
@@ -415,6 +415,19 @@ export const getModules = async (req: Request, res: Response) => {
         .where('Course.id = :id ', { id: req.session.course.id })
         .getMany();
     }
+    res.status(200).send(modules);
+  } catch (_err) {
+    res.status(500).send('Could not retrieve the modules');
+  }
+};
+
+/**
+ * @async
+ * Returns all modules that exist
+ */
+export const getAllModules = async (req: Request, res: Response) => {
+  try {
+    const modules = await getObjects({ select: ['id', 'name', 'description'] }, Module);
     res.status(200).send(modules);
   } catch (_err) {
     res.status(500).send('Could not retrieve the modules');
