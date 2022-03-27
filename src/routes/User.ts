@@ -136,6 +136,7 @@ const createLoginJwt = async (user: User, userDetails: UserDetail): Promise<stri
     username: user.username,
     fullName: userDetails.fullname,
     role,
+    course: user.course,
     exp: Math.floor(Date.now() / 1000) + (12 * 60 * 60),
   }, process.env.jwtSignatureKey);
 };
@@ -151,7 +152,7 @@ const createLoginJwt = async (user: User, userDetails: UserDetail): Promise<stri
 export const loginUser = async (req: Request, res: Response): Promise<void> => {
   try {
     const data: LoginUser = req.body;
-    const user: any = await getOneObject({ where: { username: data.username } }, User);
+    const user: any = await getOneObject({ where: { username: data.username }, relations: ['course'] }, User);
     if (!await verify(user.password, data.password)) {
       throw new Error();
     }
@@ -222,8 +223,12 @@ export const getAllUsers = async (req: Request, res: Response) => {
         'User.username',
         'User.isTeacher',
         'User.isAdministrator',
+        'User.course',
+        'Course.id',
+        'Course.name',
       ])
       .leftJoin('UserDetail.userId', 'User')
+      .leftJoin('User.course', 'Course')
       .getMany();
     res.status(200).send(users);
   } catch (_err) {
