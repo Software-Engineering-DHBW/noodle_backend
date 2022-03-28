@@ -57,13 +57,18 @@ const createModule = (data: GeneralModule): Module => {
   newModule.name = data.name;
   newModule.description = data.description;
   const teacherList: User[] = [];
+  let errorCount = 0;
   data.assignedTeacher.forEach(async (element) => {
-    const teacher: any = await getOneObject({ where: { id: element } }, User);
-    if (!teacher.isTeacher) {
-      // Error Handling missing
+    try {
+      const teacher: any = await getOneObject({ where: { id: element } }, User);
+      teacherList.push(teacher);
+    } catch (_err) {
+      errorCount += 1;
     }
-    teacherList.push(teacher);
   });
+  if (errorCount > 0) {
+    throw new Error('Teacher not found');
+  }
   newModule.assignedTeacher = teacherList;
   if (data.submodule != null) {
     const moduleList: Module[] = [];
