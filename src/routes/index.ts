@@ -207,7 +207,7 @@ router.post('/grades/delete', (req: express.Request, res: express.Response) => {
 
 // API Calls for Timetable
 router.post('/timetable/insert', (req: express.Request, res: express.Response) => {
-  req.params.moduleId = req.body.id;
+  req.params.moduleId = req.body.assignedModule;
   Permission.checkAdministratorOrModuleTeacher(req, res, time.insertTimetableEntry);
 });
 
@@ -224,7 +224,7 @@ router.get('/timetable/getCourse/:courseId', (req: express.Request, res: express
 });
 
 router.post('/timetable/delete', (req: express.Request, res: express.Response) => {
-  req.params.moduleId = req.body.id;
+  req.params.moduleId = req.body.assignedModule;
   Permission.checkAdministratorOrModuleTeacher(req, res, time.deleteTimeTableEntriesModule);
 });
 
