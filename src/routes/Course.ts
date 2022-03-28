@@ -161,7 +161,6 @@ export const selectCourse = async (req: Request, res: Response) => {
     const course: any = await getObjects({ where: { id: courseId }, relations: ['students'] }, Course);
     res.status(200).send(course);
   } catch (_err) {
-    console.log(_err);
     res.status(500).send('Could not find the course');
   }
 };

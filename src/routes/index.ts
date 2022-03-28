@@ -116,7 +116,7 @@ router.post('/module/:moduleId/addMouduleItem', (req: express.Request, res: expr
   Permission.checkAdministratorOrModuleTeacher(req, res, moduleItem.registerModuleItem);
 });
 
-router.get('/module/:moduleId/:moduleItemId', (req: express.Request, res: express.Respone) => {
+router.get('/module/:moduleId/:moduleItemId/select', (req: express.Request, res: express.Respone) => {
   moduleItem.selectModuleItem(req, res);
 });
 
@@ -124,7 +124,7 @@ router.get('/module/:moduleId/selectModuleItems', (req: express.Request, res: ex
   moduleItem.selectAllModuleItems(req, res);
 });
 
-router.post('/module/:moduleId/:moduleItemId/changeModuleItem', (req: express.Request, res: express.Respone) => {
+router.get('/module/:moduleId/:moduleItemId/changeModuleItem', (req: express.Request, res: express.Respone) => {
   Permission.checkAdministratorOrModuleTeacher(req, res, moduleItem.changeModuleItem);
 });
 
