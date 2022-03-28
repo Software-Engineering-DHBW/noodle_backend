@@ -1,4 +1,5 @@
 import { Request, Response } from 'express';
+import { getRepository } from 'typeorm';
 import Timetable from '../entity/Timetable';
 import {
   saveObject, getObjects, getOneObject, deleteObjects,
@@ -33,32 +34,46 @@ export const getTimeTableEntriesPerson = async (req: Request, res: Response) => 
   try {
     let searchOptions = {};
     if (req.session.role === 'teacher') {
-      searchOptions = {
-        where: {
-          assignedModule: {
-            assignedTeacher: req.session.id,
-          },
-        },
-        relations: ['assignedModule'],
-      };
-    } else {
-      const studentCourseId: any = await getOneObject({
-        where: {
-          username: req.session.username,
-        },
-        relations: ['course'],
-      }, User);
-      searchOptions = {
-        where: {
-          assignedModule: {
-            assignedCourse: studentCourseId.course.id,
-          },
-        },
-        relations: ['assignedModule', 'assignedModule.assignedCourse'],
-      };
+      const entries: Timetable[] = await getRepository(Timetable)
+        .createQueryBuilder('')
+        .select([
+          'Timetable.id',
+          'Timetable.startTime',
+          'Timetable.endTime',
+          'Timetable.description',
+          'Timetable.room',
+          'Module.id',
+          'Module.name',
+          'Module.description',
+          'Course.id',
+          'Course.name',
+        ])
+        .leftJoin('Timetable.assignedModule', 'Module')
+        .leftJoin('Module.assignedCourse', 'Course')
+        .leftJoin('Module.assignedTeacher', 'User')
+        .where('User.id = :id', { id: req.session.id })
+        .getMany();
+      res.status(200).send(entries);
+      return;
     }
+    const studentCourseId: any = await getOneObject({
+      where: {
+        username: req.session.username,
+      },
+      relations: ['course'],
+    }, User);
+    searchOptions = {
+      where: {
+        assignedModule: {
+          assignedCourse: studentCourseId.course.id,
+        },
+      },
+      relations: ['assignedModule', 'assignedModule.assignedCourse'],
+    };
+
     res.status(200).send(await getObjects(searchOptions, Timetable));
   } catch (_err) {
+    console.log(_err);
     res.status(500).send('The entries could not be retrieved');
   }
 };
