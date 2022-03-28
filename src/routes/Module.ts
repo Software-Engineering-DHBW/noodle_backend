@@ -15,7 +15,7 @@ interface GeneralModule {
   description?: string;
   assignedTeacher: User[];
   assignedCourse?: Course;
-  submodule: Module[];
+  submodule?: Module[];
 }
 /**
  * Representation of the incoming data for changing the name or description of a module or category
@@ -112,7 +112,7 @@ export const registerModule = (req: Request, res: Response) => {
     const data: GeneralModule = req.body;
     const newModule: Module = createModule(data);
     saveNewModule(newModule, res);
-  } catch {
+  } catch (_err) {
     res.sendStatus(500);
   }
 };

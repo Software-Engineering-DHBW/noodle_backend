@@ -158,12 +158,10 @@ export const deleteStudent = async (req: Request, res: Response) => {
 export const selectCourse = async (req: Request, res: Response) => {
   try {
     const { courseId } = req.params;
-    const course: any = await getObjects({
-      select: ['name', 'students'],
-      where: { courseId },
-    }, Course);
+    const course: any = await getObjects({ where: { id: courseId }, relations: ['students'] }, Course);
     res.status(200).send(course);
   } catch (_err) {
+    console.log(_err);
     res.status(500).send('Could not find the course');
   }
 };
