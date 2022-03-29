@@ -1,6 +1,6 @@
 {
   "name": "@software-engineering-dhbw/noodle_backend",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Awesome project developed with TypeORM.",
   "main": "build/index.js",
   "bin": {
